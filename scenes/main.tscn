@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5bvccsb3n045"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_0lpw8"]
+[ext_resource type="PackedScene" uid="uid://d36rtp405vhun" path="res://scenes/model.tscn" id="2_5xiag"]
+[ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/Overlay_V1.png" id="3_uqy7f"]
+[ext_resource type="Script" path="res://scripts/web_socket_server.gd" id="4_6tyg6"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0lpw8")
+
+[node name="Model" parent="." instance=ExtResource("2_5xiag")]
+position = Vector2(115, 268)
+
+[node name="OverlayV1" type="Sprite2D" parent="."]
+position = Vector2(321.556, 181)
+scale = Vector2(0.333333, 0.333333)
+texture = ExtResource("3_uqy7f")
+
+[node name="WebSocketServer" type="Node" parent="."]
+script = ExtResource("4_6tyg6")
+
+[connection signal="client_connected" from="WebSocketServer" to="." method="_on_web_socket_server_client_connected"]
+[connection signal="message_received" from="WebSocketServer" to="." method="_on_web_socket_server_message_received"]
