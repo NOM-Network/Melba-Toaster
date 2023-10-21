@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://b5bvccsb3n045"]
 
-[ext_resource type="Script" path="res://scripts/servers/pixel_melba_server.gd" id="1_rheal"]
+[ext_resource type="Script" path="res://scripts/pixel/pixel_melba_server.gd" id="1_rheal"]
 [ext_resource type="PackedScene" uid="uid://d36rtp405vhun" path="res://scenes/pixel/pixel_melba.tscn" id="2_5xiag"]
 [ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/overlays/Overlay_V1.png" id="3_qa3h2"]
-[ext_resource type="Script" path="res://scripts/servers/web_socket_server.gd" id="4_t3hk7"]
+[ext_resource type="Script" path="res://scripts/websocket/web_socket_server.gd" id="4_t3hk7"]
 
 [node name="PixelMelbaServer" type="Node"]
 script = ExtResource("1_rheal")
