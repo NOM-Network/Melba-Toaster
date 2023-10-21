@@ -67,9 +67,11 @@ func send(peer_id, message) -> int:
 
 func get_message(peer_id) -> Variant:
     assert(peers.has(peer_id))
+
     var socket = peers[peer_id]
     if socket.get_available_packet_count() < 1:
         return null
+        
     var pkt = socket.get_packet()
     if socket.was_string_packet():
         return pkt.get_string_from_utf8()
@@ -91,11 +93,13 @@ func _create_peer() -> WebSocketPeer:
 func poll() -> void:
     if not tcp_server.is_listening():
         return
+    
     while not refuse_new_connections and tcp_server.is_connection_available():
         var conn = tcp_server.take_connection()
         assert(conn != null)
         pending_peers.append(PendingPeer.new(conn))
-    var to_remove := []
+    
+    var to_remove := []    
     for p in pending_peers:
         if not _connect_pending(p):
             if p.connect_time + handshake_timout < Time.get_ticks_msec():
@@ -103,12 +107,14 @@ func poll() -> void:
                 to_remove.append(p)
             continue # Still pending
         to_remove.append(p)
+    
     for r in to_remove:
         pending_peers.erase(r)
     to_remove.clear()
+
     for id in peers:
         var p: WebSocketPeer = peers[id]
-        var packets = p.get_available_packet_count()
+        var _packets = p.get_available_packet_count()
         p.poll()
         if p.get_ready_state() != WebSocketPeer.STATE_OPEN:
             client_disconnected.emit(id)
@@ -158,5 +164,5 @@ func _connect_pending(p: PendingPeer) -> bool:
         return false
 
 
-func _process(delta):
+func _process(_delta):
     poll()

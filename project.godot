@@ -13,17 +13,23 @@ config_version=5
 config/name="Melba Toaster"
 run/main_scene="res://scenes/pixel/pixel_melba_server.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
+boot_splash/show_image=false
 
 [display]
 
 window/size/viewport_width=640
 window/size/viewport_height=360
+window/size/resizable=false
 window/size/borderless=true
 window/size/transparent=true
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
+
+[editor]
+
+movie_writer/disable_vsync=true
 
 [editor_plugins]
 

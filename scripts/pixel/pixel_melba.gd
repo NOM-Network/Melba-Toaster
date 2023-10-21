@@ -19,7 +19,7 @@ func _ready() -> void:
     look_at_chat()
     pass
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
     if state == States.LOOKINGSTRAIGHT:
         var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
         if volume < -60.0:

@@ -7,6 +7,8 @@ extends Node
 
 const PORT = 8765 
 
+var control_panel = preload("res://scenes/control_panel/control_panel.tscn")
+
 var id: int 
 
 func _ready() -> void:
@@ -14,11 +16,21 @@ func _ready() -> void:
     get_tree().get_root().set_transparent_background(true)
     DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
     
+    # CP init
+    control_panel_init()
+
+    # WebSockets server init
     var err: Error = server.listen(PORT)
     if err != OK:
         print("Error listing on port %s" % PORT)
     
-func _on_web_socket_server_message_received(peer_id, message):
+func control_panel_init():
+    get_viewport().set_embedding_subwindows(false)
+    var cp: Window = control_panel.instantiate()
+    add_child(cp)
+    cp.visible = true
+
+func _on_web_socket_server_message_received(_peer_id, message):
     server.send(id, message)
     print(typeof(message))
     if message == "quit":
