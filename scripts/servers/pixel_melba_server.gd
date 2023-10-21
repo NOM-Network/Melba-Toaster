@@ -1,4 +1,4 @@
-extends Control
+extends Node
 
 @export var path = "C:/Users/user/Downloads/audio/" 
 
