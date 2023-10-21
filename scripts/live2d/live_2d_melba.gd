@@ -4,12 +4,12 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-    act()
+    pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
     pass
 
-func act() -> void: 
-    cubism_model.anim_motion = 5
+#func act() -> void: 
+#    cubism_model.start_motion("", 4)
     
