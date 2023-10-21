@@ -7,7 +7,6 @@ title = "Control Panel - Toaster"
 initial_position = 1
 size = Vector2i(800, 600)
 wrap_controls = true
-always_on_top = true
 min_size = Vector2i(800, 600)
 script = ExtResource("1_rhl0v")
 
@@ -27,62 +26,73 @@ theme_override_constants/margin_bottom = 5
 [node name="Columns" type="VBoxContainer" parent="Margins"]
 layout_mode = 2
 
-[node name="Rows" type="HBoxContainer" parent="Margins/Columns"]
+[node name="FirstRow" type="HBoxContainer" parent="Margins/Columns"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="SpeechBox" type="VBoxContainer" parent="Margins/Columns/Rows"]
+[node name="SpeechBox" type="VBoxContainer" parent="Margins/Columns/FirstRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CurrentSpeech" type="Label" parent="Margins/Columns/Rows/SpeechBox"]
+[node name="CurrentSpeech" type="Label" parent="Margins/Columns/FirstRow/SpeechBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Let's get toasty!"
 horizontal_alignment = 1
 
-[node name="Buttons" type="HBoxContainer" parent="Margins/Columns/Rows/SpeechBox"]
+[node name="Buttons" type="HBoxContainer" parent="Margins/Columns/FirstRow/SpeechBox"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="CancelSpeech" type="Button" parent="Margins/Columns/Rows/SpeechBox/Buttons"]
+[node name="CancelSpeech" type="Button" parent="Margins/Columns/FirstRow/SpeechBox/Buttons"]
 layout_mode = 2
 text = "Cancel speech"
 
-[node name="GenerateSpeech" type="Button" parent="Margins/Columns/Rows/SpeechBox/Buttons"]
+[node name="GenerateSpeech" type="Button" parent="Margins/Columns/FirstRow/SpeechBox/Buttons"]
 layout_mode = 2
 text = "Generate"
 
-[node name="ObsControls" type="VBoxContainer" parent="Margins/Columns/Rows"]
+[node name="ObsControls" type="VBoxContainer" parent="Margins/Columns/FirstRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ObsScenes" type="HFlowContainer" parent="Margins/Columns/Rows/ObsControls"]
+[node name="ObsScenes" type="HFlowContainer" parent="Margins/Columns/FirstRow/ObsControls"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Margins/Columns/Rows/ObsControls/ObsScenes"]
+[node name="Button" type="Button" parent="Margins/Columns/FirstRow/ObsControls/ObsScenes"]
 layout_mode = 2
 text = "TestTestTestTestTestTestTestTestTe"
 
-[node name="Button2" type="Button" parent="Margins/Columns/Rows/ObsControls/ObsScenes"]
+[node name="Button2" type="Button" parent="Margins/Columns/FirstRow/ObsControls/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/Columns/Rows/ObsControls/ObsScenes"]
+[node name="Button3" type="Button" parent="Margins/Columns/FirstRow/ObsControls/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/Columns/Rows/ObsControls/ObsScenes"]
+[node name="Button4" type="Button" parent="Margins/Columns/FirstRow/ObsControls/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/Columns/Rows/ObsControls/ObsScenes"]
+[node name="Button5" type="Button" parent="Margins/Columns/FirstRow/ObsControls/ObsScenes"]
 layout_mode = 2
 text = "Test"
+
+[node name="SecondRow" type="VBoxContainer" parent="Margins/Columns"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StreamStats" type="RichTextLabel" parent="Margins/Columns/SecondRow"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "Waiting for data..."
+fit_content = true
 
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
-unique_name_in_owner = true
 title = "Confirm"
 initial_position = 1
 size = Vector2i(331, 109)
@@ -100,5 +110,8 @@ text = "Do you reallt want to close the Toaster?
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="StatsTimer" type="Timer" parent="."]
+
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
+[connection signal="timeout" from="StatsTimer" to="." method="_on_stats_timer_timeout"]
