@@ -1,6 +1,8 @@
 extends Node
 
 @onready var server = $WebSocketServer
+@onready var model = $Live2DMelba
+
 
 const PORT = 8765 
 
@@ -18,6 +20,8 @@ func _ready() -> void:
     
 func _on_web_socket_server_message_received(peer_id, message):
     server.send(id, message)
+    if message == "test":
+        model.test()
 
 func _on_web_socket_server_client_connected(peer_id):
     id = peer_id 
