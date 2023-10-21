@@ -56,6 +56,14 @@ text = "Generate"
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="ObsStreamControl" type="Button" parent="Margins/Columns/FirstRow/ObsControls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"1"
+toggle_mode = true
+keep_pressed_outside = true
+text = "Start Stream"
+
 [node name="ObsScenes" type="HFlowContainer" parent="Margins/Columns/FirstRow/ObsControls"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -81,16 +89,23 @@ text = "Test"
 layout_mode = 2
 text = "Test"
 
-[node name="SecondRow" type="VBoxContainer" parent="Margins/Columns"]
+[node name="SecondRow" type="HBoxContainer" parent="Margins/Columns"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="StreamStats" type="RichTextLabel" parent="Margins/Columns/SecondRow"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 bbcode_enabled = true
 text = "Waiting for data..."
-fit_content = true
+
+[node name="StreamStatus" type="RichTextLabel" parent="Margins/Columns/SecondRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Waiting for data..."
 
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
 title = "Confirm"
@@ -113,5 +128,6 @@ vertical_alignment = 1
 [node name="StatsTimer" type="Timer" parent="."]
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="Margins/Columns/FirstRow/ObsControls/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="StatsTimer" to="." method="_on_stats_timer_timeout"]
