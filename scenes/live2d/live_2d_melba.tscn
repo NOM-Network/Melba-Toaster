@@ -1,14 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://h1kmx2dkntdj"]
 
-[ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/overlays/Overlay_V1.png" id="1_lcb4j"]
+[ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_er7e7"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_708k7"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D"]
+script = ExtResource("1_er7e7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(150, 349)
+position = Vector2(5.96046e-08, 2.38419e-07)
+scale = Vector2(0.626, 0.626)
 texture = SubResource("ViewportTexture_708k7")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
@@ -16,10 +18,10 @@ assets = "res://assets/live2d/runtime/mao_pro.model3.json"
 anim_loop = false
 anim_loop_fade_in = true
 anim_expression = ""
-anim_motion = ""
-ParamAngleX = 7.3135
-ParamAngleY = 0.394298
-ParamAngleZ = 3.93167
+anim_motion = "Idle_0"
+ParamAngleX = 4.09372
+ParamAngleY = 2.80761
+ParamAngleZ = 2.86275
 ParamCheek = 0.0
 ParamFaceInkOn = 0.0
 ParamEyeLOpen = 1.0
@@ -49,23 +51,23 @@ ParamMouthUp = 1.0
 ParamMouthDown = 0.0
 ParamMouthAngry = 0.0
 ParamMouthAngryLine = 0.0
-ParamBodyAngleX = 1.77299
-ParamBodyAngleY = 0.0
-ParamBodyAngleZ = 0.0
-ParamBreath = 0.00425968
+ParamBodyAngleX = -1.68792
+ParamBodyAngleY = 0.396173
+ParamBodyAngleZ = -0.641674
+ParamBreath = 0.479487
 ParamLeftShoulderUp = 0.0
 ParamRightShoulderUp = 0.0
-ParamArmLA01 = 0.0
-ParamArmLA02 = 0.0
+ParamArmLA01 = 0.674611
+ParamArmLA02 = -0.429333
 ParamArmLA03 = 0.0
 ParamHandLA = 0.0
-ParamArmRA01 = 0.0
-ParamArmRA02 = 0.0
+ParamArmRA01 = 0.681108
+ParamArmRA02 = -0.429333
 ParamArmRA03 = 0.0
 ParamWandRotate = 0.0
 ParamHandRA = 0.0
-ParamInkDrop = 0.0
-ParamInkDropRotate = 0.0
+ParamInkDrop = 5.33209
+ParamInkDropRotate = -0.191318
 ParamInkDropOn = 0.0
 ParamArmLB01 = 0.0
 ParamArmLB02 = 0.0
@@ -80,26 +82,26 @@ ParamHandRB = 0.0
 ParamAllX = 0.0
 ParamAllY = 0.0
 ParamAllRotate = 0.0
-ParamHairFront = 0.017504
-ParamHairSideL = 0.0175417
-ParamHairSideR = 0.0175417
-ParamHairBack = 0.0169583
-ParamHairBackR = 0.0172306
-ParamHairBackL = 0.0172306
-ParamoHairMesh = 0.0193963
-ParamHairFrontFuwa = -0.00122607
-ParamHairSideFuwa = -0.00074577
-ParamHairBackFuwa = -0.0037552
-ParamWing = -0.00279496
-ParamRibbon = -0.00198187
-ParamHatBrim = -0.00453719
-ParamHatTop = 0.00297577
-ParamAccessory1 = 0.00238221
-ParamAccessory2 = -0.00226736
-ParamString = 0.00147344
-ParamRobeL = 0.00196691
-ParamRobeR = 0.00196691
-ParamRobeFuwa = 0.0
+ParamHairFront = -0.0192298
+ParamHairSideL = -0.0258895
+ParamHairSideR = -0.0258895
+ParamHairBack = -0.0168184
+ParamHairBackR = -0.0206258
+ParamHairBackL = -0.0206258
+ParamoHairMesh = -0.046586
+ParamHairFrontFuwa = 0.0374375
+ParamHairSideFuwa = 0.0368629
+ParamHairBackFuwa = 0.0411604
+ParamWing = 0.0146917
+ParamRibbon = 0.0126966
+ParamHatBrim = 0.00631464
+ParamHatTop = -0.00458876
+ParamAccessory1 = -0.0107535
+ParamAccessory2 = 0.0142465
+ParamString = -0.020135
+ParamRobeL = -0.0359722
+ParamRobeR = -0.0359722
+ParamRobeFuwa = -0.0111994
 ParamHeartMissOn = 0.0
 ParamHeartBackMissOn = 0.0
 ParamHeartColorRainbow = 0.0
@@ -179,13 +181,9 @@ PartWandB = 1.0
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true
+size = Vector2i(1000, 1000)
 render_target_update_mode = 4
 
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]
 
 [node name="GDCubismEffectEyeBlink" type="GDCubismEffectEyeBlink" parent="Sprite2D/GDCubismUserModel"]
-
-[node name="OverlayV1" type="Sprite2D" parent="."]
-position = Vector2(320.778, 180.375)
-scale = Vector2(0.332639, 0.332639)
-texture = ExtResource("1_lcb4j")
