@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byjvwdpcbr6r0"
-path="res://.godot/imported/melba_toast_face.png-4da61a3e3b0fd7a36c7b20949cad6e1c.ctex"
+uid="uid://dg114s0nxdiw"
+path="res://.godot/imported/melba_toast_eyes_closed.png-720ae34df06b27fd11544b5d61061321.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/melba_toast_face.png"
-dest_files=["res://.godot/imported/melba_toast_face.png-4da61a3e3b0fd7a36c7b20949cad6e1c.ctex"]
+source_file="res://assets/pixel_melba/melba_toast_eyes_closed.png"
+dest_files=["res://.godot/imported/melba_toast_eyes_closed.png-720ae34df06b27fd11544b5d61061321.ctex"]
 
 [params]
 

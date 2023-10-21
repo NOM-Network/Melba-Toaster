@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://b5bvccsb3n045"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_0lpw8"]
-[ext_resource type="PackedScene" uid="uid://d36rtp405vhun" path="res://scenes/model.tscn" id="2_5xiag"]
-[ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/Overlay_V1.png" id="3_uqy7f"]
-[ext_resource type="Script" path="res://scripts/web_socket_server.gd" id="4_6tyg6"]
+[ext_resource type="Script" path="res://scripts/main/main.gd" id="1_0lpw8"]
+[ext_resource type="PackedScene" uid="uid://d36rtp405vhun" path="res://scenes/pixel_melba/pixel_melba.tscn" id="2_5xiag"]
+[ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/overlays/Overlay_V1.png" id="3_qa3h2"]
+[ext_resource type="Script" path="res://scripts/websocket/web_socket_server.gd" id="4_6tyg6"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -14,13 +14,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0lpw8")
 
-[node name="Model" parent="." instance=ExtResource("2_5xiag")]
+[node name="PixelMelba" parent="." instance=ExtResource("2_5xiag")]
 position = Vector2(115, 268)
 
 [node name="OverlayV1" type="Sprite2D" parent="."]
 position = Vector2(321.556, 181)
 scale = Vector2(0.333333, 0.333333)
-texture = ExtResource("3_uqy7f")
+texture = ExtResource("3_qa3h2")
 
 [node name="WebSocketServer" type="Node" parent="."]
 script = ExtResource("4_6tyg6")

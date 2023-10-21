@@ -2,7 +2,7 @@ extends Control
 
 @export var path = "C:/Users/user/Downloads/audio/" 
 
-@onready var model = $Model
+@onready var model = $PixelMelba
 @onready var server = $WebSocketServer
 
 const PORT = 8765 

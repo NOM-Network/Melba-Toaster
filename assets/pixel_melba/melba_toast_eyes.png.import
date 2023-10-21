@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bg1vi370mu306"
-path="res://.godot/imported/melba_toast_eyes.png-5c76835e7bbdf4b7b7137765abf00ea1.ctex"
+path="res://.godot/imported/melba_toast_eyes.png-940c5d7c7910a5649d20195013a22ab4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/melba_toast_eyes.png"
-dest_files=["res://.godot/imported/melba_toast_eyes.png-5c76835e7bbdf4b7b7137765abf00ea1.ctex"]
+source_file="res://assets/pixel_melba/melba_toast_eyes.png"
+dest_files=["res://.godot/imported/melba_toast_eyes.png-940c5d7c7910a5649d20195013a22ab4.ctex"]
 
 [params]
 
