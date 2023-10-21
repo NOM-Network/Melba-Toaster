@@ -4,7 +4,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-    pass
+    cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
     
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
