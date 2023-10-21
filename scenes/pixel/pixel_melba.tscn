@@ -1,21 +1,21 @@
 [gd_scene load_steps=26 format=3 uid="uid://d36rtp405vhun"]
 
-[ext_resource type="Script" path="res://scripts/pixel_melba/pixel_melba.gd" id="1_krunt"]
-[ext_resource type="Material" uid="uid://cimhmqlj16qqv" path="res://shaders/smooth_pixel.tres" id="2_1rrwt"]
-[ext_resource type="Texture2D" uid="uid://ceut2s8wkja0m" path="res://assets/pixel_melba/melba_toast_back_hair.png" id="3_532xt"]
-[ext_resource type="Texture2D" uid="uid://1ot8s5pg2bxc" path="res://assets/pixel_melba/melba_toast_twintails.png" id="4_gdj8v"]
-[ext_resource type="Texture2D" uid="uid://bmh3o6qcs0a6i" path="res://assets/pixel_melba/melba_toast_shirt.png" id="5_h3c00"]
-[ext_resource type="Texture2D" uid="uid://qtjderhjoqbs" path="res://assets/pixel_melba/melba_toast_toast.png" id="6_bp6jg"]
-[ext_resource type="Texture2D" uid="uid://byjvwdpcbr6r0" path="res://assets/pixel_melba/melba_toast_face.png" id="7_0rqic"]
-[ext_resource type="Texture2D" uid="uid://ceg813ex013pr" path="res://assets/pixel_melba/melba_toast_hair.png" id="8_ctmrx"]
-[ext_resource type="Texture2D" uid="uid://vk61trg4ujx1" path="res://assets/pixel_melba/melba_toast_eyebrows.png" id="9_lx5j2"]
-[ext_resource type="Texture2D" uid="uid://cs20lq4tetg78" path="res://assets/pixel_melba/melba_toast_eyebrows_down.png" id="10_kfo8b"]
-[ext_resource type="Texture2D" uid="uid://bg1vi370mu306" path="res://assets/pixel_melba/melba_toast_eyes.png" id="11_vp2b8"]
-[ext_resource type="Texture2D" uid="uid://dg114s0nxdiw" path="res://assets/pixel_melba/melba_toast_eyes_closed.png" id="12_eriv4"]
-[ext_resource type="Texture2D" uid="uid://cjtqfltyw3elq" path="res://assets/pixel_melba/melba_toast_pupils.png" id="13_ek4j3"]
-[ext_resource type="Texture2D" uid="uid://cuutg4r763qx8" path="res://assets/pixel_melba/melba_toast_mouth_closed.png" id="14_bm7cj"]
-[ext_resource type="Texture2D" uid="uid://dviqyjuaqfwh5" path="res://assets/pixel_melba/melba_toast_mouth_open.png" id="15_n71yf"]
-[ext_resource type="Texture2D" uid="uid://k5ks3lcxtl61" path="res://assets/pixel_melba/melba_toast_bow.png" id="16_yghme"]
+[ext_resource type="Script" path="res://scripts/pixel/pixel_melba.gd" id="1_qa0qv"]
+[ext_resource type="Material" uid="uid://cimhmqlj16qqv" path="res://shaders/smooth_pixel.tres" id="2_2eubx"]
+[ext_resource type="Texture2D" uid="uid://ceut2s8wkja0m" path="res://assets/pixel/melba_toast_back_hair.png" id="3_nbqeo"]
+[ext_resource type="Texture2D" uid="uid://1ot8s5pg2bxc" path="res://assets/pixel/melba_toast_twintails.png" id="4_bvpve"]
+[ext_resource type="Texture2D" uid="uid://bmh3o6qcs0a6i" path="res://assets/pixel/melba_toast_shirt.png" id="5_aevqw"]
+[ext_resource type="Texture2D" uid="uid://qtjderhjoqbs" path="res://assets/pixel/melba_toast_toast.png" id="6_nlbr3"]
+[ext_resource type="Texture2D" uid="uid://byjvwdpcbr6r0" path="res://assets/pixel/melba_toast_face.png" id="7_amvuy"]
+[ext_resource type="Texture2D" uid="uid://ceg813ex013pr" path="res://assets/pixel/melba_toast_hair.png" id="8_cpg2t"]
+[ext_resource type="Texture2D" uid="uid://vk61trg4ujx1" path="res://assets/pixel/melba_toast_eyebrows.png" id="9_gmvlg"]
+[ext_resource type="Texture2D" uid="uid://cs20lq4tetg78" path="res://assets/pixel/melba_toast_eyebrows_down.png" id="10_dsdly"]
+[ext_resource type="Texture2D" uid="uid://bg1vi370mu306" path="res://assets/pixel/melba_toast_eyes.png" id="11_ysvjp"]
+[ext_resource type="Texture2D" uid="uid://dg114s0nxdiw" path="res://assets/pixel/melba_toast_eyes_closed.png" id="12_76lfa"]
+[ext_resource type="Texture2D" uid="uid://cjtqfltyw3elq" path="res://assets/pixel/melba_toast_pupils.png" id="13_j3kej"]
+[ext_resource type="Texture2D" uid="uid://cuutg4r763qx8" path="res://assets/pixel/melba_toast_mouth_closed.png" id="14_x8rj0"]
+[ext_resource type="Texture2D" uid="uid://dviqyjuaqfwh5" path="res://assets/pixel/melba_toast_mouth_open.png" id="15_81i57"]
+[ext_resource type="Texture2D" uid="uid://k5ks3lcxtl61" path="res://assets/pixel/melba_toast_bow.png" id="16_xkn4b"]
 
 [sub_resource type="Animation" id="Animation_xj4x8"]
 length = 0.001
@@ -287,66 +287,66 @@ _data = {
 }
 
 [node name="PixelMelba" type="Node2D"]
-script = ExtResource("1_krunt")
+script = ExtResource("1_qa0qv")
 
 [node name="BackHair" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("3_532xt")
+material = ExtResource("2_2eubx")
+texture = ExtResource("3_nbqeo")
 
 [node name="TwinTails" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("4_gdj8v")
+material = ExtResource("2_2eubx")
+texture = ExtResource("4_bvpve")
 
 [node name="Shirt" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("5_h3c00")
+material = ExtResource("2_2eubx")
+texture = ExtResource("5_aevqw")
 
 [node name="Toast" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("6_bp6jg")
+material = ExtResource("2_2eubx")
+texture = ExtResource("6_nlbr3")
 
 [node name="Face" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("7_0rqic")
+material = ExtResource("2_2eubx")
+texture = ExtResource("7_amvuy")
 
 [node name="Hair" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("8_ctmrx")
+material = ExtResource("2_2eubx")
+texture = ExtResource("8_cpg2t")
 
 [node name="Eyebrows" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("9_lx5j2")
+material = ExtResource("2_2eubx")
+texture = ExtResource("9_gmvlg")
 
 [node name="EyebrowsClosed" type="Sprite2D" parent="."]
 visible = false
-material = ExtResource("2_1rrwt")
-texture = ExtResource("10_kfo8b")
+material = ExtResource("2_2eubx")
+texture = ExtResource("10_dsdly")
 
 [node name="Eyes" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("11_vp2b8")
+material = ExtResource("2_2eubx")
+texture = ExtResource("11_ysvjp")
 
 [node name="EyesClosed" type="Sprite2D" parent="."]
 visible = false
-material = ExtResource("2_1rrwt")
-texture = ExtResource("12_eriv4")
+material = ExtResource("2_2eubx")
+texture = ExtResource("12_76lfa")
 
 [node name="Pupils" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("13_ek4j3")
+material = ExtResource("2_2eubx")
+texture = ExtResource("13_j3kej")
 
 [node name="MouthClosed" type="Sprite2D" parent="."]
 visible = false
-material = ExtResource("2_1rrwt")
-texture = ExtResource("14_bm7cj")
+material = ExtResource("2_2eubx")
+texture = ExtResource("14_x8rj0")
 
 [node name="MouthOpen" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("15_n71yf")
+material = ExtResource("2_2eubx")
+texture = ExtResource("15_81i57")
 
 [node name="Bow" type="Sprite2D" parent="."]
-material = ExtResource("2_1rrwt")
-texture = ExtResource("16_yghme")
+material = ExtResource("2_2eubx")
+texture = ExtResource("16_xkn4b")
 
 [node name="MouthAnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

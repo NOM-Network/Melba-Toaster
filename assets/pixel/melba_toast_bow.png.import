@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1ot8s5pg2bxc"
-path="res://.godot/imported/melba_toast_twintails.png-0df42c79695f7c204bce736e51db9efc.ctex"
+uid="uid://k5ks3lcxtl61"
+path="res://.godot/imported/melba_toast_bow.png-26b4d7f5917cf6a37552f52719dd6752.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/pixel_melba/melba_toast_twintails.png"
-dest_files=["res://.godot/imported/melba_toast_twintails.png-0df42c79695f7c204bce736e51db9efc.ctex"]
+source_file="res://assets/pixel/melba_toast_bow.png"
+dest_files=["res://.godot/imported/melba_toast_bow.png-26b4d7f5917cf6a37552f52719dd6752.ctex"]
 
 [params]
 
