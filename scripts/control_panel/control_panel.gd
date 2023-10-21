@@ -19,6 +19,7 @@ var status = {}
 # Scenes
 var active_scene = ""
 var scenes = []
+var sound_inputs = []
 
 const MessageType = {
 	Hello = 0,
@@ -55,6 +56,8 @@ func start_socket():
 func init_data():
 	if scenes == []:
 		send_request("GetSceneList")
+
+	send_request("GetInputList")
 
 	$StatsTimer.start()
 
@@ -102,6 +105,12 @@ func process_event(data):
 		"CurrentProgramSceneChanged", "SceneListChanged":
 			send_request("GetSceneList")	
 
+		"InputMuteStateChanged":
+			change_input_state(data.eventData)
+
+		"InputNameChanged":
+			change_input_name(data.eventData)
+
 		"SceneNameChanged":
 			# Handled by SceneListChanged response
 			pass 
@@ -113,9 +122,13 @@ func process_event(data):
 		"SceneTransitionStarted", "SceneTransitionEnded", "SceneTransitionVideoEnded":
 			pass
 
+		"ExitStarted":
+			socket.close()
+
 		_:
-			print("Event ", data.eventType)
-			print("Data: ", data.eventData)
+			print("Unhandled event: ", data.eventType)
+			print(data)
+			print("-------------")
 
 func process_request(data):
 	match data.requestType:
@@ -132,20 +145,60 @@ func process_request(data):
 				update_stream_control_button(status.outputActive)
 
 		"GetSceneList":
-			generate_scene_buttons(data.responseData)			
+			generate_scene_buttons(data.responseData)		
+
+		"GetInputList":
+			generate_inputs_buttons(data.responseData.inputs)
 
 		"SetCurrentProgramScene", "ToggleStream":
 			# Just a callback, ignore
 			pass
 
 		_:
-			print("Unhandled request:", data)
+			print("Unhandled request: ", data.requestType)
+			print(data)
 			print("-------------")
 
 func print_data(data, node):	
 	node.clear()
 	for i in data:
 		node.append_text("[b]%s:[b] %s\n" % [i.lstrip("output").capitalize(), data[i]])
+
+func generate_inputs_buttons(inputs):
+	for n in %ObsInputs.get_children():
+		n.queue_free()
+
+	for input in inputs:
+		var button = Button.new()
+		button.visible = false
+		button.name = input.inputName.to_camel_case()
+		button.text = input.inputName
+		button.pressed.connect(_on_input_button_pressed.bind(button))
+		%ObsInputs.add_child(button)
+
+		# Sending two times because it is easier to use events
+		send_request("ToggleInputMute", {"inputName": button.text})
+		send_request("ToggleInputMute", {"inputName": button.text})
+
+func change_input_state(data):
+	var button = %ObsInputs.get_node(data.inputName.to_camel_case())
+	if button:
+		button.visible = true
+		if (data.inputMuted):
+			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+				button.add_theme_color_override(i, Color(1, 0, 0))
+		else: 
+			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+				button.add_theme_color_override(i, Color(0, 1, 0))
+
+func _on_input_button_pressed(button):
+	send_request("ToggleInputMute", {"inputName": button.text})
+
+func change_input_name(data):
+	var button = %ObsInputs.get_node(data.oldInputName.to_camel_case())
+	if button:
+		button.name = data.inputName.to_camel_case()
+		button.text = data.inputName
 
 func generate_scene_buttons(data):
 	if data.has("currentProgramSceneName"):
@@ -160,10 +213,8 @@ func generate_scene_buttons(data):
 		var button = Button.new()
 		button.text = scene.sceneName
 		if (scene.sceneName == active_scene):
-			button.add_theme_color_override("font_color", Color(1, 0, 0))
-			button.add_theme_color_override("font_hover_color", Color(1, 0, 0))
-			button.add_theme_color_override("font_focus_color", Color(1, 0, 0))
-			button.add_theme_color_override("font_pressed_color", Color(1, 0, 0))
+			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+				button.add_theme_color_override(i, Color(0, 1, 0))
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
 
@@ -185,16 +236,12 @@ func _on_obs_stream_control_pressed():
 func update_stream_control_button(isStreaming: bool):
 	if (isStreaming):
 		%ObsStreamControl.text = "Stop Stream"
-		%ObsStreamControl.add_theme_color_override("font_color", Color(1, 0, 0))
-		%ObsStreamControl.add_theme_color_override("font_hover_color", Color(1, 0, 0))
-		%ObsStreamControl.add_theme_color_override("font_focus_color", Color(1, 0, 0))
-		%ObsStreamControl.add_theme_color_override("font_pressed_color", Color(1, 0, 0))
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			%ObsStreamControl.add_theme_color_override(i, Color(1, 0, 0))
 	else:
 		%ObsStreamControl.text = "Start Stream"
-		%ObsStreamControl.remove_theme_color_override("font_color")
-		%ObsStreamControl.remove_theme_color_override("font_hover_color")
-		%ObsStreamControl.remove_theme_color_override("font_focus_color")
-		%ObsStreamControl.remove_theme_color_override("font_pressed_color")
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			%ObsStreamControl.remove_theme_color_override(i)
 
 func send_request(type, data = {}):
 	var message = {
@@ -210,3 +257,9 @@ func send_request(type, data = {}):
 
 	message = JSON.stringify(message)
 	socket.send_text(message)
+
+func _on_reconnect_button_pressed():
+	$StatsTimer.stop()
+	socket.close()
+
+	get_tree().reload_current_scene()
