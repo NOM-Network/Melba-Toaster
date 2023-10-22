@@ -28,9 +28,11 @@ func control_panel_init():
 
 func process_string(message: String) -> void: 
 	var data = JSON.parse_string(message)
-	if data["type"] == "PlayAnimation":
-		if data["animationName"] == "wink1":
-			model.test() 
+	match data["type"]:
+		"PlayAnimation":
+			model.play_animation(data["animationName"])
+		"SetExpression":
+			model.set_expression(data["expressionName"])
 
 func _on_web_socket_server_message_received(peer_id, message):
 	server.send(id, message)

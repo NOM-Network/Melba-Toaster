@@ -1,4 +1,4 @@
-extends Node2D
+extends MelbaModel
 
 @onready var mouth_closed = $MouthClosed
 @onready var mouth_open = $MouthOpen
@@ -29,7 +29,7 @@ func _process(_delta: float) -> void:
 
 
 # Functions that needs to be able to be called from a python script 
-func play_audio(path: String) -> void:
+func play_audio_depricated(path: String) -> void:
 	look_straight()
 	
 	# Get file 
@@ -52,7 +52,6 @@ func toast_toggle() -> void:
 		toast.visible = false
 	else:
 		toast.visible = true 
-
 
 # Functions for movement and animation 
 func look_straight() -> void: 

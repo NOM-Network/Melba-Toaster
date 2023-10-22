@@ -1,4 +1,4 @@
-extends Node2D
+extends MelbaModel
 
 @onready var cubism_model = $Sprite2D/GDCubismUserModel
 
