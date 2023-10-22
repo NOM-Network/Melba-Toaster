@@ -24,6 +24,11 @@ func _ready() -> void:
 	var err: Error = server.listen(PORT)
 	if err != OK:
 		print("Error listing on port %s" % PORT)
+ 
+func _process(_delta: float) -> void: 
+	var memory_usage = Performance.get_monitor(Performance.MEMORY_STATIC) / 1024 / 1024
+	if memory_usage > 100: 
+		get_tree().quit()
 
 func control_panel_init():
 	get_viewport().set_embedding_subwindows(false)
