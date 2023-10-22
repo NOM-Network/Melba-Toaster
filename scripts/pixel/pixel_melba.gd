@@ -16,6 +16,7 @@ enum States {
 var state: States
 
 func _ready() -> void:
+	connect_signals()
 	look_at_chat()
 	pass
 
@@ -45,6 +46,7 @@ func play_audio_depricated(path: String) -> void:
 	# Play sound and animations 
 	audio_player.stream = stream
 	audio_player.play()
+
 	blabber_mouth()
 
 func toast_toggle() -> void: 

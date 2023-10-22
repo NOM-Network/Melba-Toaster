@@ -1,4 +1,9 @@
 extends Node
+class_name MelbaServer 
+
+signal play_animation 
+signal set_expression 
+signal play_audio 
 
 @export var model: Node 
 @export var server: Node
@@ -30,16 +35,21 @@ func process_string(message: String) -> void:
 	var data = JSON.parse_string(message)
 	match data["type"]:
 		"PlayAnimation":
-			model.play_animation(data["animationName"])
+			play_animation.emit(data["animationName"])
 		"SetExpression":
-			model.set_expression(data["expressionName"])
+			set_expression.emit(data["expressionName"])
+
+func process_audio(message: PackedByteArray) -> void: 
+	pass 
 
 func _on_web_socket_server_message_received(peer_id, message):
 	server.send(id, message)
 	
 	match typeof(message): 
-		4: 
+		TYPE_STRING: 
 			process_string(message) 
+		TYPE_PACKED_BYTE_ARRAY: 
+			process_audio(message)
 				
 func _on_web_socket_server_client_connected(peer_id) -> void:
 	id = peer_id 

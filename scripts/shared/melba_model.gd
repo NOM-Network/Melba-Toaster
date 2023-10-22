@@ -1,16 +1,24 @@
 # Base class for all Melba Models
+# Needs to be a parent of a MelbaServer
 extends Node2D
 class_name MelbaModel 
 
-# Do not override this function 
+@onready var server: MelbaServer = get_parent() 
+
+func connect_signals() -> void: 
+	server.play_animation.connect(play_animation)
+	server.set_expression.connect(set_expression)
+	server.play_audio.connect(play_audio)  
+
+# Do not override
 func play_animation(animation_name: String) -> void:
 	match animation_name: 
 		"lookAtChat": look_at_chat() 
 
-# Do not override this function 
+# Do not override 
 func set_expression(expression_name: String) -> void:
 	match expression_name: 
-		"toast_toggle": toast_toggle() 
+		"toastToggle": toast_toggle() 
 
 # Plays audio, override to use. 
 func play_audio(stream: AudioStreamWAV): 
