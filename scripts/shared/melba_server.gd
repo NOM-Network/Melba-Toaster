@@ -40,12 +40,13 @@ func process_string(message: String) -> void:
 			set_expression.emit(data["expressionName"])
 
 func process_audio(message: PackedByteArray) -> void: 
-	pass 
+	var stream = AudioStreamWAV.new()
+	stream.data = message
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	play_audio.emit(stream)
 
 func _on_web_socket_server_message_received(peer_id, message):
-	server.send(id, message)
-	
-	match typeof(message): 
+	match typeof(message):
 		TYPE_STRING: 
 			process_string(message) 
 		TYPE_PACKED_BYTE_ARRAY: 

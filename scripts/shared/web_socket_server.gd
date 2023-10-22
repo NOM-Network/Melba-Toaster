@@ -75,7 +75,7 @@ func get_message(peer_id) -> Variant:
 	var pkt = socket.get_packet()
 	if socket.was_string_packet():
 		return pkt.get_string_from_utf8()
-	return bytes_to_var(pkt)
+	return pkt
 
 
 func has_message(peer_id) -> bool:
@@ -85,6 +85,7 @@ func has_message(peer_id) -> bool:
 
 func _create_peer() -> WebSocketPeer:
 	var ws = WebSocketPeer.new()
+	ws.inbound_buffer_size = 20000000
 	ws.supported_protocols = supported_protocols
 	ws.handshake_headers = handshake_headers
 	return ws

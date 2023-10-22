@@ -28,6 +28,14 @@ func _process(_delta: float) -> void:
 		else:
 			blabber_mouth()
 
+func play_audio(stream: AudioStreamWAV): 
+	look_straight()
+	
+	# Play sound and animations 
+	audio_player.stream = stream
+	audio_player.play() 
+	
+	blabber_mouth()
 
 # Functions that needs to be able to be called from a python script 
 func play_audio_depricated(path: String) -> void:
