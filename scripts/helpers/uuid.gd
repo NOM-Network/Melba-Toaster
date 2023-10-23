@@ -43,7 +43,7 @@ static func v4():
     # clock
     b[10], b[11], b[12], b[13], b[14], b[15]
   ]
-  
+
 static func v4_rng(rng: RandomNumberGenerator):
   # 16 random bytes with the bytes on index 6 and 8 modified
   var b = uuidbinrng(rng)
@@ -64,7 +64,7 @@ static func v4_rng(rng: RandomNumberGenerator):
     # clock
     b[10], b[11], b[12], b[13], b[14], b[15]
   ]
-  
+
 var _uuid: Array
 
 func _init(rng := RandomNumberGenerator.new()) -> void:
@@ -90,7 +90,7 @@ func as_dict(big_endian := true) -> Dictionary:
       "clock": _uuid[8]          + (_uuid[9]  << 8 ),
       "node" : _uuid[10]         + (_uuid[11] << 8 ) + (_uuid[12] << 16) + (_uuid[13] << 24) + (_uuid[14] << 32) + (_uuid[15] << 40)
     }
-    
+
 func as_string() -> String:
   return '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x' % [
     # low
@@ -108,7 +108,7 @@ func as_string() -> String:
     # node
     _uuid[10], _uuid[11], _uuid[12], _uuid[13], _uuid[14], _uuid[15]
   ]
-  
+
 func is_equal(other) -> bool:
   # Godot Engine compares Array recursively
   # There's no need for custom comparison here.

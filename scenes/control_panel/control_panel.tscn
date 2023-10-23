@@ -9,9 +9,6 @@ disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
 size = Vector2i(800, 600)
-wrap_controls = true
-transient = true
-exclusive = true
 min_size = Vector2i(800, 600)
 script = ExtResource("1_rhl0v")
 

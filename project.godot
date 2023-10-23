@@ -11,20 +11,25 @@ config_version=5
 [application]
 
 config/name="Melba Toaster"
-run/main_scene="res://scenes/pixel/pixel_melba_server.tscn"
+run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
+run/max_fps=60
 boot_splash/show_image=false
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=360
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/size/resizable=false
 window/size/borderless=true
 window/size/transparent=true
-window/size/window_width_override=1280
-window/size/window_height_override=720
+window/size/no_focus=true
+window/subwindows/embed_subwindows=false
 window/stretch/mode="canvas_items"
+window/dpi/allow_hidpi=false
 window/per_pixel_transparency/allowed=true
+window/vsync/vsync_mode=2
 
 [editor]
 
@@ -51,3 +56,8 @@ toast={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"echo":false,"script":null)
 ]
 }
+
+[physics]
+
+2d/run_on_separate_thread=true
+3d/run_on_separate_thread=true

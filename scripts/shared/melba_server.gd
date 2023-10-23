@@ -1,22 +1,22 @@
 extends Node
-class_name MelbaServer 
+class_name MelbaServer
 
-signal play_animation 
-signal set_expression 
-signal queue_audio  
+signal play_animation
+signal set_expression
+signal queue_audio
 
-@export var model: Node 
+@export var model: Node
 @export var server: Node
 @export var control_panel: PackedScene
 
-const PORT = 8765 
+const PORT = 8765
 
-var id: int 
+var id: int
 
-func _ready() -> void: 
+func _ready() -> void:
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
-	
+
 	# CP init
 	control_panel_init()
 
@@ -24,10 +24,10 @@ func _ready() -> void:
 	var err: Error = server.listen(PORT)
 	if err != OK:
 		print("Error listing on port %s" % PORT)
- 
-func _process(_delta: float) -> void: 
+
+func _process(_delta: float) -> void:
 	var memory_usage = Performance.get_monitor(Performance.MEMORY_STATIC) / 1024 / 1024
-	if memory_usage > 200: 
+	if memory_usage > 200:
 		print("Error excessive memory usage")
 		get_tree().quit()
 
@@ -37,7 +37,7 @@ func control_panel_init():
 	add_child(cp)
 	cp.visible = true
 
-func process_string(message: String) -> void: 
+func process_string(message: String) -> void:
 	var data = JSON.parse_string(message)
 	match data["type"]:
 		"PlayAnimation":
@@ -45,19 +45,19 @@ func process_string(message: String) -> void:
 		"SetExpression":
 			set_expression.emit(data["expressionName"])
 
-func process_audio(message: PackedByteArray) -> void: 
+func process_audio(message: PackedByteArray) -> void:
 	var stream = AudioStreamWAV.new()
 	stream.data = message
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	queue_audio.emit(stream)
 
-func _on_web_socket_server_message_received(peer_id, message):
+func _on_web_socket_server_message_received(_peer_id, message):
 	match typeof(message):
-		TYPE_STRING: 
-			process_string(message) 
-		TYPE_PACKED_BYTE_ARRAY: 
+		TYPE_STRING:
+			process_string(message)
+		TYPE_PACKED_BYTE_ARRAY:
 			process_audio(message)
-				
+
 func _on_web_socket_server_client_connected(peer_id) -> void:
-	id = peer_id 
+	id = peer_id
 	print(peer_id)
