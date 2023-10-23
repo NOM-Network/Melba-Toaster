@@ -7,6 +7,7 @@ class_name MelbaModel
 
 var audio_queue := [] 
 
+# Make sure to run this function within the _ready() function 
 func connect_signals() -> void: 
 	server.play_animation.connect(play_animation)
 	server.set_expression.connect(set_expression)
