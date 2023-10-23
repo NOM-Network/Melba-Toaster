@@ -9,8 +9,8 @@ extends MelbaModel
 @onready var reading_animation_player = $ReadingAnimationPlayer
 
 enum States {
-	LOOKINGSTRAIGHT,
-	READINGCHAT
+	LOOKING_STRAIGHT, # For when playing an audio  
+	LOOKING_AT_CHAT # For when not playing an audio 
 }
 
 var state: States
@@ -21,12 +21,17 @@ func _ready() -> void:
 	pass
 
 func _process(_delta: float) -> void:
-	if state == States.LOOKINGSTRAIGHT:
+	if state == States.LOOKING_STRAIGHT:
 		var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
 		if volume < -60.0:
 			close_mouth()
 		else:
 			blabber_mouth()
+	elif state == States.LOOKING_AT_CHAT:
+		if audio_queue.size() > 0: 
+			play_audio(audio_queue[0])
+			audio_queue.remove_at(0)
+	
 
 func play_audio(stream: AudioStreamWAV): 
 	look_straight()
@@ -65,13 +70,13 @@ func toast_toggle() -> void:
 
 # Functions for movement and animation 
 func look_straight() -> void: 
-	if state != States.LOOKINGSTRAIGHT:
-		state = States.LOOKINGSTRAIGHT
+	if state != States.LOOKING_STRAIGHT:
+		state = States.LOOKING_STRAIGHT
 		reading_animation_player.play_backwards("look_at_chat") 
 
 func look_at_chat() -> void:
 	reading_animation_player.play("look_at_chat")
-	state = States.READINGCHAT
+	state = States.LOOKING_AT_CHAT
 
 func close_mouth() -> void:
 	mouth_animation_player.stop()

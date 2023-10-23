@@ -3,7 +3,7 @@ class_name MelbaServer
 
 signal play_animation 
 signal set_expression 
-signal play_audio 
+signal queue_audio  
 
 @export var model: Node 
 @export var server: Node
@@ -27,7 +27,8 @@ func _ready() -> void:
  
 func _process(_delta: float) -> void: 
 	var memory_usage = Performance.get_monitor(Performance.MEMORY_STATIC) / 1024 / 1024
-	if memory_usage > 100: 
+	if memory_usage > 200: 
+		print("Error excessive memory usage")
 		get_tree().quit()
 
 func control_panel_init():
@@ -48,7 +49,7 @@ func process_audio(message: PackedByteArray) -> void:
 	var stream = AudioStreamWAV.new()
 	stream.data = message
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	play_audio.emit(stream)
+	queue_audio.emit(stream)
 
 func _on_web_socket_server_message_received(peer_id, message):
 	match typeof(message):

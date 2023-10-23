@@ -5,10 +5,12 @@ class_name MelbaModel
 
 @onready var server: MelbaServer = get_parent() 
 
+var audio_queue := [] 
+
 func connect_signals() -> void: 
 	server.play_animation.connect(play_animation)
 	server.set_expression.connect(set_expression)
-	server.play_audio.connect(play_audio)  
+	server.queue_audio.connect(queue_audio)  
 
 # Do not override
 func play_animation(animation_name: String) -> void:
@@ -20,15 +22,19 @@ func set_expression(expression_name: String) -> void:
 	match expression_name: 
 		"toastToggle": toast_toggle() 
 
-# Plays audio, override to use. 
-func play_audio(stream: AudioStreamWAV): 
+# Do not override.  
+func queue_audio(stream: AudioStreamWAV): 
+	audio_queue.append(stream) 
+
+# Override to use. 
+func play_audio(stream: AudioStreamWAV) -> void:
+	pass
+
+# An animation, override to use. 
+func look_at_chat() -> void:
 	pass 
 
-# Animation, override to use. 
-func look_at_chat():
-	pass 
-
-# Expression, override to use. 
-func toast_toggle():
+# An expression, override to use. 
+func toast_toggle() -> void:
 	pass 
 
