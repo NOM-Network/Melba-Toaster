@@ -1,109 +1,56 @@
 extends Window
+@onready var obs: WebSocketClient = $WebSocketClient
+@onready var stats_timer: Timer = $StatsTimer
+@onready var status_timer: Timer = $StatusTimer
 
-const uuid := preload("res://scripts/helpers/uuid.gd")
+var OpCodes := WebSocketClient.OpCodeEnums.WebSocketOpCode
 
-# OBS Websocket settings
-@export_category("OBS Websocket settings")
-@export var server = "127.0.0.1"
-@export var port = 4455
+var is_streaming = false
 
-# WS data
-var socket := WebSocketPeer.new()
-var connected = false
+# region MAIN
 
-# Stream info
-var streaming = false
-var stats = {}
-var status = {}
+func _ready() -> void:
+	obs.data_received.connect(_on_data_received)
 
-# Scenes
-var active_scene = ""
-var scenes = []
-var sound_inputs = []
+	obs.establish_connection()
+	await obs.connection_authenticated
 
-const MessageType = {
-	Hello = 0,
-	Identify = 1,
-	Identified = 2,
-	Reidentify = 3,
-	Event = 5,
-	Request = 6,
-	RequestResponse = 7,
-	RequestBatch = 8,
-	RequestBatchResponse = 9,
-}
+	# Init
+	obs.send_command_batch([
+		"GetSceneList",
+		"GetInputList",
+		"GetStats",
+		"GetStreamStatus"
+	])
 
-func _ready():
-	socket.connect_to_url("ws://%s:%d" % [server, port], TLSOptions.client_unsafe())
-	
-func _process(_delta):
-	start_socket()
+	stats_timer.start()
+	status_timer.start()
 
-func start_socket():
-	match socket.get_ready_state():
-		WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CONNECTING, WebSocketPeer.STATE_CLOSING:
-			socket.poll()
+# endregion
 
-			while socket.get_available_packet_count():
-				_on_packet_received(socket.get_packet().get_string_from_utf8())
-					
-		WebSocketPeer.STATE_CLOSED:
-			var code = socket.get_close_code()
-			var reason = socket.get_close_reason()
-			print("OBS Websocket closed: %d %s" % [code, reason])
-			set_process(false)
+# region INCOMING DATA
 
-func init_data():
-	if scenes == []:
-		send_request("GetSceneList")
+func _on_data_received(data):
+	match data.op:
+		OpCodes.Event.IDENTIFIER_VALUE:
+			_handle_event(data.d)
 
-	send_request("GetInputList")
+		OpCodes.RequestResponse.IDENTIFIER_VALUE:
+			_handle_request(data.d)
 
-	$StatsTimer.start()
-
-func _on_stats_timer_timeout():
-	send_request("GetStats")
-	send_request("GetStreamStatus")
-
-func _on_packet_received(packet):
-	var data = JSON.parse_string(packet)
-
-	var op = int(data.op)
-	var d = data.d
-	match op:
-		MessageType.Hello:
-			print("Hello! WS version %s, version %s" % [d.obsWebSocketVersion, d.rpcVersion])
-			
-			var message = {
-				"op": MessageType.Identify, 
-				"d": {
-					"rpcVersion": d.rpcVersion
-				}
-			}
-
-			message = JSON.stringify(message)
-			socket.send_text(message)
-		
-		MessageType.Identified:
-			connected = true
-			init_data()
-			print("Successfully connected!")
-		
-		MessageType.RequestResponse:
-			process_request(d)
-
-		MessageType.Event:
-			process_event(d)
+		OpCodes.RequestBatchResponse.IDENTIFIER_VALUE:
+			for i in data.d.results:
+				_handle_request(i)
 
 		_:
-			print("op: ", op)
-			print("d: ", d)
-			print("-------------")	
+			print("Unhandled op: ", data.op)
+			print(data)
+			print("-------------")
 
-func process_event(data):
+func _handle_event(data):
 	match data.eventType:
 		"CurrentProgramSceneChanged", "SceneListChanged":
-			send_request("GetSceneList")	
+			obs.send_command("GetSceneList")
 
 		"InputMuteStateChanged":
 			change_input_state(data.eventData)
@@ -111,99 +58,103 @@ func process_event(data):
 		"InputNameChanged":
 			change_input_name(data.eventData)
 
-		"SceneNameChanged":
-			# Handled by SceneListChanged response
-			pass 
-
 		"StreamStateChanged":
-			# Handled by GetStreamStatus request
-			pass
-
-		"SceneTransitionStarted", "SceneTransitionEnded", "SceneTransitionVideoEnded":
-			pass
+			if is_streaming != data.eventData.outputActive:
+				is_streaming = data.eventData.outputActive
+				update_stream_control_button()
 
 		"ExitStarted":
-			socket.close()
+			stop_processing()
+
+		# Ignored callbacks
+		"SceneNameChanged":
+			pass # handled by SceneListChanged
+
+		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded":
+			pass # We don't need it
 
 		_:
 			print("Unhandled event: ", data.eventType)
 			print(data)
 			print("-------------")
 
-func process_request(data):
+func _handle_request(data):
+	if not data.requestStatus.result:
+		printerr("Error in request: ", data)
+		return
+
 	match data.requestType:
 		"GetStats":
-			stats = data.responseData
-			print_data(stats, %StreamStats)
+			insert_data(data.responseData, %StreamStats)
 
 		"GetStreamStatus":
-			status = data.responseData
-			print_data(status, %StreamStatus)
+			var status = data.responseData
+			insert_data(status, %StreamStatus)
 
-			if streaming != status.outputActive:
-				streaming = status.outputActive
-				update_stream_control_button(status.outputActive)
+			if is_streaming != status.outputActive:
+				is_streaming = status.outputActive
+				update_stream_control_button()
 
 		"GetSceneList":
-			generate_scene_buttons(data.responseData)		
+			generate_scene_buttons(data.responseData)
 
 		"GetInputList":
-			generate_inputs_buttons(data.responseData.inputs)
+			generate_input_request(data.responseData.inputs)
+
+		"GetInputMute":
+			var inputData := {
+				"inputName": data.requestId,
+				"inputMuted": data.responseData.inputMuted
+			}
+			generate_input_button(inputData)
+
+		# Ignored callbacks
+		"ToggleInputMute":
+			pass # handled by InputMuteStateChanged event
 
 		"SetCurrentProgramScene", "ToggleStream":
-			# Just a callback, ignore
-			pass
+			pass # handled by StreamChateChanged event
 
 		_:
 			print("Unhandled request: ", data.requestType)
 			print(data)
 			print("-------------")
 
-func print_data(data, node):	
-	node.clear()
-	for i in data:
-		node.append_text("[b]%s:[b] %s\n" % [i.lstrip("output").capitalize(), data[i]])
+# endregion
 
-func generate_inputs_buttons(inputs):
-	for n in %ObsInputs.get_children():
-		n.queue_free()
+# region TIMERS
 
-	for input in inputs:
-		var button = Button.new()
-		button.visible = false
-		button.name = input.inputName.to_camel_case()
-		button.text = input.inputName
-		button.pressed.connect(_on_input_button_pressed.bind(button))
-		%ObsInputs.add_child(button)
+func _on_stats_timer_timeout():
+	obs.send_command("GetStats")
 
-		# Sending two times because it is easier to use events
-		send_request("ToggleInputMute", {"inputName": button.text})
-		send_request("ToggleInputMute", {"inputName": button.text})
+func _on_status_timer_timeout():
+	obs.send_command("GetStreamStatus")
 
-func change_input_state(data):
-	var button = %ObsInputs.get_node(data.inputName.to_camel_case())
-	if button:
-		button.visible = true
-		if (data.inputMuted):
-			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
-				button.add_theme_color_override(i, Color(1, 0, 0))
-		else: 
-			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
-				button.add_theme_color_override(i, Color(0, 1, 0))
+# endregion
 
-func _on_input_button_pressed(button):
-	send_request("ToggleInputMute", {"inputName": button.text})
+# region UI FUNCTIONS
 
-func change_input_name(data):
-	var button = %ObsInputs.get_node(data.oldInputName.to_camel_case())
-	if button:
-		button.name = data.inputName.to_camel_case()
-		button.text = data.inputName
+func update_stream_control_button():
+	if is_streaming:
+		%ObsStreamControl.text = "Stop Stream"
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			%ObsStreamControl.add_theme_color_override(i, Color(1, 0, 0))
+	else:
+		%ObsStreamControl.text = "Start Stream"
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			%ObsStreamControl.remove_theme_color_override(i)
+
+func _on_obs_stream_control_pressed():
+	obs.send_command("ToggleStream")
+
+func _on_scene_button_pressed(button):
+	obs.send_command("SetCurrentProgramScene", { "sceneName": button.text })
 
 func generate_scene_buttons(data):
+	var active_scene = null
 	if data.has("currentProgramSceneName"):
 		active_scene = data.currentProgramSceneName
-	scenes = data.scenes
+	var scenes = data.scenes
 	scenes.reverse()
 
 	for n in %ObsScenes.get_children():
@@ -218,48 +169,68 @@ func generate_scene_buttons(data):
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
 
-func _on_scene_button_pressed(button):
-	send_request("SetCurrentProgramScene", { "sceneName": button.text })
+func generate_input_request(inputs):
+	for n in %ObsInputs.get_children():
+		n.queue_free()
+
+	var request = []
+	for i in inputs:
+		request.push_back(["GetInputMute", { "inputName": i.inputName }, i.inputName])
+
+	obs.send_command_batch(request)
+
+func generate_input_button(input):
+	var button = Button.new()
+	button.visible = false
+	button.name = input.inputName.to_camel_case()
+	button.text = input.inputName
+	button.pressed.connect(_on_input_button_pressed.bind(button))
+	%ObsInputs.add_child(button)
+	change_input_state(input)
+
+func change_input_name(data):
+	var button = %ObsInputs.get_node(data.oldInputName.to_camel_case())
+	if button:
+		button.name = data.inputName.to_camel_case()
+		button.text = data.inputName
+
+func change_input_state(data):
+	var button = %ObsInputs.get_node(data.inputName.to_camel_case())
+	if button:
+		button.visible = true
+		if (data.inputMuted):
+			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+				button.add_theme_color_override(i, Color(1, 0, 0))
+		else:
+			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+				button.add_theme_color_override(i, Color(0, 1, 0))
+
+func _on_input_button_pressed(button):
+	obs.send_command("ToggleInputMute", { "inputName": button.text }, button.text)
+
+func insert_data(data, node):
+	node.clear()
+	for i in data:
+		node.append_text("[b]%s:[b] %s\n" % [i.lstrip("output").capitalize(), data[i]])
+
+# endregion
+
+# region WINDOW FUNCTIONS
+
+func stop_processing():
+	stats_timer.stop()
+	status_timer.stop()
+	obs.break_connection()
+
+func _on_reconnect_button_pressed():
+	stop_processing()
+	get_tree().reload_current_scene()
 
 func _on_close_requested():
 	$CloseConfirm.visible = true
 
 func _on_close_confirm_confirmed():
-	$StatsTimer.stop()
-	socket.close()
-
+	stop_processing()
 	get_tree().quit()
 
-func _on_obs_stream_control_pressed():
-	send_request("ToggleStream")
-
-func update_stream_control_button(isStreaming: bool):
-	if (isStreaming):
-		%ObsStreamControl.text = "Stop Stream"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
-			%ObsStreamControl.add_theme_color_override(i, Color(1, 0, 0))
-	else:
-		%ObsStreamControl.text = "Start Stream"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
-			%ObsStreamControl.remove_theme_color_override(i)
-
-func send_request(type, data = {}):
-	var message = {
-		"op": MessageType.Request,
-		"d": {
-			"requestType": type,
-			"requestId": uuid.v4()
-		}
-	}
-
-	if data != {}:
-		message.d.requestData = data
-
-	message = JSON.stringify(message)
-	socket.send_text(message)
-
-func _on_reconnect_button_pressed():
-	$StatsTimer.stop()
-	socket.close()
-
-	get_tree().reload_current_scene()
+# endregion
