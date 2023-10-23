@@ -20,8 +20,6 @@ func _process(delta: float) -> void:
 
 func look_at_chat() -> void: 
 	cubism_model.start_motion("", 4, GDCubismUserModel.PRIORITY_FORCE)
-	print("Motions: ", cubism_model.get_motions())
-	print("Expressions: ", cubism_model.get_expressions())
 
 func toast_toggle() -> void: 
 	if current_expression != Expressions.TOAST:
