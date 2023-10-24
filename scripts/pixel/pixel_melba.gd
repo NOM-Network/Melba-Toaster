@@ -9,8 +9,8 @@ extends MelbaModel
 @onready var reading_animation_player = $ReadingAnimationPlayer
 
 enum States {
-	LOOKING_STRAIGHT, # For when playing an audio  
-	LOOKING_AT_CHAT # For when not playing an audio 
+	LOOKING_STRAIGHT, # For when playing an audio
+	LOOKING_AT_CHAT # For when not playing an audio
 }
 
 var state: States
@@ -28,51 +28,51 @@ func _process(_delta: float) -> void:
 		else:
 			blabber_mouth()
 	elif state == States.LOOKING_AT_CHAT:
-		if audio_queue.size() > 0: 
+		if audio_queue.size() > 0:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
-	
 
-func play_audio(stream: AudioStreamWAV): 
-	look_straight()
-	
-	# Play sound and animations 
-	audio_player.stream = stream
-	audio_player.play() 
-	
-	blabber_mouth()
 
-# Functions that needs to be able to be called from a python script 
-func play_audio_depricated(path: String) -> void:
+func play_audio(stream: AudioStreamWAV):
 	look_straight()
-	
-	# Get file 
-	var file = FileAccess.open(path, FileAccess.READ)
-	var buffer = file.get_buffer(file.get_length())
-	file.close()
-	
-	# Get bytes
-	var stream = AudioStreamWAV.new()
-	stream.data = buffer
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	
-	# Play sound and animations 
+
+	# Play sound and animations
 	audio_player.stream = stream
 	audio_player.play()
 
 	blabber_mouth()
 
-func toast_toggle() -> void: 
+# Functions that needs to be able to be called from a python script
+func play_audio_depricated(path: String) -> void:
+	look_straight()
+
+	# Get file
+	var file = FileAccess.open(path, FileAccess.READ)
+	var buffer = file.get_buffer(file.get_length())
+	file.close()
+
+	# Get bytes
+	var stream = AudioStreamWAV.new()
+	stream.data = buffer
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+
+	# Play sound and animations
+	audio_player.stream = stream
+	audio_player.play()
+
+	blabber_mouth()
+
+func toast_toggle() -> void:
 	if toast.visible:
 		toast.visible = false
 	else:
-		toast.visible = true 
+		toast.visible = true
 
-# Functions for movement and animation 
-func look_straight() -> void: 
+# Functions for movement and animation
+func look_straight() -> void:
 	if state != States.LOOKING_STRAIGHT:
 		state = States.LOOKING_STRAIGHT
-		reading_animation_player.play_backwards("look_at_chat") 
+		reading_animation_player.play_backwards("look_at_chat")
 
 func look_at_chat() -> void:
 	reading_animation_player.play("look_at_chat")
@@ -85,7 +85,7 @@ func close_mouth() -> void:
 
 func blabber_mouth() -> void:
 	mouth_animation_player.play("mouth")
-	
+
 func blink() -> void:
 	blink_animation_player.play("blink")
 
