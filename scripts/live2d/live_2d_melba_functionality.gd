@@ -1,6 +1,7 @@
 extends MelbaModel
 
 @onready var cubism_model = $"../Live2DMelba/Sprite2D/GDCubismUserModel"
+@onready var mouth_movement = $"../Live2DMelba/Sprite2D/GDCubismUserModel/MouthMovement"
 @onready var audio_player = $"../AudioStreamPlayer"
 
 # Toggles 
@@ -14,14 +15,13 @@ var current_expression = Expressions.SMILE
 
 # Animations 
 enum Animations {
-	LOOKING_STRAIGHT, # For when playing an audio  
-	LOOKING_AT_CHAT # For when not playing an audio 
+	LOOKING_STRAIGHT, 
+	LOOKING_AT_CHAT 
 }
 var current_animation = Animations.LOOKING_AT_CHAT 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(cubism_model.get_parameters())
 	connect_signals()
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 	audio_player.finished.connect(_on_audio_stream_player_finished)
@@ -30,7 +30,6 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if current_animation == Animations.LOOKING_AT_CHAT: 
 		if audio_queue.size() > 0: 
-			print("playing audio... ")
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
 
@@ -53,12 +52,7 @@ func play_audio(stream: AudioStreamWAV) -> void:
 	look_straight()
 	
 	audio_player.stream = stream
-	audio_player.play()  
-	
-	blabber_mouth()
-
-func blabber_mouth() -> void: 
-	pass 
+	audio_player.play()
 
 func idle_animation() -> void:
 	cubism_model.start_motion("Idle", 0, GDCubismUserModel.PRIORITY_FORCE)

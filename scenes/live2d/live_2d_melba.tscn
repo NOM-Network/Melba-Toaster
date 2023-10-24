@@ -1,12 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=3 format=3 uid="uid://h1kmx2dkntdj"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_gpnqv"]
+[ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_oi2rw"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("ViewportTexture_gpnqv")
+texture = SubResource("ViewportTexture_oi2rw")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/melba_test/melbatoast_model.model3.json"
@@ -14,13 +16,13 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = ""
-ParamAngleX = 7.2768
-ParamAngleY = -3.99068
-ParamAngleZ = -2.56268
-ParamBodyAngleX = 1.83176
+ParamAngleX = 7.45341
+ParamAngleY = -3.99026
+ParamAngleZ = 4.90877
+ParamBodyAngleX = 1.95413
 ParamBodyAngleY = 0.0
 ParamBodyAngleZ = 0.0
-Param3 = 1.78401
+Param3 = 1.86058
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
@@ -31,11 +33,11 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = -0.0392515
-Param7 = -0.00689154
-Param8 = -0.00288698
-Param10 = -0.214042
-Param11 = 0.0125017
+Param6 = 0.0793948
+Param7 = 0.00559939
+Param8 = -0.00914125
+Param10 = 0.262203
+Param11 = 0.0416002
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
@@ -50,14 +52,14 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.119289
+ParamBreath = 0.0552152
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
 Param = 2.38419e-07
 Param2 = 0.0
-Param12 = -0.000277987
-Param13 = 0.00015286
+Param12 = 0.000305825
+Param13 = 0.00013078
 Model = 1.0
 Head = 1.0
 Part4 = 1.0
@@ -90,3 +92,6 @@ render_target_update_mode = 4
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]
 
 [node name="GDCubismEffectEyeBlink" type="GDCubismEffectEyeBlink" parent="Sprite2D/GDCubismUserModel"]
+
+[node name="MouthMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+script = ExtResource("1_2m8bk")
