@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
-[ext_resource type="PackedScene" uid="uid://35fv5sxiel01" path="res://scenes/live2d/live_2d_melba_server.tscn" id="2_di8to"]
+[ext_resource type="PackedScene" uid="uid://35fv5sxiel01" path="res://scenes/live2d/live_2d_controller.tscn" id="2_di8to"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 
@@ -29,7 +29,7 @@ projection = 1
 current = true
 size = 8.28
 
-[node name="Live2DMelbaServer" parent="." instance=ExtResource("2_di8to")]
+[node name="Live2DController" parent="." instance=ExtResource("2_di8to")]
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
