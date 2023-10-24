@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://35fv5sxiel01"]
+[gd_scene load_steps=7 format=3 uid="uid://35fv5sxiel01"]
 
 [ext_resource type="Script" path="res://scripts/shared/melba_server.gd" id="1_a5gc0"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_5p6jo"]
 [ext_resource type="Script" path="res://scripts/shared/web_socket_server.gd" id="2_pfmd7"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="2_q4dky"]
 [ext_resource type="Texture2D" uid="uid://bv6frero5onkm" path="res://assets/overlays/Overlay_V1.png" id="3_mwtsf"]
+[ext_resource type="Script" path="res://scripts/live2d/live_2d_melba_functionality.gd" id="6_g37vr"]
 
 [node name="Live2DMelbaServer" type="Node2D" node_paths=PackedStringArray("model", "server")]
 script = ExtResource("1_a5gc0")
@@ -21,6 +22,9 @@ script = ExtResource("2_pfmd7")
 [node name="OverlayV1" type="Sprite2D" parent="."]
 texture = ExtResource("3_mwtsf")
 centered = false
+
+[node name="Live2DMelbaFunctionality" type="Node2D" parent="."]
+script = ExtResource("6_g37vr")
 
 [connection signal="client_connected" from="WebSocketServer" to="." method="_on_web_socket_server_client_connected"]
 [connection signal="message_received" from="WebSocketServer" to="." method="_on_web_socket_server_message_received"]

@@ -1,12 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://h1kmx2dkntdj"]
-
-[ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_er7e7"]
+[gd_scene load_steps=2 format=3 uid="uid://h1kmx2dkntdj"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_708k7"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D"]
-script = ExtResource("1_er7e7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("ViewportTexture_708k7")
@@ -17,9 +14,9 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "exp_01"
 anim_motion = "Idle_0"
-ParamAngleX = -7.42113
-ParamAngleY = -4.66601
-ParamAngleZ = 3.75248
+ParamAngleX = -2.89729
+ParamAngleY = -4.7036
+ParamAngleZ = 2.78363
 ParamCheek = 0.0
 ParamFaceInkOn = 0.0
 ParamEyeLOpen = 1.0
@@ -49,23 +46,23 @@ ParamMouthUp = 1.0
 ParamMouthDown = 0.0
 ParamMouthAngry = 0.0
 ParamMouthAngryLine = 0.0
-ParamBodyAngleX = -3.77543
-ParamBodyAngleY = 0.390212
-ParamBodyAngleZ = -0.79845
-ParamBreath = 0.117199
+ParamBodyAngleX = -0.999004
+ParamBodyAngleY = 0.398645
+ParamBodyAngleZ = -0.670101
+ParamBreath = 0.0931314
 ParamLeftShoulderUp = 0.0
 ParamRightShoulderUp = 0.0
-ParamArmLA01 = 0.748581
-ParamArmLA02 = -0.519602
+ParamArmLA01 = 0.689164
+ParamArmLA02 = -0.445671
 ParamArmLA03 = 0.0
 ParamHandLA = 0.0
-ParamArmRA01 = 0.754434
-ParamArmRA02 = -0.519602
+ParamArmRA01 = 0.69556
+ParamArmRA02 = -0.445671
 ParamArmRA03 = 0.0
 ParamWandRotate = 0.0
 ParamHandRA = 0.0
-ParamInkDrop = 7.28676
-ParamInkDropRotate = -0.222165
+ParamInkDrop = 5.66928
+ParamInkDropRotate = -0.196948
 ParamInkDropOn = 0.0
 ParamArmLB01 = 0.0
 ParamArmLB02 = 0.0
@@ -80,26 +77,26 @@ ParamHandRB = 0.0
 ParamAllX = 0.0
 ParamAllY = 0.0
 ParamAllRotate = 0.0
-ParamHairFront = 0.00547727
-ParamHairSideL = 0.00617121
-ParamHairSideR = 0.00617121
-ParamHairBack = 0.0057697
-ParamHairBackR = 0.00608768
-ParamHairBackL = 0.00608768
-ParamoHairMesh = 0.00469973
-ParamHairFrontFuwa = -0.00231439
-ParamHairSideFuwa = -0.00352901
-ParamHairBackFuwa = -0.00614472
-ParamWing = -0.00379765
-ParamRibbon = -0.00263544
-ParamHatBrim = -0.000391188
-ParamHatTop = -0.00251734
-ParamAccessory1 = -0.0178986
-ParamAccessory2 = 0.00388894
-ParamString = -0.0163487
-ParamRobeL = -0.0170116
-ParamRobeR = -0.0170116
-ParamRobeFuwa = -0.0139356
+ParamHairFront = 0.00252412
+ParamHairSideL = 0.00329363
+ParamHairSideR = 0.00329363
+ParamHairBack = 0.00135279
+ParamHairBackR = 0.00258411
+ParamHairBackL = 0.00258411
+ParamoHairMesh = 0.00151265
+ParamHairFrontFuwa = -0.00377372
+ParamHairSideFuwa = -0.00319029
+ParamHairBackFuwa = -0.00756976
+ParamWing = -0.00814056
+ParamRibbon = -0.00485086
+ParamHatBrim = -0.00174941
+ParamHatTop = -0.0041759
+ParamAccessory1 = -0.00771503
+ParamAccessory2 = -0.00389937
+ParamString = -0.00927006
+ParamRobeL = -0.00859638
+ParamRobeR = -0.00859638
+ParamRobeFuwa = -0.0116955
 ParamHeartMissOn = 0.0
 ParamHeartBackMissOn = 0.0
 ParamHeartColorRainbow = 0.0
