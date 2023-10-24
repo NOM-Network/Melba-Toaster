@@ -14,7 +14,7 @@ server = NodePath("WebSocketServer")
 control_panel = ExtResource("2_5p6jo")
 
 [node name="Live2DMelba" parent="." instance=ExtResource("2_q4dky")]
-position = Vector2(1065, 882)
+position = Vector2(591, 1281)
 
 [node name="WebSocketServer" type="Node" parent="."]
 script = ExtResource("2_pfmd7")
