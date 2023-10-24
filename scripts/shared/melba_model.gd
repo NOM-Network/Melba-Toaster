@@ -26,11 +26,11 @@ func set_expression(expression_name: String, enabled: bool) -> void:
 		"removeToggle": remove_toggle(enabled)
 
 # Do not override.
-func queue_audio(stream: AudioStreamWAV):
+func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)
 
 # Override to use.
-func play_audio(_stream: AudioStreamWAV) -> void:
+func play_audio(_stream: AudioStreamMP3) -> void:
 	pass
 
 # An animation, override to use.
@@ -42,9 +42,9 @@ func toast_toggle(enabled: bool) -> void:
 	pass
 
 # An exprssion, override to use.
-func void_toggle(enabled: bool) -> void: 
-	pass 
+func void_toggle(enabled: bool) -> void:
+	pass
 
 # An expression, override to use.
-func remove_toggle(enabled: bool) -> void: 
-	pass 
+func remove_toggle(enabled: bool) -> void:
+	pass

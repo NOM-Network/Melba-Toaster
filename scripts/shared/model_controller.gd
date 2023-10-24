@@ -18,7 +18,6 @@ func set_expr(type, enabled):
 	set_expression.emit(type, enabled)
 
 func process_audio(message: PackedByteArray) -> void:
-	var stream = AudioStreamWAV.new()
+	var stream = AudioStreamMP3.new()
 	stream.data = message
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	queue_audio.emit(stream)

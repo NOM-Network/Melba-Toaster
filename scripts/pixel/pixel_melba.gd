@@ -33,7 +33,7 @@ func _process(_delta: float) -> void:
 			audio_queue.remove_at(0)
 
 
-func play_audio(stream: AudioStreamWAV):
+func play_audio(stream: AudioStreamMP3):
 	look_straight()
 
 	# Play sound and animations
@@ -52,9 +52,8 @@ func play_audio_depricated(path: String) -> void:
 	file.close()
 
 	# Get bytes
-	var stream = AudioStreamWAV.new()
+	var stream = AudioStreamMP3.new()
 	stream.data = buffer
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
 
 	# Play sound and animations
 	audio_player.stream = stream
