@@ -1,77 +1,76 @@
 extends Node
 class_name WebSocketClient
 
-signal connection_established()
-signal connection_closed()
-signal data_received(data)
-
 @export_group("Connection data (DO NOT EXPOSE!)")
 @export var host: String = "127.0.0.1"
 @export_range(1, 65535, 1) var port: int = 9876
 
-const URL_PATH: String = "ws://%s:%d"
-var client := WebSocketPeer.new()
+@export var handshake_headers: PackedStringArray
+@export var supported_protocols: PackedStringArray
+var tls_options: TLSOptions = null
 
-var connected = false
-var current_state = 0
+const URL_PATH: String = "ws://%s:%d"
+var socket := WebSocketPeer.new()
+var last_state = WebSocketPeer.STATE_CLOSED
+
+signal connection_established()
+signal connection_closed()
+signal data_received(data: Variant)
 
 func _ready() -> void:
 	print_debug("Toaster client: Establishing connection!")
-	set_process(true)
 
-	var err := client.connect_to_url(URL_PATH % [host, port], TLSOptions.client())
+	socket.handshake_headers = handshake_headers
+	socket.supported_protocols = supported_protocols
+	socket.inbound_buffer_size = 200000000
+
+	var err := socket.connect_to_url(URL_PATH % [host, port], TLSOptions.client())
 	if err != OK:
-		printerr(err)
+		printerr("Toaster client: Connection error ", err)
 		connection_closed.emit()
-		set_process(false)
+
+	last_state = socket.get_ready_state()
 
 func _process(_delta: float) -> void:
-	if current_state != client.get_ready_state():
-		print_debug("State %s -> %s" % [current_state, client.get_ready_state()])
-		current_state = client.get_ready_state()
+	if socket.get_ready_state() != socket.STATE_CLOSED:
+		socket.poll()
 
-	match client.get_ready_state():
-		WebSocketPeer.STATE_CONNECTING:
-			client.poll()
-			print_debug("Toaster client: Connecting...")
-
-		WebSocketPeer.STATE_OPEN:
-			client.poll()
-
-			while client.get_available_packet_count():
-				_poll_handler(client.get_packet().get_string_from_utf8())
-
-		WebSocketPeer.STATE_CLOSING:
-			client.poll()
-
-			print_debug("Toaster client: Closing...")
-
-		WebSocketPeer.STATE_CLOSED:
-			print_debug("Toaster client: Connection closed! ", client.get_close_reason())
-
-			connected = false
+	var state = socket.get_ready_state()
+	if last_state != state:
+		last_state = state
+		if state == socket.STATE_OPEN:
+			connection_established.emit()
+		elif state == socket.STATE_CLOSED:
 			connection_closed.emit()
-			set_process(false)
+			print_debug("Toaster client: Connection closed! ", socket.get_close_reason())
 
-func _poll_handler(data):
-	print_debug("Incoming data: ", data)
+	while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
+		data_received.emit(message_handler())
 
-	if data && not connected:
-		connected = true
-		connection_established.emit()
+func message_handler() -> Variant:
+	if socket.get_available_packet_count() < 1:
+		return null
 
-	var json: Variant = JSON.parse_string(data)
-	if not json is Dictionary:
-		printerr("Unexpected data from backend: ", str(data))
-	else:
-		data_received.emit(json)
+	var packet = socket.get_packet()
+	if socket.was_string_packet():
+		return {
+			"type": "text",
+			"message": packet.get_string_from_utf8()
+		}
+
+	print_debug("Incoming buffer...")
+	return {
+		"type": "binary",
+		"message": packet
+	}
 
 func send_message(json: Dictionary) -> void:
 	var message := JSON.stringify(json)
 
-	var err := client.send_text(message)
+	var err := socket.send_text(message)
 	if err != OK:
-		printerr(err)
+		printerr("Toaster client: Message sending error ", err)
 
 func break_connection(reason: String = "") -> void:
-	client.close(1000, reason)
+	socket.close(1000, reason)
+	last_state = socket.get_ready_state()
