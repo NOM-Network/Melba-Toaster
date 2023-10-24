@@ -33,13 +33,19 @@ func _process(_delta: float) -> void:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
 
-func toast_toggle() -> void:
-	cubism_model.start_expression("Bread")
+func toast_toggle(enabled: bool) -> void:
+	if enabled:
+		cubism_model.start_expression("Bread")
+	else: 
+		cubism_model.stop_expression()
 
-func void_toggle() -> void:
-	cubism_model.start_expression("Void")
+func void_toggle(enabled: bool) -> void:
+	if enabled:
+		cubism_model.start_expression("Void")
+	else:
+		cubism_model.stop_expression()
 
-func remove_toggle() -> void:
+func remove_toggle(enabled: bool) -> void:
 	cubism_model.stop_expression()
 
 func play_audio(stream: AudioStreamWAV) -> void:

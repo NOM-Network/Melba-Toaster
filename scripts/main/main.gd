@@ -2,7 +2,7 @@ extends Node2D
 
 @onready var client: WebSocketClient = $WebSocketClient
 @onready var control_panel: Window = $ControlPanel
-@onready var live2d_server: Node2D = $Live2DMelbaServer
+@onready var live2d_server: Node2D = $Live2DController
 
 func _ready():
 	get_viewport().set_embedding_subwindows(false)
@@ -23,7 +23,7 @@ func _on_data_received(data: Dictionary):
 			live2d_server.play_anim(data.animationName)
 
 		"SetExpression":
-			live2d_server.set_expr(data.expressionName)
+			live2d_server.set_expr(data.expressionName, data.enabled)
 
 		_:
 			print("Unhandled data type: ", data)

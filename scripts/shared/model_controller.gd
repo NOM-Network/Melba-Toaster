@@ -14,8 +14,8 @@ func _ready() -> void:
 func play_anim(type):
 	play_animation.emit(type)
 
-func set_expr(type):
-	set_expression.emit(type)
+func set_expr(type, enabled):
+	set_expression.emit(type, enabled)
 
 func process_audio(message: PackedByteArray) -> void:
 	var stream = AudioStreamWAV.new()
