@@ -11,12 +11,6 @@ func _ready() -> void:
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
-func _process(_delta: float) -> void:
-	var memory_usage = Performance.get_monitor(Performance.MEMORY_STATIC) / 1024 / 1024
-	if memory_usage > 200:
-		print("Error excessive memory usage")
-		get_tree().quit()
-
 func play_anim(type):
 	play_animation.emit(type)
 

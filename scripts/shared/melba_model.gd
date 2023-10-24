@@ -22,6 +22,8 @@ func play_animation(animation_name: String) -> void:
 func set_expression(expression_name: String) -> void:
 	match expression_name:
 		"toastToggle": toast_toggle()
+		"voidToggle": void_toggle()
+		"removeToggle": remove_toggle()
 
 # Do not override.
 func queue_audio(stream: AudioStreamWAV):
@@ -39,3 +41,10 @@ func look_at_chat() -> void:
 func toast_toggle() -> void:
 	pass
 
+# An exprssion, override to use.
+func void_toggle() -> void: 
+	pass 
+
+# An expression, override to use.
+func remove_toggle() -> void: 
+	pass 
