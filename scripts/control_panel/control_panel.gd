@@ -1,19 +1,21 @@
 extends Window
-@onready var obs: WebSocketClient = $WebSocketClient
+@onready var main: Node2D = get_parent()
+@onready var obs: ObsWebSocketClient = $WebSocketClient
 @onready var stats_timer: Timer = $StatsTimer
 @onready var status_timer: Timer = $StatusTimer
 
-var OpCodes := WebSocketClient.OpCodeEnums.WebSocketOpCode
+var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
 var is_streaming = false
 
 # region MAIN
 
 func _ready() -> void:
-	obs.data_received.connect(_on_data_received)
-
 	obs.establish_connection()
 	await obs.connection_authenticated
+
+	obs.data_received.connect(_on_data_received)
+	%ObsClientStatus.color = Color(0, 1, 0)
 
 	# Init
 	obs.send_command_batch([
@@ -43,9 +45,9 @@ func _on_data_received(data):
 				_handle_request(i)
 
 		_:
-			print("Unhandled op: ", data.op)
-			print(data)
-			print("-------------")
+			print_debug("Unhandled op: ", data.op)
+			print_debug(data)
+			print_debug("-------------")
 
 func _handle_event(data):
 	match data.eventType:
@@ -74,13 +76,13 @@ func _handle_event(data):
 			pass # We don't need it
 
 		_:
-			print("Unhandled event: ", data.eventType)
-			print(data)
-			print("-------------")
+			print_debug("Unhandled event: ", data.eventType)
+			print_debug(data)
+			print_debug("-------------")
 
 func _handle_request(data):
 	if not data.requestStatus.result:
-		printerr("Error in request: ", data)
+		print_debug("Error in request: ", data)
 		return
 
 	match data.requestType:
@@ -217,10 +219,18 @@ func insert_data(data, node):
 
 # region WINDOW FUNCTIONS
 
+func backend_connected():
+	%BackendStatus.color = Color(0, 1, 0)
+
+func backend_disconnected():
+	%BackendStatus.color = Color(1, 0, 0)
+
 func stop_processing():
 	stats_timer.stop()
 	status_timer.stop()
 	obs.break_connection()
+	main.client.break_connection("from control panel")
+	%ObsClientStatus.color = Color(1, 0, 0)
 
 func _on_reconnect_button_pressed():
 	stop_processing()

@@ -2,7 +2,7 @@
 ## https://github.com/you-win/obs-websocket-gd/blob/master/addons/obs-websocket-gd/obs_websocket.gd
 
 extends Node
-class_name WebSocketClient
+class_name ObsWebSocketClient
 
 signal obs_authenticated()
 signal obs_data_received(data)
@@ -794,10 +794,10 @@ const URL_PATH: String = "ws://%s:%d"
 
 var obs_client := WebSocketPeer.new()
 
-@export_category("Timing")
-@export_range(0.1, 1, 0.1) var poll_time: float = 0.1
+# @export_category("Timing")
+# @export_range(0.1, 1, 0.1) var poll_time: float = 0.1
 
-var _poll_counter: float = 0.0
+# var _poll_counter: float = 0.0
 var _poll_handler := _handle_hello
 
 @export_group("Connection data (DO NOT EXPOSE!)")
@@ -812,24 +812,24 @@ var _poll_handler := _handle_hello
 func _ready() -> void:
 	set_process(false)
 
-func _process(delta: float) -> void:
-	_poll_counter += delta
-	if _poll_counter >= poll_time:
-		_poll_counter = 0.0
-		match obs_client.get_ready_state():
-			WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CONNECTING, WebSocketPeer.STATE_CLOSING:
-				obs_client.poll()
+func _process(_delta: float) -> void:
+	# _poll_counter += delta
+	# if _poll_counter >= poll_time:
+	# 	_poll_counter = 0.0
+	match obs_client.get_ready_state():
+		WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CONNECTING, WebSocketPeer.STATE_CLOSING:
+			obs_client.poll()
 
-				while obs_client.get_available_packet_count():
-					var err: Error = _poll_handler.call()
-					if err != OK:
-						printerr(err)
+			while obs_client.get_available_packet_count():
+				var err: Error = _poll_handler.call()
+				if err != OK:
+					printerr(err)
 
-			WebSocketPeer.STATE_CLOSED:
-				print_debug("Connection closed!")
+		WebSocketPeer.STATE_CLOSED:
+			print_debug("OBS WebSocket: Connection closed!")
 
-				connection_closed.emit()
-				set_process(false)
+			connection_closed.emit()
+			set_process(false)
 
 ###############################################################################
 # Private functions                                                           #
@@ -856,7 +856,11 @@ func _handle_hello() -> Error:
 
 	var identify := Identify.new(
 		RPC_VERSION,
-		WebSocketClient._generate_auth(password, hello.authentication.challenge, hello.authentication.salt)
+		ObsWebSocketClient._generate_auth(
+			password,
+			hello.authentication.challenge,
+			hello.authentication.salt
+		)
 	)
 
 	connection_established.emit()
@@ -945,7 +949,7 @@ static func _generate_auth(passw: String, challenge: String, salt: String) -> St
 ###############################################################################
 
 func establish_connection() -> int:
-	print_debug("Establishing connection")
+	print_debug("OBS WebSocket: Establishing connection")
 
 	set_process(true)
 	return obs_client.connect_to_url(URL_PATH % [host, port], TLSOptions.client())
