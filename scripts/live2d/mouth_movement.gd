@@ -50,7 +50,7 @@ func start_tween() -> void:
 		tween.kill()
 	tween = create_tween() 
 	tween.finished.connect(_on_tween_finished)
-	tween.tween_property(param_mouth, "value", 0.4, 0.15)
+	tween.tween_property(param_mouth, "value", 0.5, 0.15)
 
 func _on_tween_finished() -> void: 
 	if tween: 
