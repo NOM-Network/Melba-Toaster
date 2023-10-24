@@ -3,7 +3,7 @@
 extends Node2D
 class_name MelbaModel
 
-@onready var server: MelbaServer = get_parent()
+@onready var server: ModelController = get_parent()
 
 var audio_queue := []
 
