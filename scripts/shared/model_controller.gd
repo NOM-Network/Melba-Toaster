@@ -1,5 +1,5 @@
 extends Node
-class_name MelbaServer
+class_name ModelController
 
 signal play_animation
 signal set_expression
