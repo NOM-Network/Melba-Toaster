@@ -26,5 +26,7 @@ centered = false
 [node name="Live2DMelbaFunctionality" type="Node2D" parent="."]
 script = ExtResource("6_g37vr")
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="client_connected" from="WebSocketServer" to="." method="_on_web_socket_server_client_connected"]
 [connection signal="message_received" from="WebSocketServer" to="." method="_on_web_socket_server_message_received"]
