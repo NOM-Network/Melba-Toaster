@@ -46,8 +46,6 @@ func _process(_delta: float) -> void:
 			toggles[toggle]["param"].set_value(true)
 		else:
 			toggles[toggle]["param"].set_value(false)
-			
-	$Sprite2D.rotation += 5 * _delta 
 	
 func play_animation(animation_name: String) -> void:
 	match animation_name:
