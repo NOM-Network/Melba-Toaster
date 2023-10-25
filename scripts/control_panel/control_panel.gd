@@ -6,6 +6,23 @@ extends Window
 
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
+# TODO: Formats
+var obs_stats_template = "" \
+	+ "CPU Usage: [b]{cpuUsage}[/b]\n" \
+	+ "Memory Usage: [b]{memoryUsage}[/b]\n" \
+	+ "Disk Space: [b]{availableDiskSpace}[/b]\n" \
+	+ "Active FPS: [b]{activeFps}[/b]\n" \
+	+ "Frame Render Time: [b]{averageFrameRenderTime}[/b]\n" \
+	+ "Frames Rendered/Skipped: [b]{renderTotalFrames}[/b]/[b]{renderSkippedFrames}[/b]\n" \
+	+ "Total Rendered/Skipped: [b]{outputTotalFrames}[/b]/[b]{outputSkippedFrames}[/b]\n" \
+	+ "WS Incoming/Outgoing: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]\n"
+
+var godot_stats_template = "" \
+	+ "Active FPS: [b]{fps}[/b]\n" \
+	+ "Frame Time: [b]{frameTime}[/b]\n" \
+	+ "Video Memory Used: [b]{videoMemoryUsed}[/b]\n" \
+	+ "Audio Latency: [b]{audioLatency}[/b]\n"
+
 var is_streaming = false
 
 # region MAIN
@@ -15,18 +32,28 @@ func _ready() -> void:
 	await obs.connection_authenticated
 
 	obs.data_received.connect(_on_data_received)
-	%ObsClientStatus.color = Color(0, 1, 0)
+	change_status_color(%ObsClientStatus, true)
 
 	# Init
 	obs.send_command_batch([
 		"GetSceneList",
 		"GetInputList",
 		"GetStats",
-		"GetStreamStatus"
+		# "GetStreamStatus"
 	])
 
 	stats_timer.start()
 	status_timer.start()
+
+func _process(_delta) -> void:
+	var render_data = {
+		"fps": Performance.get_monitor(Performance.Monitor.TIME_FPS),
+		"frameTime": Performance.get_monitor(Performance.Monitor.TIME_PROCESS),
+		"videoMemoryUsed": Performance.get_monitor(Performance.Monitor.RENDER_VIDEO_MEM_USED),
+		"audioLatency": Performance.get_monitor(Performance.Monitor.AUDIO_OUTPUT_LATENCY),
+	}
+
+	insert_data(render_data, %GodotStats, godot_stats_template)
 
 # endregion
 
@@ -87,12 +114,11 @@ func _handle_request(data):
 
 	match data.requestType:
 		"GetStats":
-			insert_data(data.responseData, %StreamStats)
+			insert_data(data.responseData, %StreamStats, obs_stats_template)
 
 		"GetStreamStatus":
 			var status = data.responseData
-			insert_data(status, %StreamStatus)
-
+			# insert_data(status, %StreamStatus, "")
 			if is_streaming != status.outputActive:
 				is_streaming = status.outputActive
 				update_stream_control_button()
@@ -135,6 +161,9 @@ func _on_status_timer_timeout():
 # endregion
 
 # region UI FUNCTIONS
+
+func change_status_color(node: Node, active: bool) -> void:
+	node.get_theme_stylebox("panel").bg_color = Color(0, 1, 0) if active else Color(1, 0, 0)
 
 func update_stream_control_button():
 	if is_streaming:
@@ -210,27 +239,26 @@ func change_input_state(data):
 func _on_input_button_pressed(button):
 	obs.send_command("ToggleInputMute", { "inputName": button.text }, button.text)
 
-func insert_data(data, node):
+func insert_data(data: Dictionary, node: Node, template: String) -> void:
 	node.clear()
-	for i in data:
-		node.append_text("[b]%s:[b] %s\n" % [i.lstrip("output").capitalize(), data[i]])
+	node.append_text(template.format(data))
 
 # endregion
 
 # region WINDOW FUNCTIONS
 
 func backend_connected():
-	%BackendStatus.color = Color(0, 1, 0)
+	change_status_color(%BackendStatus, true)
 
 func backend_disconnected():
-	%BackendStatus.color = Color(1, 0, 0)
+	change_status_color(%BackendStatus, false)
 
 func stop_processing():
 	stats_timer.stop()
 	status_timer.stop()
 	obs.break_connection()
 	main.client.break_connection("from control panel")
-	%ObsClientStatus.color = Color(1, 0, 0)
+	change_status_color(%ObsClientStatus, false)
 
 func _on_reconnect_button_pressed():
 	stop_processing()
