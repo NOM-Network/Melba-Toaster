@@ -1,8 +1,7 @@
-# SPDX-License-Identifier: MIT
-# SPDX-FileCopyrightText: 2023 MizunagiKB <mizukb@live.jp>
 extends GDCubismEffectCustom
+class_name MouthMovement
 
-
+@export var live_2d_melba = Node # The node with live2d_melba.gd 
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
 
@@ -18,17 +17,13 @@ func _ready():
 
 func _on_cubism_init(model: GDCubismUserModel):
 	param_mouth = null
-	var ary_param = model.get_parameters()
+	var any_param = model.get_parameters()
 
-	for param in ary_param:
-#		print(param.id)
+	for param in any_param:
 		if param.id == param_mouth_name:
 			param_mouth = param
 		if param.id == param_mouth_form_name:
 			param_mouth_form = param
-
-	param_mouth_form.value = 1.0
-	# print(param_mouth_form.value)
 
 func _on_cubism_term(_model: GDCubismUserModel):
 	param_mouth = null
@@ -44,13 +39,18 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 			start_tween()
 		else: # If she has been speaking
 			pass
+			
+	if live_2d_melba.reading_audio:
+		param_mouth_form.value = -0.8
+	else: 
+		if tween: tween.kill()
 
 func start_tween() -> void:
 	if tween:
 		tween.kill()
 	tween = create_tween()
 	tween.finished.connect(_on_tween_finished)
-	tween.tween_property(param_mouth, "value", 0.5, 0.15)
+	tween.tween_property(param_mouth, "value", 0.6, 0.15)
 
 func _on_tween_finished() -> void:
 	if tween:

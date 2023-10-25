@@ -2,7 +2,6 @@ extends Node2D
 
 @onready var controller: ModelController = get_parent()
 @onready var cubism_model = %GDCubismUserModel
-@onready var mouth_movement = %MouthMovement
 @onready var audio_player = $AudioStreamPlayer
 
 var reading_audio = false
@@ -41,11 +40,14 @@ func _process(_delta: float) -> void:
 		if audio_queue.size() > 0:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
+			
 	for toggle in toggles: 
 		if toggles[toggle]["status"]:
 			toggles[toggle]["param"].set_value(true)
 		else:
 			toggles[toggle]["param"].set_value(false)
+			
+	$Sprite2D.rotation += 5 * _delta 
 	
 func play_animation(animation_name: String) -> void:
 	match animation_name:
