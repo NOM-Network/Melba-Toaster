@@ -7,12 +7,6 @@ extends Node2D
 var reading_audio = false
 var audio_queue := []
 
-# Pretty sure there is a more readable way to do this but this works for now.
-var toggles := {
-	"toast": {"param": null, "status": false},
-	"void": {"param": null, "status": false}
-}
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
@@ -30,9 +24,9 @@ func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
 		if param.get_id() == "Param9": 
-			toggles["toast"]["param"] = param
+			Globals.toggles["toast"]["param"] = param
 		if param.get_id() == "Param14":
-			toggles["void"]["param"] = param
+			Globals.toggles["void"]["param"] = param
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -41,26 +35,29 @@ func _process(_delta: float) -> void:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
 			
-	for toggle in toggles: 
-		if toggles[toggle]["status"]:
-			toggles[toggle]["param"].set_value(true)
+	for toggle in Globals.toggles: 
+		if Globals.toggles[toggle]["enabled"]:
+			Globals.toggles[toggle]["param"].set_value(true)
 		else:
-			toggles[toggle]["param"].set_value(false)
+			Globals.toggles[toggle]["param"].set_value(false)
 	
-func play_animation(animation_name: String) -> void:
-	match animation_name:
-		"sampleAnimation": pass
+func play_animation(anim_name: String) -> void:
+	if Globals.animations.has(anim_name):
+		var anim_id = Globals.animations[anim_name]["id"]
+		cubism_model.start_motion(anim_id, 0, GDCubismUserModel.PRIORITY_FORCE)
 
 func set_expression(expression_name: String, enabled: bool) -> void:
-	match expression_name:
-		"stopExpression": stop_expression() 
-
-func stop_expression(): 
-	cubism_model.stop_expression()
+	if Globals.expressions.has(expression_name):
+		if enabled:
+			Globals.expressions[expression_name]["enabled"] = true 
+			cubism_model.start_expression(expression_name)
+		else:
+			Globals.expressions[expression_name]["enabled"] = false
+			cubism_model.stop_expression()
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
-	if toggles.has(toggle_name):
-		toggles[toggle_name]["status"] = true
+	if Globals.toggles.has(toggle_name):
+		Globals.toggles[toggle_name]["enabled"] = true
 
 func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)
