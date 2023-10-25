@@ -6,10 +6,10 @@ var toggles := {
 }
 
 var animations := {
-	"sampleAnimation": {"id": "Idle"}
+	"sampleAnimation": {"id": "Sample"}
 }
 
 var expressions := {
-	"sampleExpression": {"enabled": false}
+	"sampleExpression": {"id": "Sample", "enabled": false}
 } 
 

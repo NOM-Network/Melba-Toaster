@@ -48,9 +48,10 @@ func play_animation(anim_name: String) -> void:
 
 func set_expression(expression_name: String, enabled: bool) -> void:
 	if Globals.expressions.has(expression_name):
+		var expr_id = Globals.expresions[expression_name]["id"]
 		if enabled:
 			Globals.expressions[expression_name]["enabled"] = true 
-			cubism_model.start_expression(expression_name)
+			cubism_model.start_expression(expr_id)
 		else:
 			Globals.expressions[expression_name]["enabled"] = false
 			cubism_model.stop_expression()

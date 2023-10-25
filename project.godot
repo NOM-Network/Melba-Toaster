@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.1", "GL Compatibility")
 run/max_fps=60
 boot_splash/show_image=false
 
+[autoload]
+
+Globals="*res://scripts/shared/globals.gd"
+
 [display]
 
 window/size/viewport_width=1920
