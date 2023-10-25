@@ -7,10 +7,11 @@ extends Node2D
 
 var reading_audio = false
 var audio_queue := []
+
 # Pretty sure there is a more readable way to do this but this works for now.
 var toggles := {
-	"toast": [null, false],
-	"void": [null, false]
+	"toast": {"param": null, "status": false},
+	"void": {"param": null, "status": false}
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -30,9 +31,9 @@ func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
 		if param.get_id() == "Param9": 
-			toggles["toast"][0] = param
+			toggles["toast"]["param"] = param
 		if param.get_id() == "Param14":
-			toggles["void"][0] = param
+			toggles["void"]["param"] = param
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -41,8 +42,10 @@ func _process(_delta: float) -> void:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
 	for toggle in toggles: 
-		if toggles[toggle][1]:
-			toggles[toggle][0].set_value(true)
+		if toggles[toggle]["status"]:
+			toggles[toggle]["param"].set_value(true)
+		else:
+			toggles[toggle]["param"].set_value(false)
 	
 func play_animation(animation_name: String) -> void:
 	match animation_name:
@@ -57,7 +60,7 @@ func stop_expression():
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if toggles.has(toggle_name):
-		toggles[toggle_name][1] = true
+		toggles[toggle_name]["status"] = true
 
 func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)
