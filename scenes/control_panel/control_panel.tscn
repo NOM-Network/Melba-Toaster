@@ -1,14 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://bjp2bck62tl2m"]
+[gd_scene load_steps=6 format=3 uid="uid://bjp2bck62tl2m"]
 
 [ext_resource type="Script" path="res://scripts/control_panel/control_panel.gd" id="1_rhl0v"]
 [ext_resource type="Script" path="res://scripts/control_panel/obs_websocket_client.gd" id="2_1sf50"]
 [ext_resource type="Texture2D" uid="uid://qtjderhjoqbs" path="res://assets/pixel/melba_toast_toast.png" id="2_bkvhp"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crp4d"]
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fief3"]
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [node name="ControlPanel" type="Window"]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
-size = Vector2i(800, 600)
+size = Vector2i(924, 648)
 min_size = Vector2i(800, 600)
 script = ExtResource("1_rhl0v")
 
@@ -50,109 +62,148 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Columns" type="VBoxContainer" parent="Margins"]
+[node name="HSplitContainer" type="HSplitContainer" parent="Margins"]
 layout_mode = 2
 
-[node name="FirstRow" type="HBoxContainer" parent="Margins/Columns"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SpeechBox" type="VBoxContainer" parent="Margins/Columns/FirstRow"]
+[node name="SpeechBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="Margins/Columns/FirstRow/SpeechBox"]
+[node name="SpeechBoxPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer"]
+[node name="SpeechBoxContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer"]
 layout_mode = 2
 
-[node name="Buttons" type="HBoxContainer" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Buttons" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="CancelSpeech" type="Button" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer/MarginContainer/VBoxContainer/Buttons"]
+[node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 text = "Cancel speech"
 
-[node name="GenerateSpeech" type="Button" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer/MarginContainer/VBoxContainer/Buttons"]
+[node name="GenerateSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 text = "Generate"
 
-[node name="CurrentSpeech" type="Label" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! "
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="Margins/Columns/FirstRow/SpeechBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 8
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2/MarginContainer"]
-layout_mode = 2
-
-[node name="ObsClientStatus" type="ColorRect" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2/MarginContainer/HBoxContainer"]
+[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(1, 0, 0, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_crp4d")
 
-[node name="Label" type="Label" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2/MarginContainer/HBoxContainer/ObsClientStatus"]
-layout_mode = 0
-offset_right = 81.0
-offset_bottom = 26.0
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer/ObsClientStatus"]
+layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "OBS Client"
+horizontal_alignment = 1
 
-[node name="BackendStatus" type="ColorRect" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2/MarginContainer/HBoxContainer"]
+[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(1, 0, 0, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_fief3")
 
-[node name="Label" type="Label" parent="Margins/Columns/FirstRow/SpeechBox/PanelContainer2/MarginContainer/HBoxContainer/BackendStatus"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer/BackendStatus"]
+layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "Backend"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ObsControls" type="VBoxContainer" parent="Margins/Columns/FirstRow"]
+[node name="ModelControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="Margins/Columns/FirstRow/ObsControls"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Model Controls"
+horizontal_alignment = 1
+
+[node name="ModelControls" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Active FPS: 69
+Frame time: "
+fit_content = true
+
+[node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Godot Stats"
+horizontal_alignment = 1
+
+[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Active FPS: 69
+Frame time: "
+fit_content = true
+
+[node name="ObsControlsContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ObsStreamControl" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="ObsStreamControl" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"1"
@@ -160,108 +211,104 @@ toggle_mode = true
 keep_pressed_outside = true
 text = "Start Stream"
 
-[node name="ScenesLabel" type="Label" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ScenesLabel" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Scenes"
 horizontal_alignment = 1
 
-[node name="ObsScenes" type="HFlowContainer" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ObsScenes" type="HFlowContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+alignment = 1
 
-[node name="Button" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsScenes"]
-layout_mode = 2
-text = "TestTestTestTestTestTestTestTestTe"
-
-[node name="Button2" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="InputsLabel" type="Label" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+layout_mode = 2
+text = "Test"
+
+[node name="InputsLabel" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Inputs"
 horizontal_alignment = 1
 
-[node name="ObsInputs" type="HFlowContainer" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ObsInputs" type="HFlowContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+alignment = 1
 
-[node name="Button" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsInputs"]
-layout_mode = 2
-text = "TestTestTestTestTestTestTestTestTe"
-
-[node name="Button2" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="ReconnectButton" type="Button" parent="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+layout_mode = 2
+text = "Test"
+
+[node name="ReconnectButton" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Reconnect"
 
-[node name="SecondRow" type="HBoxContainer" parent="Margins/Columns"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="Margins/Columns/SecondRow"]
+[node name="StreamStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/Columns/SecondRow/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="StreamStats" type="RichTextLabel" parent="Margins/Columns/SecondRow/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "OBS Stats"
+horizontal_alignment = 1
+
+[node name="StreamStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
-text = "Waiting for data..."
-
-[node name="PanelContainer2" type="PanelContainer" parent="Margins/Columns/SecondRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Margins/Columns/SecondRow/PanelContainer2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="StreamStatus" type="RichTextLabel" parent="Margins/Columns/SecondRow/PanelContainer2/MarginContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-bbcode_enabled = true
-text = "Waiting for data..."
+text = "cpuUsage: 420
+memoryUsage: 420
+availableDiskSpace: 420
+activeFps: 420
+averageFrameRenderTime: 420
+totalFrames / skippedFrames: 69/420
+totalFrames / skippedFrames: 420
+incoming / outgoingMessages: 69/420"
+fit_content = true
 
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
 initial_position = 4
@@ -288,8 +335,8 @@ vertical_alignment = 1
 [node name="StatsTimer" type="Timer" parent="."]
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
-[connection signal="pressed" from="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
-[connection signal="pressed" from="Margins/Columns/FirstRow/ObsControls/PanelContainer/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
+[connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
+[connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="StatusTimer" to="." method="_on_status_timer_timeout"]
 [connection signal="timeout" from="StatsTimer" to="." method="_on_stats_timer_timeout"]
