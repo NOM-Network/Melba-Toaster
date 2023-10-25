@@ -58,7 +58,7 @@ func set_expression(expression_name: String, enabled: bool) -> void:
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
-		Globals.toggles[toggle_name]["enabled"] = true
+		Globals.toggles[toggle_name]["enabled"] = enabled
 
 func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)
