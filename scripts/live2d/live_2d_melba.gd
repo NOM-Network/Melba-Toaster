@@ -1,25 +1,38 @@
 extends Node2D
 
-@onready var server: ModelController = get_parent()
-@onready var cubism_model = $"../Live2DMelba/Sprite2D/GDCubismUserModel"
-@onready var mouth_movement = $"../Live2DMelba/Sprite2D/GDCubismUserModel/MouthMovement"
-@onready var audio_player = $"../AudioStreamPlayer"
+@onready var controller: ModelController = get_parent()
+@onready var cubism_model = %GDCubismUserModel
+@onready var mouth_movement = %MouthMovement
+@onready var audio_player = $AudioStreamPlayer
 
 var reading_audio = false
 var audio_queue := []
+# Pretty sure there is a more readable way to do this but this works for now.
+var toggles := {
+	"toast": [null, false],
+	"void": [null, false]
+}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
-
-	audio_player.play()
+	intialize_toggles()
 
 func connect_signals() -> void:
-	server.play_animation.connect(play_animation)
-	server.set_expression.connect(set_expression)
-	server.queue_audio.connect(queue_audio)
+	controller.play_animation.connect(play_animation)
+	controller.set_expression.connect(set_expression)
+	controller.set_toggle.connect(set_toggle)
+	controller.queue_audio.connect(queue_audio)
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 	audio_player.finished.connect(_on_audio_stream_player_finished)
+
+func intialize_toggles() -> void: 
+	var parameters = cubism_model.get_parameters()
+	for param in parameters:
+		if param.get_id() == "Param9": 
+			toggles["toast"][0] = param
+		if param.get_id() == "Param14":
+			toggles["void"][0] = param
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -27,34 +40,24 @@ func _process(_delta: float) -> void:
 		if audio_queue.size() > 0:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
-
+	for toggle in toggles: 
+		if toggles[toggle][1]:
+			toggles[toggle][0].set_value(true)
+	
 func play_animation(animation_name: String) -> void:
 	match animation_name:
-		"sameAnimation": pass
+		"sampleAnimation": pass
 
 func set_expression(expression_name: String, enabled: bool) -> void:
 	match expression_name:
-		"toastToggle": toast_toggle(enabled)
-		"voidToggle": void_toggle(enabled)
-		"removeToggle": remove_toggle(enabled)
+		"stopExpression": stop_expression() 
 
-# Expression
-func toast_toggle(enabled: bool) -> void:
-	if enabled:
-		cubism_model.start_expression("Bread")
-	else:
-		cubism_model.stop_expression()
-
-# Expression
-func void_toggle(enabled: bool) -> void:
-	if enabled:
-		cubism_model.start_expression("Void")
-	else:
-		cubism_model.stop_expression()
-
-# Expression
-func remove_toggle(_enabled: bool) -> void:
+func stop_expression(): 
 	cubism_model.stop_expression()
+
+func set_toggle(toggle_name: String, enabled: bool) -> void:
+	if toggles.has(toggle_name):
+		toggles[toggle_name][1] = true
 
 func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)

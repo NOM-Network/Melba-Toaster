@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://35fv5sxiel01"]
+[gd_scene load_steps=4 format=3 uid="uid://35fv5sxiel01"]
 
 [ext_resource type="Script" path="res://scripts/shared/model_controller.gd" id="1_sx1sx"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="2_q4dky"]
-[ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="4_anxc0"]
 [ext_resource type="Texture2D" uid="uid://gl5jw0qtwkda" path="res://assets/overlays/Overlay_V2.png" id="5_fcxfr"]
 
 [node name="Live2DController" type="Node2D"]
@@ -10,11 +9,6 @@ script = ExtResource("1_sx1sx")
 
 [node name="Live2DMelba" parent="." instance=ExtResource("2_q4dky")]
 position = Vector2(591, 1281)
-
-[node name="Live2DMelbaFunctionality" type="Node2D" parent="."]
-script = ExtResource("4_anxc0")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="OverlayV2" type="Sprite2D" parent="."]
 position = Vector2(960, 540)

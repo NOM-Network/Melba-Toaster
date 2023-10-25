@@ -38,7 +38,10 @@ func _on_data_received(data: Dictionary):
 
 			"SetExpression":
 				controller.set_expr(message.expressionName, message.enabled)
-
+			
+			"SetToggle": 
+				controller.set_togg(message.toggleName, message.enabled)
+			
 			_:
 				print("Unhandled data type: ", message)
 

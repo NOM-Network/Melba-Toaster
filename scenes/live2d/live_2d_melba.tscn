@@ -1,14 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=4 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
+[ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_oi2rw"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_j6d0u"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D"]
+script = ExtResource("1_gym56")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("ViewportTexture_oi2rw")
+texture = SubResource("ViewportTexture_j6d0u")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/melba_test2/melbatoast_model.model3.json"
@@ -16,13 +18,13 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = ""
-ParamAngleX = 5.34239
-ParamAngleY = 3.97793
-ParamAngleZ = 4.02609
-ParamBodyAngleX = 0.654677
+ParamAngleX = -7.45213
+ParamAngleY = -3.9998
+ParamAngleZ = -2.59938
+ParamBodyAngleX = -0.119399
 ParamBodyAngleY = 0.0
 ParamBodyAngleZ = 0.0
-Param3 = 1.28581
+Param3 = -1.83057
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
@@ -33,15 +35,15 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.264052
-Param7 = -1.07552
-Param8 = 1.25398
-Param10 = 0.366774
-Param11 = 0.271646
+Param6 = -0.0527556
+Param7 = 0.018362
+Param8 = 0.0110906
+Param10 = -0.208643
+Param11 = 0.00747276
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
-Param9 = 0.0
+Param9 = 1.0
 Param14 = 0.0
 ParamBrowLY = 0.0
 ParamBrowRY = 0.0
@@ -52,14 +54,14 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.499881
+ParamBreath = 0.158198
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -5.16972e-07
-Param2 = 7.54916e-08
-Param12 = -0.00114078
-Param13 = -0.000337123
+Param = 2.38419e-07
+Param2 = 0.0
+Param12 = 0.000440714
+Param13 = 0.000458756
 Model = 1.0
 Head = 1.0
 Part4 = 1.0
@@ -83,6 +85,7 @@ Part6 = 1.0
 Part7 = 1.0
 Part8 = 1.0
 Part9 = 1.0
+unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true
@@ -94,4 +97,7 @@ render_target_update_mode = 4
 [node name="GDCubismEffectEyeBlink" type="GDCubismEffectEyeBlink" parent="Sprite2D/GDCubismUserModel"]
 
 [node name="MouthMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+unique_name_in_owner = true
 script = ExtResource("1_2m8bk")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

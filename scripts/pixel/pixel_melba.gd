@@ -1,5 +1,6 @@
-extends MelbaModel
+extends Node2D
 
+@onready var server: ModelController = get_parent()
 @onready var mouth_closed = $MouthClosed
 @onready var mouth_open = $MouthOpen
 @onready var toast = $Toast
@@ -14,11 +15,16 @@ enum States {
 }
 
 var state: States
+var audio_queue := [] 
 
 func _ready() -> void:
 	connect_signals()
 	look_at_chat()
-	pass
+
+func connect_signals() -> void:
+	server.play_animation.connect(play_animation)
+	server.set_expression.connect(set_expression)
+	server.queue_audio.connect(queue_audio)
 
 func _process(_delta: float) -> void:
 	if state == States.LOOKING_STRAIGHT:
@@ -32,14 +38,21 @@ func _process(_delta: float) -> void:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
 
+func play_animation(animation_name: String) -> void:
+	match animation_name:
+		"lookAtChat": look_at_chat()
+
+func set_expression(expression_name: String, enabled: bool) -> void:
+	match expression_name:
+		"toastToggle": toast_toggle()
+
+func queue_audio(stream: AudioStreamMP3):
+	audio_queue.append(stream)
 
 func play_audio(stream: AudioStreamMP3):
 	look_straight()
-
-	# Play sound and animations
 	audio_player.stream = stream
 	audio_player.play()
-
 	blabber_mouth()
 
 # Functions that needs to be able to be called from a python script
