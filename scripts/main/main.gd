@@ -42,7 +42,7 @@ func _on_data_received(data: Dictionary):
 				Globals.play_animation.emit(message.animationName)
 
 			"SetExpression":
-				Globals.set_expression.emit(message.expressionName, message.enabled)
+				Globals.set_expression.emit(message.expressionName)
 
 			"SetToggle":
 				Globals.set_toggle.emit(message.toggleName, message.enabled)

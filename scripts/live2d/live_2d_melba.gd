@@ -3,6 +3,8 @@ extends Node2D
 @export var cubism_model: GDCubismUserModel
 @export var audio_player: AudioStreamPlayer
 
+@onready var eye_blink = %EyeBlink
+
 var reading_audio = false
 var audio_queue := []
 
@@ -10,6 +12,7 @@ var audio_queue := []
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
+	play_animation("end")
 
 func connect_signals() -> void:
 	Globals.incoming_speech.connect(process_audio)
@@ -42,19 +45,22 @@ func _process(_delta: float) -> void:
 			Globals.toggles[toggle]["param"].set_value(false)
 
 func play_animation(anim_name: String) -> void:
-	if Globals.animations.has(anim_name):
+	if anim_name == "end":
+		cubism_model.stop_motion()
+	elif Globals.animations.has(anim_name):
 		var anim_id = Globals.animations[anim_name]["id"]
-		cubism_model.start_motion(anim_id, 0, GDCubismUserModel.PRIORITY_FORCE)
-
-func set_expression(expression_name: String, enabled: bool) -> void:
-	if Globals.expressions.has(expression_name):
+		var override = Globals.animations[anim_name]["override"]
+		match override: 
+			"eye_blink":
+				eye_blink.active = false 
+		cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)
+			
+func set_expression(expression_name: String) -> void:
+	if expression_name == "end":
+		cubism_model.stop_expression()
+	elif Globals.expressions.has(expression_name):
 		var expr_id = Globals.expresions[expression_name]["id"]
-		if enabled:
-			Globals.expressions[expression_name]["enabled"] = true
-			cubism_model.start_expression(expr_id)
-		else:
-			Globals.expressions[expression_name]["enabled"] = false
-			cubism_model.stop_expression()
+		cubism_model.start_expression(expr_id)
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
@@ -78,12 +84,11 @@ func play_audio(stream: AudioStreamMP3) -> void:
 func stop_audio() -> void:
 	audio_player.stop()
 
-func idle_animation() -> void:
-#	cubism_model.start_motion("Idle", 0, GDCubismUserModel.PRIORITY_FORCE)
-	pass
+func reset_overrides():
+	eye_blink.active = true
 
 func _on_gd_cubism_user_model_motion_finished():
-	idle_animation()
+	reset_overrides()
 
 func _on_audio_stream_player_finished():
 	reading_audio = false

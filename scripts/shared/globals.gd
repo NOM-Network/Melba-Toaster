@@ -18,11 +18,13 @@ var toggles := {
 }
 
 var animations := {
-	"sampleAnimation": {"id": "Sample"}
+	"end": {"id": -1, "override": "none"}, 
+	"idle": {"id": 0, "override": "none"},
+	"sleep": {"id": 1, "override": "eye_blink"}
 }
 
 var expressions := {
-	"sampleExpression": {"id": "Sample", "enabled": false}
+	"sampleExpression": {"id": "Sample"}
 }
 
 # endregion
@@ -31,12 +33,11 @@ func _ready() -> void:
 	# region EVENT BUS DEBUG
 
 	play_animation.connect(func(anim_name): _debug_event("play_animation", {
-		"name": anim_name
+		"name": anim_name,
 	}))
 
-	set_expression.connect(func(expression_name, enabled): _debug_event("set_expression", {
+	set_expression.connect(func(expression_name): _debug_event("set_expression", {
 		"name": expression_name,
-		"enabled": enabled
 	}))
 
 	set_toggle.connect(func(toggle_name, enabled): _debug_event("set_toggle", {

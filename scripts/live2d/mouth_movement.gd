@@ -30,20 +30,22 @@ func _on_cubism_term(_model: GDCubismUserModel):
 	param_mouth_form = null
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
+	if live_2d_melba.reading_audio:
+		param_mouth_form.value = -0.8
+	else: 
+		if tween: tween.kill()
+	
 	if param_mouth != null:
 		var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
 		if volume < -60.0: # If she is not speaking
 			blabbering = false
+			param_mouth.value = 0.0
 		elif not blabbering: # If she just started speaking
 			blabbering = true
 			start_tween()
 		else: # If she has been speaking
 			pass
-			
-	if live_2d_melba.reading_audio:
-		param_mouth_form.value = -0.8
-	else: 
-		if tween: tween.kill()
+
 
 func start_tween() -> void:
 	if tween:

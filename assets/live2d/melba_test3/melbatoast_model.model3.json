@@ -16,7 +16,17 @@
 				"Name": "Void",
 				"File": "Void Toggle.exp3.json"
 			}
-		]
+		],
+		"Motions": {
+			"": [
+				{
+					"File": "Idle.motion3.json"
+				},
+				{
+					"File": "Sleep.motion3.json"
+				}
+			]
+		}
 	},
 	"Groups": [
 		{

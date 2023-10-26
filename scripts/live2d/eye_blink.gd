@@ -17,12 +17,14 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_eye = param
 
 func _on_timer_timeout() -> void:
-	tween = create_tween()
-	tween.finished.connect(_on_tween_finished)
-	tween.tween_property(param_eye, "value", 0.0, 0.1)
+	if active:
+		tween = create_tween()
+		tween.finished.connect(_on_tween_finished)
+		tween.tween_property(param_eye, "value", 0.0, 0.1)
 
 func _on_tween_finished() -> void:
-	tween = create_tween()
-	tween.tween_property(param_eye, "value", 1.0, 0.1)
+	if active: 
+		tween = create_tween()
+		tween.tween_property(param_eye, "value", 1.0, 0.1)
 
 
