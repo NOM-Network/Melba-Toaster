@@ -1,8 +1,8 @@
 extends Node2D
 
-@onready var client: WebSocketClient = $WebSocketClient
-@onready var control_panel: Window = $ControlPanel
-@onready var controller: Node2D = $Live2DController
+@export var client: WebSocketClient
+@export var control_panel: Window
+@export var controller: Node2D
 
 func _ready():
 	# Waiting for the backend

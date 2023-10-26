@@ -5,8 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "controller")]
 script = ExtResource("1_bldvu")
+client = NodePath("WebSocketClient")
+control_panel = NodePath("ControlPanel")
+controller = NodePath("Live2DController")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 anchors_preset = 15
