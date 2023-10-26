@@ -20,6 +20,8 @@ func _ready():
 	await get_tree().create_timer(1.0).timeout
 	client.send_message({"type": "PlayAnimation"})
 	await get_tree().create_timer(1.0).timeout
+	client.send_message({"type": "SetToggle"})
+	await get_tree().create_timer(1.0).timeout
 	client.send_message({"type": "SetExpression"})
 
 func _on_data_received(data: Dictionary):
@@ -44,7 +46,7 @@ func _on_data_received(data: Dictionary):
 
 			"SetToggle":
 				Globals.set_toggle.emit(message.toggleName, message.enabled)
-
+				print("Setting Toggle")
 			_:
 				print("Unhandled data type: ", message)
 
