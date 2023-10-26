@@ -1,6 +1,5 @@
 extends Node2D
 
-@onready var controller: ModelController = get_parent()
 @onready var cubism_model = %GDCubismUserModel
 @onready var audio_player = $AudioStreamPlayer
 
@@ -13,6 +12,7 @@ func _ready() -> void:
 	intialize_toggles()
 
 func connect_signals() -> void:
+	Globals.incoming_speech.connect(process_audio)
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
@@ -59,6 +59,11 @@ func set_expression(expression_name: String, enabled: bool) -> void:
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
 		Globals.toggles[toggle_name]["enabled"] = enabled
+
+func process_audio(message: PackedByteArray) -> void:
+	var stream = AudioStreamMP3.new()
+	stream.data = message
+	queue_audio(stream)
 
 func queue_audio(stream: AudioStreamMP3):
 	audio_queue.append(stream)
