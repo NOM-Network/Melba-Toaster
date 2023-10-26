@@ -36,8 +36,8 @@ func _on_cubism_init(model: GDCubismUserModel):
 func _on_cubism_term(_model: GDCubismUserModel):
 	param_mouth = null
 	param_mouth_form = null
-	param_eye_ball_x = null 
-	param_eye_ball_y = null
+#	param_eye_ball_x = null 
+#	param_eye_ball_y = null
 
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):

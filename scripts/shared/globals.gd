@@ -22,10 +22,12 @@ var animations := {
 	"idle": {"id": 0, "override": "none"},
 	"sleep": {"id": 1, "override": "eye_blink"}
 }
+var last_animation := "" 
 
 var expressions := {
 	"sampleExpression": {"id": "Sample"}
 }
+var last_expression := ""
 
 # endregion
 

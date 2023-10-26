@@ -7,13 +7,11 @@ extends Node2D
 
 var reading_audio := false
 var audio_queue := []
-var ideling := false 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
-	play_animation("idle")
 
 func connect_signals() -> void:
 	Globals.incoming_speech.connect(process_audio)
@@ -46,8 +44,8 @@ func _process(_delta: float) -> void:
 			Globals.toggles[toggle]["param"].set_value(false)
 
 func play_animation(anim_name: String) -> void:
+	Globals.last_animation = anim_name
 	if anim_name == "end":
-		ideling = false 
 		cubism_model.stop_motion()
 	elif Globals.animations.has(anim_name):
 		var anim_id = Globals.animations[anim_name]["id"]
@@ -58,6 +56,7 @@ func play_animation(anim_name: String) -> void:
 		cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)
 			
 func set_expression(expression_name: String) -> void:
+	Globals.last_expression = expression_name 
 	if expression_name == "end":
 		cubism_model.stop_expression()
 	elif Globals.expressions.has(expression_name):
