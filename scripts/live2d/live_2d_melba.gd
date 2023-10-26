@@ -1,7 +1,7 @@
 extends Node2D
 
-@onready var cubism_model = %GDCubismUserModel
-@onready var audio_player = $AudioStreamPlayer
+@export var cubism_model: GDCubismUserModel
+@export var audio_player: AudioStreamPlayer
 
 var reading_audio = false
 var audio_queue := []

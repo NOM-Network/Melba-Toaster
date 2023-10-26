@@ -7,8 +7,10 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_sw0pq"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
-[node name="Live2DMelba" type="Node2D"]
+[node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model", "audio_player")]
 script = ExtResource("1_gym56")
+cubism_model = NodePath("Sprite2D/GDCubismUserModel")
+audio_player = NodePath("AudioStreamPlayer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("ViewportTexture_sw0pq")
@@ -19,13 +21,13 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = ""
-ParamAngleX = -6.6396
-ParamAngleY = 1.82125
-ParamAngleZ = -0.578668
-ParamBodyAngleX = -1.2729
+ParamAngleX = -2.4719
+ParamAngleY = 1.4094
+ParamAngleZ = 0.0740927
+ParamBodyAngleX = -1.90666
 ParamBodyAngleY = 0.0
 ParamBodyAngleZ = 0.0
-Param3 = -1.64949
+Param3 = -0.592309
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
@@ -36,11 +38,11 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = -0.0218213
-Param7 = -0.0271074
-Param8 = 0.0250421
-Param10 = -0.122334
-Param11 = 0.00453545
+Param6 = 0.00587414
+Param7 = 0.0493944
+Param8 = -0.0236068
+Param10 = -0.036001
+Param11 = -0.0226508
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
@@ -55,14 +57,14 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0016935
+ParamBreath = 0.419556
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
 Param = 2.38419e-07
 Param2 = 0.0
-Param12 = -0.00162173
-Param13 = 9.77356e-05
+Param12 = -1.71736e-06
+Param13 = 1.60864e-06
 Model = 1.0
 Head = 1.0
 Part4 = 1.0
@@ -86,7 +88,6 @@ Part6 = 1.0
 Part7 = 1.0
 Part8 = 1.0
 Part9 = 1.0
-unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true

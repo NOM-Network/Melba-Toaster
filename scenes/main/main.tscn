@@ -6,11 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="4_el578"]
 [ext_resource type="Texture2D" uid="uid://gl5jw0qtwkda" path="res://assets/overlays/Overlay_V2.png" id="5_a7lxb"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "controller")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel")]
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
-controller = NodePath("Live2DController")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 anchors_preset = 15
