@@ -5,8 +5,6 @@ extends Node2D
 @onready var controller: Node2D = $Live2DController
 
 func _ready():
-	get_viewport().set_embedding_subwindows(false)
-
 	# Waiting for the backend
 	await client.connection_established
 	control_panel.backend_connected()
@@ -21,6 +19,7 @@ func _ready():
 	client.send_message({"type": "SetExpression"})
 
 func _on_data_received(data: Dictionary):
+	# TODO: Send audio and text in subsequent frames
 	if data.type == "binary":
 		# Testing for MP3
 		var header = data.message.slice(0, 2)
@@ -28,20 +27,20 @@ func _on_data_received(data: Dictionary):
 			printerr("Binary data is not an MP3 file! Skipping...")
 			return
 
-		controller.process_audio(data.message)
+		Globals.incoming_speech.emit(data.message)
 	else:
 		var message = JSON.parse_string(data.message)
 		print_debug(message)
 		match message.type:
 			"PlayAnimation":
-				controller.play_anim(message.animationName)
+				Globals.set_animation.emit(message.animationName)
 
 			"SetExpression":
-				controller.set_expr(message.expressionName, message.enabled)
-			
-			"SetToggle": 
-				controller.set_togg(message.toggleName, message.enabled)
-			
+				Globals.set_expression.emit(message.expressionName, message.enabled)
+
+			"SetToggle":
+				Globals.set_toggle.emit(message.toggleName, message.enabled)
+
 			_:
 				print("Unhandled data type: ", message)
 

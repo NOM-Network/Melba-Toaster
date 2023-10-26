@@ -22,6 +22,7 @@ title = "Control Panel - Toaster"
 initial_position = 1
 size = Vector2i(924, 648)
 min_size = Vector2i(800, 600)
+auto_translate = false
 script = ExtResource("1_rhl0v")
 
 [node name="WebSocketClient" type="Node" parent="."]
@@ -64,6 +65,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Margins"]
 layout_mode = 2
+theme_override_constants/autohide = 0
 
 [node name="SpeechBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
 layout_mode = 2
@@ -149,13 +151,48 @@ layout_mode = 2
 text = "Model Controls"
 horizontal_alignment = 1
 
-[node name="ModelControls" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
+[node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
 layout_mode = 2
-size_flags_horizontal = 3
-bbcode_enabled = true
-text = "Active FPS: 69
-Frame time: "
-fit_content = true
+size_flags_vertical = 3
+alignment = 1
+
+[node name="AnimationsMenu" type="MenuBar" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Animations" type="PopupMenu" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/AnimationsMenu"]
+title = "Anim"
+hide_on_checkable_item_selection = false
+item_count = 1
+item_0/text = "Test"
+item_0/checkable = 1
+item_0/checked = true
+item_0/id = 0
+
+[node name="ExpressionsMenu" type="MenuBar" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Expressions" type="PopupMenu" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/ExpressionsMenu"]
+title = "Anim"
+hide_on_checkable_item_selection = false
+item_count = 1
+item_0/text = "Test"
+item_0/checkable = 1
+item_0/checked = true
+item_0/id = 0
+
+[node name="Toggles" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/Toggles"]
+layout_mode = 2
+text = "Test 1"
+
+[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/Toggles"]
+layout_mode = 2
+text = "Test  2"
 
 [node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
 layout_mode = 2
@@ -334,7 +371,11 @@ vertical_alignment = 1
 
 [node name="StatsTimer" type="Timer" parent="."]
 
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+offset_bottom = 638.0
+
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]

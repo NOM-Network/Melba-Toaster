@@ -6,44 +6,14 @@ extends Window
 
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
-# TODO: Formats
-var obs_stats_template = "" \
-	+ "CPU Usage: [b]{cpuUsage}[/b]\n" \
-	+ "Memory Usage: [b]{memoryUsage}[/b]\n" \
-	+ "Disk Space: [b]{availableDiskSpace}[/b]\n" \
-	+ "Active FPS: [b]{activeFps}[/b]\n" \
-	+ "Frame Render Time: [b]{averageFrameRenderTime}[/b]\n" \
-	+ "Frames Rendered/Skipped: [b]{renderTotalFrames}[/b]/[b]{renderSkippedFrames}[/b]\n" \
-	+ "Total Rendered/Skipped: [b]{outputTotalFrames}[/b]/[b]{outputSkippedFrames}[/b]\n" \
-	+ "WS Incoming/Outgoing: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]\n"
-
-var godot_stats_template = "" \
-	+ "Active FPS: [b]{fps}[/b]\n" \
-	+ "Frame Time: [b]{frameTime}[/b]\n" \
-	+ "Video Memory Used: [b]{videoMemoryUsed}[/b]\n" \
-	+ "Audio Latency: [b]{audioLatency}[/b]\n"
-
 var is_streaming = false
 
 # region MAIN
 
 func _ready() -> void:
-	obs.establish_connection()
-	await obs.connection_authenticated
-
-	obs.data_received.connect(_on_data_received)
-	change_status_color(%ObsClientStatus, true)
-
-	# Init
-	obs.send_command_batch([
-		"GetSceneList",
-		"GetInputList",
-		"GetStats",
-		# "GetStreamStatus"
-	])
-
-	stats_timer.start()
-	status_timer.start()
+	obs_connection()
+	generate_model_controls()
+	connect_signals()
 
 func _process(_delta) -> void:
 	var render_data = {
@@ -53,7 +23,55 @@ func _process(_delta) -> void:
 		"audioLatency": Performance.get_monitor(Performance.Monitor.AUDIO_OUTPUT_LATENCY),
 	}
 
-	insert_data(render_data, %GodotStats, godot_stats_template)
+	insert_data(render_data, %GodotStats, Templates.godot_stats_template)
+
+func obs_connection() -> void:
+	# OBS Connection
+	obs.establish_connection()
+	await obs.connection_authenticated
+	obs.data_received.connect(_on_data_received)
+	change_status_color(%ObsClientStatus, true)
+
+	# OBS Data init
+	obs.send_command_batch([
+		"GetSceneList",
+		"GetInputList",
+		"GetStats",
+		# "GetStreamStatus"
+	])
+
+	# OBS Stats timers
+	stats_timer.start()
+	# status_timer.start()
+
+func connect_signals() -> void:
+	Globals.play_animation.connect(update_model_controls.unbind(1))
+	Globals.set_expression.connect(update_model_controls.unbind(2))
+	Globals.set_toggle.connect(update_model_controls.unbind(2))
+	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
+	print_debug("Control Panel: connected signals")
+
+func generate_model_controls():
+	# Animations
+
+	# Expressions
+	# var expressons := Globals.expressions
+	# var expressions_menu := PopupMenu.new()
+	# for e in expressions:
+	# 	expressions_menu.add_item()
+
+	# Toggles
+	var toggles := Globals.toggles
+
+	for n in %Toggles.get_children():
+		n.queue_free()
+
+	for t in toggles:
+		var toggle = CheckButton.new()
+		toggle.text = t
+		toggle.button_pressed = toggles[t].enabled
+		toggle.pressed.connect(_on_toggle_pressed.bind(toggle))
+		%Toggles.add_child(toggle)
 
 # endregion
 
@@ -109,12 +127,14 @@ func _handle_event(data):
 
 func _handle_request(data):
 	if not data.requestStatus.result:
-		print_debug("Error in request: ", data)
+		if data.requestStatus.code != 604:
+			print_debug("Error in request: ", data)
+			return
 		return
 
 	match data.requestType:
 		"GetStats":
-			insert_data(data.responseData, %StreamStats, obs_stats_template)
+			insert_data(data.responseData, %StreamStats, Templates.obs_stats_template)
 
 		"GetStreamStatus":
 			var status = data.responseData
@@ -161,6 +181,14 @@ func _on_status_timer_timeout():
 # endregion
 
 # region UI FUNCTIONS
+
+func _on_incoming_speech():
+	%CurrentSpeech.add_theme_color_override("font_color", Color(1, 0, 0))
+	%CurrentSpeech.text = str(randi())
+
+func update_model_controls():
+	# TODO: Implement
+	print("LEL")
 
 func change_status_color(node: Node, active: bool) -> void:
 	node.get_theme_stylebox("panel").bg_color = Color(0, 1, 0) if active else Color(1, 0, 0)
@@ -252,6 +280,13 @@ func backend_connected():
 
 func backend_disconnected():
 	change_status_color(%BackendStatus, false)
+
+func _on_cancel_speech_pressed():
+	Globals.cancel_speech.emit()
+	%CurrentSpeech.add_theme_color_override("font_color", Color(1, 0, 0))
+
+func _on_toggle_pressed(toggle: CheckButton):
+	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
 
 func stop_processing():
 	stats_timer.stop()

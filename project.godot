@@ -19,6 +19,7 @@ boot_splash/show_image=false
 [autoload]
 
 Globals="*res://scripts/shared/globals.gd"
+Templates="*res://scripts/shared/templates.gd"
 
 [display]
 
