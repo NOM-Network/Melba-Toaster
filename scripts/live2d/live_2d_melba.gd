@@ -5,8 +5,9 @@ extends Node2D
 
 @onready var eye_blink = %EyeBlink
 
-var reading_audio = false
+var reading_audio := false
 var audio_queue := []
+var ideling := false 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -34,6 +35,9 @@ func intialize_toggles() -> void:
 
 func _process(_delta: float) -> void:
 	if not reading_audio:
+		if not ideling: 
+			ideling = true 
+			play_animation("idle")
 		if audio_queue.size() > 0:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
@@ -46,6 +50,7 @@ func _process(_delta: float) -> void:
 
 func play_animation(anim_name: String) -> void:
 	if anim_name == "end":
+		ideling = false 
 		cubism_model.stop_motion()
 	elif Globals.animations.has(anim_name):
 		var anim_id = Globals.animations[anim_name]["id"]
@@ -89,6 +94,8 @@ func reset_overrides():
 
 func _on_gd_cubism_user_model_motion_finished():
 	reset_overrides()
+	ideling = false 
 
 func _on_audio_stream_player_finished():
 	reading_audio = false
+	

@@ -4,9 +4,13 @@ class_name MouthMovement
 @export var live_2d_melba = Node # The node with live2d_melba.gd 
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
+@export var param_eye_ball_x_name: String = "ParamEyeBallX"
+@export var param_eye_ball_y_name: String = "ParamEyeBallY"
 
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
+var param_eye_ball_x: GDCubismParameter
+var param_eye_ball_y: GDCubismParameter
 var tween: Tween
 var blabbering = false
 
@@ -24,14 +28,23 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_mouth = param
 		if param.id == param_mouth_form_name:
 			param_mouth_form = param
+		if param.id == param_eye_ball_x_name:
+			param_eye_ball_x = param
+		if param.id == param_eye_ball_y_name:
+			param_eye_ball_y = param
 
 func _on_cubism_term(_model: GDCubismUserModel):
 	param_mouth = null
 	param_mouth_form = null
+	param_eye_ball_x = null 
+	param_eye_ball_y = null
+
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	if live_2d_melba.reading_audio:
 		param_mouth_form.value = -0.8
+		param_eye_ball_x.value = 0.0
+		param_eye_ball_y.value = 0.0 
 	else: 
 		if tween: tween.kill()
 	
