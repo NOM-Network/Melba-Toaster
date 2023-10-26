@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="ControlPanel" type="Window"]
+[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "stats_timer", "status_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -24,6 +24,9 @@ size = Vector2i(924, 648)
 min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
+obs = NodePath("WebSocketClient")
+stats_timer = NodePath("StatsTimer")
+status_timer = NodePath("StatusTimer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")

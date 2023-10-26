@@ -1,14 +1,14 @@
 extends Node2D
 
-@onready var client: WebSocketClient = $WebSocketClient
-@onready var control_panel: Window = $ControlPanel
-@onready var controller: Node2D = $Live2DController
+@export var client: WebSocketClient
+@export var control_panel: Window
+@export var controller: Node2D
 
 func _ready():
-	# Makes bg transparent 
+	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
-	
+
 	# Waiting for the backend
 	await client.connection_established
 	control_panel.backend_connected()

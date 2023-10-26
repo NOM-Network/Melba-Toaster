@@ -1,8 +1,8 @@
 extends Window
 @onready var main: Node2D = get_parent()
-@onready var obs: ObsWebSocketClient = $WebSocketClient
-@onready var stats_timer: Timer = $StatsTimer
-@onready var status_timer: Timer = $StatusTimer
+@export var obs: ObsWebSocketClient
+@export var stats_timer: Timer
+@export var status_timer: Timer
 
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
