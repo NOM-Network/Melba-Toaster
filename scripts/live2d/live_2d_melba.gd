@@ -13,7 +13,7 @@ var ideling := false
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
-	play_animation("end")
+	play_animation("idle")
 
 func connect_signals() -> void:
 	Globals.incoming_speech.connect(process_audio)
@@ -35,9 +35,6 @@ func intialize_toggles() -> void:
 
 func _process(_delta: float) -> void:
 	if not reading_audio:
-		if not ideling: 
-			ideling = true 
-			play_animation("idle")
 		if audio_queue.size() > 0:
 			play_audio(audio_queue[0])
 			audio_queue.remove_at(0)
@@ -94,8 +91,7 @@ func reset_overrides():
 
 func _on_gd_cubism_user_model_motion_finished():
 	reset_overrides()
-	ideling = false 
+	play_animation("idle")
 
 func _on_audio_stream_player_finished():
 	reading_audio = false
-	
