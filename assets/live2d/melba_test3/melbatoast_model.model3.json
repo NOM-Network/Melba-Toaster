@@ -1,0 +1,34 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "melbatoast_model.moc3",
+		"Textures": [
+			"melbatoast_model.4096/texture_00.png"
+		],
+		"Physics": "melbatoast_model.physics3.json",
+		"DisplayInfo": "melbatoast_model.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "Bread",
+				"File": "Bread Toggle.exp3.json"
+			},
+			{
+				"Name": "Void",
+				"File": "Void Toggle.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		}
+	],
+	"HitAreas": []
+}

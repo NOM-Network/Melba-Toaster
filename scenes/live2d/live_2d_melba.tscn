@@ -4,28 +4,28 @@
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_xc2lk"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_sw0pq"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D"]
 script = ExtResource("1_gym56")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("ViewportTexture_xc2lk")
+texture = SubResource("ViewportTexture_sw0pq")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
-assets = "res://assets/live2d/melba_test2/melbatoast_model.model3.json"
+assets = "res://assets/live2d/melba_test3/melbatoast_model.model3.json"
 anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = ""
-ParamAngleX = 7.39023
-ParamAngleY = 3.18776
-ParamAngleZ = -0.868165
-ParamBodyAngleX = 0.475483
+ParamAngleX = -6.6396
+ParamAngleY = 1.82125
+ParamAngleZ = -0.578668
+ParamBodyAngleX = -1.2729
 ParamBodyAngleY = 0.0
 ParamBodyAngleZ = 0.0
-Param3 = 1.81355
+Param3 = -1.64949
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
@@ -36,15 +36,15 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = -0.0103836
-Param7 = -0.00109329
-Param8 = 0.000512948
-Param10 = 0.0036714
-Param11 = 0.0155924
+Param6 = -0.0218213
+Param7 = -0.0271074
+Param8 = 0.0250421
+Param10 = -0.122334
+Param11 = 0.00453545
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
-Param9 = 1.0
+Param9 = 0.0
 Param14 = 0.0
 ParamBrowLY = 0.0
 ParamBrowRY = 0.0
@@ -55,14 +55,14 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.113746
+ParamBreath = 0.0016935
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
 Param = 2.38419e-07
 Param2 = 0.0
-Param12 = 0.000282743
-Param13 = -0.000479903
+Param12 = -0.00162173
+Param13 = 9.77356e-05
 Model = 1.0
 Head = 1.0
 Part4 = 1.0
