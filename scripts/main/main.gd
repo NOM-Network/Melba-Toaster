@@ -36,7 +36,7 @@ func _on_data_received(data: Dictionary):
 		Globals.incoming_speech.emit(data.message)
 	else:
 		var message = JSON.parse_string(data.message)
-		print_debug(message)
+
 		match message.type:
 			"PlayAnimation":
 				Globals.play_animation.emit(message.animationName)

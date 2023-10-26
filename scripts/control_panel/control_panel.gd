@@ -6,6 +6,8 @@ extends Window
 
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
+var anim_menu: Array
+
 var is_streaming = false
 
 # region MAIN
@@ -45,14 +47,24 @@ func obs_connection() -> void:
 	# status_timer.start()
 
 func connect_signals() -> void:
-	Globals.play_animation.connect(update_model_controls.unbind(1))
-	Globals.set_expression.connect(update_model_controls.unbind(2))
-	Globals.set_toggle.connect(update_model_controls.unbind(2))
+	# Globals.play_animation.connect(update_model_controls.unbind(1))
+	# Globals.set_expression.connect(update_model_controls.unbind(2))
+	Globals.set_toggle.connect(update_toggle_controls)
 	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
 	print_debug("Control Panel: connected signals")
 
 func generate_model_controls():
 	# Animations
+	var animations := Globals.animations
+	var anim_popup: PopupMenu = %AnimationsMenu.get_popup()
+
+	anim_popup.clear()
+
+	for a in animations:
+		var id: int = animations[a]["id"] + 1
+		anim_popup.add_item(a, id)
+		anim_menu.push_back(a) # TODO: Find a better way to handle menu index
+	anim_popup.index_pressed.connect(_on_animation_pressed)
 
 	# Expressions
 	# var expressons := Globals.expressions
@@ -69,6 +81,7 @@ func generate_model_controls():
 	for t in toggles:
 		var toggle = CheckButton.new()
 		toggle.text = t
+		toggle.name = "Toggle%s" % [t.to_camel_case().capitalize()]
 		toggle.button_pressed = toggles[t].enabled
 		toggle.pressed.connect(_on_toggle_pressed.bind(toggle))
 		%Toggles.add_child(toggle)
@@ -182,13 +195,22 @@ func _on_status_timer_timeout():
 
 # region UI FUNCTIONS
 
+func _on_animation_pressed(id: int):
+	print(anim_menu, " ", id, " ", anim_menu.size())
+	if anim_menu.size() >= id + 1:
+		Globals.play_animation.emit(anim_menu[id])
+	else:
+		printerr("Control panel: no menu item with ID %d" % [id])
+
 func _on_incoming_speech():
-	%CurrentSpeech.add_theme_color_override("font_color", Color(1, 0, 0))
 	%CurrentSpeech.text = str(randi())
 
-func update_model_controls():
-	# TODO: Implement
-	print("LEL")
+func update_toggle_controls(toggle_name: String, enabled: bool):
+	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
+	var toggle: CheckButton = %Toggles.get_node(ui_name)
+	print(toggle)
+	if toggle:
+		toggle.button_pressed = enabled
 
 func change_status_color(node: Node, active: bool) -> void:
 	node.get_theme_stylebox("panel").bg_color = Color(0, 1, 0) if active else Color(1, 0, 0)

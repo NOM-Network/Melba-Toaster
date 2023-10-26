@@ -146,54 +146,39 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Model Controls"
 horizontal_alignment = 1
 
-[node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2"]
+[node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="AnimationsMenu" type="MenuBar" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
+[node name="AnimationsMenu" type="MenuButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Animations ˅"
+flat = false
+item_count = 2
+popup/item_0/text = "Test"
+popup/item_0/id = 0
+popup/item_1/text = "Tets2"
+popup/item_1/id = 1
+
+[node name="Toggles" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Animations" type="PopupMenu" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/AnimationsMenu"]
-title = "Anim"
-hide_on_checkable_item_selection = false
-item_count = 1
-item_0/text = "Test"
-item_0/checkable = 1
-item_0/checked = true
-item_0/id = 0
-
-[node name="ExpressionsMenu" type="MenuBar" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Expressions" type="PopupMenu" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/ExpressionsMenu"]
-title = "Anim"
-hide_on_checkable_item_selection = false
-item_count = 1
-item_0/text = "Test"
-item_0/checkable = 1
-item_0/checked = true
-item_0/id = 0
-
-[node name="Toggles" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/Toggles"]
+[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/Toggles"]
 layout_mode = 2
 text = "Test 1"
 
-[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer2/ModelControls/Toggles"]
+[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/Toggles"]
 layout_mode = 2
 text = "Test  2"
 
@@ -373,9 +358,6 @@ vertical_alignment = 1
 [node name="StatusTimer" type="Timer" parent="."]
 
 [node name="StatsTimer" type="Timer" parent="."]
-
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
-offset_bottom = 638.0
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
