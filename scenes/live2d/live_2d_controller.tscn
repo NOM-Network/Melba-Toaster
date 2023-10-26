@@ -1,11 +1,27 @@
-[gd_scene load_steps=4 format=3 uid="uid://35fv5sxiel01"]
+[gd_scene load_steps=4 format=3 uid="uid://bbgse2rqide8j"]
 
-[ext_resource type="Script" path="res://scripts/shared/model_controller.gd" id="1_sx1sx"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="2_q4dky"]
 [ext_resource type="Texture2D" uid="uid://gl5jw0qtwkda" path="res://assets/overlays/Overlay_V2.png" id="5_fcxfr"]
 
+[sub_resource type="GDScript" id="GDScript_0qo8j"]
+script/source = "extends Node
+class_name ModelController
+
+@onready var model := $Live2DMelba
+
+# TODO: Remove controller altogether or make it useful
+func _ready() -> void:
+	Globals.incoming_speech.connect(process_audio)
+
+# TODO: move to the model itself
+func process_audio(message: PackedByteArray) -> void:
+	var stream = AudioStreamMP3.new()
+	stream.data = message
+	model.queue_audio(stream)
+"
+
 [node name="Live2DController" type="Node2D"]
-script = ExtResource("1_sx1sx")
+script = SubResource("GDScript_0qo8j")
 
 [node name="Live2DMelba" parent="." instance=ExtResource("2_q4dky")]
 position = Vector2(591, 1281)

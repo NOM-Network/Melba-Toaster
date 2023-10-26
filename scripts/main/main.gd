@@ -5,6 +5,10 @@ extends Node2D
 @export var controller: Node2D
 
 func _ready():
+	# Makes bg transparent 
+	get_tree().get_root().set_transparent_background(true)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
+	
 	# Waiting for the backend
 	await client.connection_established
 	control_panel.backend_connected()
@@ -33,7 +37,7 @@ func _on_data_received(data: Dictionary):
 		print_debug(message)
 		match message.type:
 			"PlayAnimation":
-				Globals.set_animation.emit(message.animationName)
+				Globals.play_animation.emit(message.animationName)
 
 			"SetExpression":
 				Globals.set_expression.emit(message.expressionName, message.enabled)
