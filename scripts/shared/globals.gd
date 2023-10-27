@@ -13,7 +13,7 @@ signal cancel_speech()
 # region LIVE2D DATA
 
 var toggles := {
-	"toast": {"param": null, "enabled": false},
+	"toast": {"param": null, "enabled": false, "opacity": null}, 
 	"void": {"param": null, "enabled": false}
 }
 

@@ -33,6 +33,10 @@ func intialize_toggles() -> void:
 			Globals.toggles["toast"]["param"] = param
 		if param.get_id() == "Param14":
 			Globals.toggles["void"]["param"] = param
+	var part_opacities = cubism_model.get_part_opacities() 
+	for opacity in part_opacities:
+		if opacity.get_id() == "Bread":
+			Globals.toggles["toast"]["opacity"] = opacity
 
 func _process(_delta: float) -> void:
 	if not reading_audio:
@@ -41,10 +45,13 @@ func _process(_delta: float) -> void:
 			audio_queue.remove_at(0)
 
 	for toggle in Globals.toggles:
-		if Globals.toggles[toggle]["enabled"]:
+		if Globals.toggles[toggle].has("opacity"):
 			Globals.toggles[toggle]["param"].set_value(true)
 		else:
-			Globals.toggles[toggle]["param"].set_value(false)
+			if Globals.toggles[toggle]["enabled"]:
+				Globals.toggles[toggle]["param"].set_value(true)
+			else:
+				Globals.toggles[toggle]["param"].set_value(false)
 
 func play_animation(anim_name: String) -> void:
 	Globals.last_animation = anim_name
@@ -58,7 +65,7 @@ func play_animation(anim_name: String) -> void:
 			"eye_blink":
 				eye_blink.active = false 
 		cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)
-			
+		
 func set_expression(expression_name: String) -> void:
 	Globals.last_expression = expression_name 
 	if expression_name == "end":
@@ -69,6 +76,11 @@ func set_expression(expression_name: String) -> void:
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
+		if Globals.toggles[toggle_name].has("opacity"):
+			var opacity_tween = create_tween() 
+			var toggle_opacity = Globals.toggles[toggle_name]["opacity"]
+			if enabled: opacity_tween.tween_property(toggle_opacity, "value", 1.0, 0.5)
+			else: opacity_tween.tween_property(toggle_opacity, "value", 0.0, 0.5)
 		Globals.toggles[toggle_name]["enabled"] = enabled
 
 func process_audio(message: PackedByteArray) -> void:
