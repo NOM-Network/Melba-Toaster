@@ -58,6 +58,7 @@ func play_animation(anim_name: String) -> void:
 func set_expression(expression_name: String) -> void:
 	Globals.last_expression = expression_name 
 	if expression_name == "end":
+		reset_overrides()
 		cubism_model.stop_expression()
 	elif Globals.expressions.has(expression_name):
 		var expr_id = Globals.expresions[expression_name]["id"]
@@ -88,9 +89,12 @@ func stop_audio() -> void:
 func reset_overrides():
 	eye_blink.active = true
 
+# DOESN'T run when motion has been forcibly stoped
 func _on_gd_cubism_user_model_motion_finished():
 	reset_overrides()
 	play_animation("idle")
 
+# DOES in run when audio has been forcibly stoped
 func _on_audio_stream_player_finished():
 	reading_audio = false
+	play_animation("idle")
