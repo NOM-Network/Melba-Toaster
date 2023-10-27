@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=5 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="4_el578"]
-[ext_resource type="Texture2D" uid="uid://gl5jw0qtwkda" path="res://assets/overlays/Overlay_V2.png" id="5_a7lxb"]
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel")]
 script = ExtResource("1_bldvu")
@@ -40,8 +39,4 @@ initial_position = 3
 current_screen = 0
 
 [node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
-position = Vector2(514, 1232)
-
-[node name="OverlayV2" type="Sprite2D" parent="."]
-position = Vector2(960, 540)
-texture = ExtResource("5_a7lxb")
+position = Vector2(656, 1165)
