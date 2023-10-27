@@ -101,3 +101,6 @@ func _on_gd_cubism_user_model_motion_finished():
 # DOES in run when audio has been forcibly stoped
 func _on_audio_stream_player_finished():
 	reading_audio = false
+	if Globals.last_animation == "idle": 
+		play_animation("idle")
+	
