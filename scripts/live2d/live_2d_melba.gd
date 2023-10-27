@@ -3,7 +3,10 @@ extends Node2D
 @export var cubism_model: GDCubismUserModel
 @export var audio_player: AudioStreamPlayer
 
+# Effects 
 @onready var eye_blink = %EyeBlink
+@onready var mouth_movement = %MouthMovement
+@onready var breath_effect = %GDCubismEffectBreath
 
 var reading_audio := false
 var audio_queue := []
@@ -46,6 +49,7 @@ func _process(_delta: float) -> void:
 func play_animation(anim_name: String) -> void:
 	Globals.last_animation = anim_name
 	if anim_name == "end":
+		reset_overrides()
 		cubism_model.stop_motion()
 	elif Globals.animations.has(anim_name):
 		var anim_id = Globals.animations[anim_name]["id"]
@@ -58,7 +62,6 @@ func play_animation(anim_name: String) -> void:
 func set_expression(expression_name: String) -> void:
 	Globals.last_expression = expression_name 
 	if expression_name == "end":
-		reset_overrides()
 		cubism_model.stop_expression()
 	elif Globals.expressions.has(expression_name):
 		var expr_id = Globals.expresions[expression_name]["id"]
@@ -78,7 +81,6 @@ func queue_audio(stream: AudioStreamMP3):
 
 func play_audio(stream: AudioStreamMP3) -> void:
 	reading_audio = true
-
 	audio_player.stream = stream
 	audio_player.play()
 
@@ -88,6 +90,8 @@ func stop_audio() -> void:
 
 func reset_overrides():
 	eye_blink.active = true
+	mouth_movement.active = true 
+	breath_effect.active = true 
 
 # DOESN'T run when motion has been forcibly stoped
 func _on_gd_cubism_user_model_motion_finished():
@@ -97,4 +101,3 @@ func _on_gd_cubism_user_model_motion_finished():
 # DOES in run when audio has been forcibly stoped
 func _on_audio_stream_player_finished():
 	reading_audio = false
-	play_animation("idle")

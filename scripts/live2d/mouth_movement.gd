@@ -19,6 +19,7 @@ var tween_mouth: Tween
 var tween_mouth_form: Tween 
 var tween_eye_x: Tween
 var tween_eye_y: Tween
+var previous_volume = 0.0
 # State for volume analysis 
 var blabbering = false
 # States for when reading audio 
@@ -88,7 +89,7 @@ func manage_mouth_form_and_eyes() -> void:
 
 func manage_mouth_movement() -> void: 
 	var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
-	if volume < -60.0: # If she is not speaking
+	if volume < -60.0 and previous_volume < -60.0: # If she is not speaking
 		blabbering = false
 		param_mouth.value = 0.0
 	elif not blabbering: # If she just started speaking
@@ -96,6 +97,7 @@ func manage_mouth_movement() -> void:
 		start_tween()
 	else: # If she has been speaking
 		pass 
+	previous_volume = volume 
 
 func start_tween() -> void:
 	if tween_mouth: tween_mouth.kill()
