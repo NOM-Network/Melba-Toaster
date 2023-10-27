@@ -39,5 +39,4 @@ initial_position = 3
 current_screen = 0
 
 [node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
-position = Vector2(713, 1265)
-scale = Vector2(1.2325, 1.2325)
+position = Vector2(656, 1146)
