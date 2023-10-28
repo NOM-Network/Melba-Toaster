@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=8 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="4_el578"]
 [ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
+[ext_resource type="AudioStream" uid="uid://d3sjs2q0qb6yh" path="res://assets/main/TOASTED.mp3" id="6_vd5ab"]
 
 [sub_resource type="Theme" id="Theme_q4aj4"]
 default_font = ExtResource("5_pnxoy")
@@ -15,11 +16,12 @@ RichTextLabel/constants/outline_size = 5
 RichTextLabel/constants/shadow_offset_x = 3
 RichTextLabel/constants/shadow_offset_y = 3
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles", "cancel_sound")]
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 subtitles = NodePath("Subtitles")
+cancel_sound = NodePath("CancelSound")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -52,3 +54,6 @@ hint_underlined = false
 selection_enabled = true
 deselect_on_focus_loss_enabled = false
 visible_characters_behavior = 1
+
+[node name="CancelSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_vd5ab")

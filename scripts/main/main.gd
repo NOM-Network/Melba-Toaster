@@ -8,6 +8,7 @@ extends Node2D
 @export var client: WebSocketClient
 @export var control_panel: Window
 @export var subtitles: RichTextLabel
+@export var cancel_sound: AudioStreamPlayer
 
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
@@ -16,6 +17,8 @@ func _ready():
 	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
+
+	Globals.is_paused = true
 
 	# Waiting for the backend
 	await client.connection_established
@@ -32,8 +35,6 @@ func _ready():
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 	# Globals.ready_for_speech.emit()
-
-	Globals.is_paused = true
 
 func _on_data_received(data: Dictionary):
 	if Globals.is_paused:
@@ -113,8 +114,9 @@ func _on_cancel_speech():
 	Globals.is_speaking = false
 	subtitles_cleanout = false
 	subtitles.visible_ratio = 1.0
-	subtitles.text = "[center][REDACTED]"
+	subtitles.text = "[center][TOASTED]"
 	subtitles.remove_theme_font_size_override("normal_font_size")
+	cancel_sound.play()
 
 	get_ready_for_next_speech()
 
