@@ -7,10 +7,9 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_ujwmb"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
-[node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model", "audio_player")]
+[node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model")]
 script = ExtResource("1_gym56")
 cubism_model = NodePath("Sprite2D/GDCubismUserModel")
-audio_player = NodePath("AudioStreamPlayer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("ViewportTexture_ujwmb")
@@ -132,5 +131,3 @@ blink_timer = NodePath("../../../BlinkTimer")
 unique_name_in_owner = true
 wait_time = 2.5
 autostart = true
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
