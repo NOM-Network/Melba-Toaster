@@ -65,7 +65,7 @@ func set_expression(expression_name: String) -> void:
 	if expression_name == "end":
 		cubism_model.stop_expression()
 	elif Globals.expressions.has(expression_name):
-		var expr_id = Globals.expresions[expression_name]["id"]
+		var expr_id = Globals.expressions[expression_name].id
 		cubism_model.start_expression(expr_id)
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:

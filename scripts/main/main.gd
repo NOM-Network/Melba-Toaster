@@ -99,7 +99,7 @@ func play_audio() -> void:
 	if speech_player.stream:
 		Globals.is_speaking = true
 		speech_player.play()
-	# else:
+	else:
 		printerr("NO AUDIO FOR THE MESSAGE!")
 
 func _on_ready_for_speech():

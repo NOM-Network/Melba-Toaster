@@ -10,6 +10,7 @@ extends Window
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
 var anim_menu: Array
+var expr_menu: Array
 
 var is_streaming = false
 
@@ -63,36 +64,42 @@ func connect_signals() -> void:
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	print_debug("Control Panel: connected signals")
 
+# TODO: find a way to a make it a generic function lule
 func generate_model_controls():
+	for b in [%Animations, %Expressions, %Toggles]:
+		for n in b.get_children():
+			n.queue_free()
+
 	# Animations
-	var animations := Globals.animations
-	var anim_popup: PopupMenu = %AnimationsMenu.get_popup()
+	var anim_label = Label.new()
+	anim_label.text = "Animations"
+	%Animations.add_child(anim_label)
 
-	anim_popup.clear()
-
-	for a in animations:
-		var id: int = animations[a]["id"] + 1
-		anim_popup.add_item(a, id)
-		anim_menu.push_back(a) # TODO: Find a better way to handle menu index
-	anim_popup.index_pressed.connect(_on_animation_pressed)
+	for a in Globals.animations:
+		var anim = Button.new()
+		anim.text = a
+		anim.name = "Anim%s" % [a.to_camel_case().capitalize()]
+		anim.pressed.connect(func (): Globals.play_animation.emit(a))
+		%Animations.add_child(anim)
 
 	# Expressions
-	# var expressons := Globals.expressions
-	# var expressions_menu := PopupMenu.new()
-	# for e in expressions:
-	# 	expressions_menu.add_item()
+	var expr_label = Label.new()
+	expr_label.text = "Expressions"
+	%Expressions.add_child(expr_label)
+
+	for a in Globals.expressions:
+		var expr = Button.new()
+		expr.text = a
+		expr.name = "Expr%s" % [a.to_camel_case().capitalize()]
+		expr.pressed.connect(func (): Globals.set_expression.emit(a))
+		%Expressions.add_child(expr)
 
 	# Toggles
-	var toggles := Globals.toggles
-
-	for n in %Toggles.get_children():
-		n.queue_free()
-
-	for t in toggles:
+	for a in Globals.toggles:
 		var toggle = CheckButton.new()
-		toggle.text = t
-		toggle.name = "Toggle%s" % [t.to_camel_case().capitalize()]
-		toggle.button_pressed = toggles[t].enabled
+		toggle.text = a
+		toggle.name = "Toggle%s" % [a.to_camel_case().capitalize()]
+		toggle.button_pressed = Globals.toggles[a].enabled
 		toggle.pressed.connect(_on_toggle_pressed.bind(toggle))
 		%Toggles.add_child(toggle)
 
@@ -206,17 +213,13 @@ func _on_status_timer_timeout():
 
 # region UI FUNCTIONS
 
+func _on_toggle_pressed(toggle: CheckButton):
+	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
+
 func _on_new_speech(prompt, text) -> void:
 	current_speech.remove_theme_color_override("font_color")
 	current_prompt.text = prompt
 	current_speech.text = text
-
-func _on_animation_pressed(id: int):
-	print(anim_menu, " ", id, " ", anim_menu.size())
-	if anim_menu.size() >= id + 1:
-		Globals.play_animation.emit(anim_menu[id])
-	else:
-		printerr("Control panel: no menu item with ID %d" % [id])
 
 func _on_incoming_speech():
 	current_speech.text = str(randi())
@@ -336,11 +339,7 @@ func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()
 
 func _on_cancel_speech():
-
 	current_speech.add_theme_color_override("font_color", Color(1, 0, 0))
-
-func _on_toggle_pressed(toggle: CheckButton):
-	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
 
 func stop_processing():
 	stats_timer.stop()
