@@ -91,7 +91,10 @@ func manage_mouth_movement() -> void:
 	var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
 	if volume < -60.0 and previous_volume < -60.0: # If she is not speaking
 		blabbering = false
-		param_mouth.value = 0.0
+		if Globals.is_speaking:
+			param_mouth.value = 0.05
+		else: 
+			param_mouth.value = 0.0 
 	elif not blabbering: # If she just started speaking
 		blabbering = true
 		start_tween()
@@ -108,7 +111,7 @@ func start_tween() -> void:
 func _on_tween_finished() -> void:
 	if tween_mouth: tween_mouth.kill()
 	tween_mouth = create_tween()
-	await tween_mouth.tween_property(param_mouth, "value", 0.0, 0.15).finished
+	await tween_mouth.tween_property(param_mouth, "value", 0.1, 0.15).finished
 	if blabbering:
 		start_tween()
 	else:
