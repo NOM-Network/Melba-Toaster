@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "stats_timer", "status_timer")]
+[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "pause_button", "stats_timer", "status_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -25,6 +25,9 @@ min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
 obs = NodePath("WebSocketClient")
+current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/CurrentPrompt")
+current_speech = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
+pause_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
 stats_timer = NodePath("StatsTimer")
 status_timer = NodePath("StatusTimer")
 
@@ -94,42 +97,58 @@ size_flags_horizontal = 4
 
 [node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
-text = "Cancel speech"
+text = "Cancel"
 
-[node name="GenerateSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+[node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
-text = "Generate"
+toggle_mode = true
+text = "Pause"
 
-[node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="CurrentPrompt" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! Let's get toasty! "
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+text = "What is your opinion on pinapple on pizza?"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Eh, I gotta admit mate, I'm not the biggest fan of pineapple on pizza. It's just not my thing. Sure it has a sweet taste, but it just doesn't mix well with the savoury flavour of the cheese and the tomato. But hey, I ain't gonna be a hater, mate! To each their own, am I right? Some people might like pineapple on their pizza, and that's totally fine with me. I'll just stick to my jam, cheese, and peanut butter toast. (and yes, I do love to eat my peanut butter and jam toast!)"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer"]
+[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_crp4d")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer/ObsClientStatus"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/ObsClientStatus"]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "OBS Client"
 horizontal_alignment = 1
 
-[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer"]
+[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_fief3")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/HBoxContainer/BackendStatus"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/BackendStatus"]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "Backend"
@@ -361,6 +380,7 @@ vertical_alignment = 1
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
+[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]

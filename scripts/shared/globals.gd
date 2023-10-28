@@ -5,7 +5,11 @@ extends Node
 signal play_animation(anim_name: String)
 signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
+
+signal ready_for_speech()
 signal incoming_speech(stream: PackedByteArray)
+signal new_speech(prompt: String, text: String)
+signal speech_done()
 signal cancel_speech()
 
 # endregion
@@ -13,21 +17,29 @@ signal cancel_speech()
 # region LIVE2D DATA
 
 var toggles := {
-	"toast": {"param": null, "enabled": false, "opacity": null}, 
+	"toast": {"param": null, "enabled": false, "opacity": null},
 	"void": {"param": null, "enabled": false}
 }
 
 var animations := {
-	"end": {"id": -1, "override": "none"}, 
+	"end": {"id": -1, "override": "none"},
 	"idle": {"id": 0, "override": "none"},
 	"sleep": {"id": 1, "override": "eye_blink"}
 }
-var last_animation := "" 
+var last_animation := ""
 
 var expressions := {
 	"sampleExpression": {"id": "Sample"}
 }
 var last_expression := ""
+
+# endregion
+
+# region MELBA STATE
+
+var is_speaking := false
+var is_paused := false
+var current_audio: AudioStreamMP3
 
 # endregion
 
@@ -49,6 +61,11 @@ func _ready() -> void:
 
 	incoming_speech.connect(func(stream): _debug_event("set_toggle", {
 		"stream": stream.size()
+	}))
+
+	new_speech.connect(func(prompt, text): _debug_event("new_speech", {
+		"prompt": prompt,
+		"text": text
 	}))
 
 	cancel_speech.connect(_debug_event.bind("cancel_speech"))

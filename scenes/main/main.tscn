@@ -1,35 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=7 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="4_el578"]
+[ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel")]
+[sub_resource type="Theme" id="Theme_q4aj4"]
+default_font = ExtResource("5_pnxoy")
+default_font_size = 40
+RichTextLabel/colors/font_outline_color = Color(0.556863, 0.384314, 0.117647, 1)
+RichTextLabel/colors/font_shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
+RichTextLabel/constants/outline_size = 5
+RichTextLabel/constants/shadow_offset_x = 3
+RichTextLabel/constants/shadow_offset_y = 3
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles")]
 script = ExtResource("1_bldvu")
+waiting_timer = 5.0
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.994252, 0)
-projection = 1
-current = true
-size = 8.28
+subtitles = NodePath("Subtitles")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -40,3 +31,25 @@ current_screen = 0
 
 [node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
 position = Vector2(656, 1146)
+
+[node name="Subtitles" type="RichTextLabel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = 863.0
+offset_right = 1860.0
+offset_bottom = 1043.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+theme = SubResource("Theme_q4aj4")
+bbcode_enabled = true
+text = "[center]According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow! Let's shake it up a little. Barry! Breakfast is ready! Ooming! Hang on a second. Hello? Barry? Adam? Oan you believe this is happening? I can't. I'll pick you up. Looking sharp. Use the stairs. Your father paid good money for those. Sorry. I'm excited. Here's the graduate. We're very proud of you, son. A perfect report card, all B's. Very proud. Ma! I got a thing going here. You got lint on your fuzz. Ow! That's me! Wave to us! We'll be in row 118,000. Bye! Barry, I told you, stop flying in the house! Hey, Adam. Hey, Barry. Is that fuzz gel? A little. Special day, graduation. Never thought I'd make it. Three days grade school, three days high school. Those were awkward. Three days college. I'm glad I took a day and hitchhiked around the hive. You did come back different. Hi, Barry. Artie, growing a mustache? Looks good. Hear about Frankie? Yeah. You going to the funeral? No, I'm not going. Everybody knows, sting someone, you die. Don't waste it on a squirrel. Such a hothead. I guess he could have just gotten out of the way. I love this incorporating an amusement park into our day. That's why we don't need vacations. Boy, quite a bit of pomp... under the circumstances. Well, Adam, today we are men. We are! Bee-men. Amen! Hallelujah!"
+scroll_active = false
+shortcut_keys_enabled = false
+meta_underlined = false
+hint_underlined = false
+selection_enabled = true
+deselect_on_focus_loss_enabled = false
+visible_characters_behavior = 1

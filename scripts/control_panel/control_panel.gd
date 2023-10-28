@@ -1,6 +1,9 @@
 extends Window
 @onready var main: Node2D = get_parent()
 @export var obs: ObsWebSocketClient
+@export var current_prompt: Label
+@export var current_speech: Label
+@export var pause_button: Button
 @export var stats_timer: Timer
 @export var status_timer: Timer
 
@@ -46,11 +49,18 @@ func obs_connection() -> void:
 	stats_timer.start()
 	# status_timer.start()
 
+	# Pause
+	if Globals.is_paused:
+		pause_button.button_pressed = true
+		_on_pause_speech_toggled(true)
+
 func connect_signals() -> void:
 	# Globals.play_animation.connect(update_model_controls.unbind(1))
 	# Globals.set_expression.connect(update_model_controls.unbind(2))
 	Globals.set_toggle.connect(update_toggle_controls)
 	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.cancel_speech.connect(_on_cancel_speech)
 	print_debug("Control Panel: connected signals")
 
 func generate_model_controls():
@@ -134,9 +144,10 @@ func _handle_event(data):
 			pass # We don't need it
 
 		_:
-			print_debug("Unhandled event: ", data.eventType)
-			print_debug(data)
-			print_debug("-------------")
+			pass
+			# print_debug("Unhandled event: ", data.eventType)
+			# print_debug(data)
+			# print_debug("-------------")
 
 func _handle_request(data):
 	if not data.requestStatus.result:
@@ -195,6 +206,11 @@ func _on_status_timer_timeout():
 
 # region UI FUNCTIONS
 
+func _on_new_speech(prompt, text) -> void:
+	current_speech.remove_theme_color_override("font_color")
+	current_prompt.text = prompt
+	current_speech.text = text
+
 func _on_animation_pressed(id: int):
 	print(anim_menu, " ", id, " ", anim_menu.size())
 	if anim_menu.size() >= id + 1:
@@ -203,7 +219,7 @@ func _on_animation_pressed(id: int):
 		printerr("Control panel: no menu item with ID %d" % [id])
 
 func _on_incoming_speech():
-	%CurrentSpeech.text = str(randi())
+	current_speech.text = str(randi())
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
@@ -303,9 +319,25 @@ func backend_connected():
 func backend_disconnected():
 	change_status_color(%BackendStatus, false)
 
+func _on_pause_speech_toggled(button_pressed: bool):
+	Globals.is_paused = button_pressed
+
+	if (button_pressed):
+		pause_button.text = ">>> RESUME <<<"
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			pause_button.add_theme_color_override(i, Color(1, 0, 0))
+	else:
+		Globals.ready_for_speech.emit()
+		pause_button.text = "Pause"
+		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			pause_button.remove_theme_color_override(i)
+
 func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()
-	%CurrentSpeech.add_theme_color_override("font_color", Color(1, 0, 0))
+
+func _on_cancel_speech():
+
+	current_speech.add_theme_color_override("font_color", Color(1, 0, 0))
 
 func _on_toggle_pressed(toggle: CheckButton):
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)

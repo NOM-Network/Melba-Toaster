@@ -1,8 +1,15 @@
 extends Node2D
 
+@export_category("Variables")
+@export var waiting_timer: float = 3.0
+
+@export_category("Nodes")
 @export var client: WebSocketClient
 @export var control_panel: Window
-@export var controller: Node2D
+@export var subtitles: RichTextLabel
+
+var subtitles_cleanout := false
+var subtitles_duration := 0.0
 
 func _ready():
 	# Makes bg transparent
@@ -15,25 +22,33 @@ func _ready():
 	client.data_received.connect(_on_data_received)
 	client.connection_closed.connect(_on_connection_closed)
 
-	# Testing data
-	client.send_message({"type": "RequestAudio"})
-	await get_tree().create_timer(1.0).timeout
-	client.send_message({"type": "PlayAnimation"})
-	await get_tree().create_timer(1.0).timeout
-	client.send_message({"type": "SetToggle"})
-	await get_tree().create_timer(1.0).timeout
-	client.send_message({"type": "SetExpression"})
+	# Signals
+	Globals.incoming_speech.connect(_on_incoming_speech)
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.speech_done.connect(_on_speech_done)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+
+	# Ready for speech
+	Globals.ready_for_speech.connect(_on_ready_for_speech)
+	# Globals.ready_for_speech.emit()
+
+	Globals.is_paused = true
 
 func _on_data_received(data: Dictionary):
-	# TODO: Send audio and text in subsequent frames
-	if data.type == "binary":
-		# Testing for MP3
-		var header = data.message.slice(0, 2)
-		if not header == PackedByteArray([255, 251]): # Magic number FF FB
-			printerr("Binary data is not an MP3 file! Skipping...")
-			return
+	if Globals.is_paused:
+		return
 
-		Globals.incoming_speech.emit(data.message)
+	if data.type == "binary":
+		if not Globals.is_speaking:
+			# Testing for MP3
+			var header = data.message.slice(0, 2)
+			if not header == PackedByteArray([255, 251]): # Magic number FF FB
+				printerr("Binary data is not an MP3 file! Skipping...")
+				return
+
+			Globals.incoming_speech.emit(data.message)
+		else:
+			print_debug("Audio while blabbering")
 	else:
 		var message = JSON.parse_string(data.message)
 
@@ -46,9 +61,64 @@ func _on_data_received(data: Dictionary):
 
 			"SetToggle":
 				Globals.set_toggle.emit(message.toggleName, message.enabled)
-				print("Setting Toggle")
+
+			"NewSpeech":
+				if not Globals.is_speaking:
+					Globals.new_speech.emit(message.prompt, message.text)
+				else:
+					print_debug("NewSpeech while blabbering")
+
 			_:
 				print("Unhandled data type: ", message)
+
+func _process(delta):
+	if Globals.is_speaking:
+		if subtitles.visible_ratio <= 1.0:
+			subtitles.visible_ratio += ((1.0 / subtitles_duration) + 0.05) * delta
+	else:
+		if subtitles.visible_ratio > 0.0 && subtitles_cleanout:
+			subtitles.visible_ratio -= 0.05
+
+func _on_incoming_speech(message: PackedByteArray):
+	var stream = AudioStreamMP3.new()
+	stream.data = message
+	subtitles_duration = stream.get_length()
+	Globals.current_audio = stream
+
+func _on_ready_for_speech():
+	if not Globals.is_paused:
+		client.send_message({"type": "ReadyForSpeech"})
+
+func _on_new_speech(_prompt, text):
+	subtitles_cleanout = false
+	subtitles.visible_ratio = 0.0
+
+	if text.length() > 300:
+		subtitles.add_theme_font_size_override("normal_font_size", 20)
+	else:
+		subtitles.remove_theme_font_size_override("normal_font_size")
+
+	subtitles.text = "[center]%s" % text
+
+func _on_speech_done():
+	subtitles.remove_theme_font_size_override("normal_font_size")
+	await get_tree().create_timer(waiting_timer).timeout
+	subtitles_cleanout = true
+
+	if not Globals.is_paused:
+		await get_tree().create_timer(2.0).timeout
+		Globals.ready_for_speech.emit()
+
+func _on_cancel_speech():
+	Globals.is_speaking = false
+	subtitles_cleanout = false
+	subtitles.visible_ratio = 1.0
+	subtitles.text = "[center][REDACTED]"
+	subtitles.remove_theme_font_size_override("normal_font_size")
+
+	if not Globals.is_paused:
+		await get_tree().create_timer(5.0).timeout
+		Globals.ready_for_speech.emit()
 
 func _on_connection_closed():
 	control_panel.backend_disconnected()
