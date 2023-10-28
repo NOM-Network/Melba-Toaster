@@ -11,9 +11,23 @@ We are using Websockets with JSON messages (except binary audio), default port i
 
 ## Schema
 
+## Client -> server
+
+### Ready for speech
+
+JSON message, tells server that the Toaster is ready to receive a new audio message (initializing or finished speaking + timeout). Doesn't require asknowledgment.
+
+```json
+    {
+        "type": "ReadyForSpeech"
+    }
+```
+
+## Server -> client
+
 ### Send audio
 
-Binary message, MP3 file sent as is. `NewSpeech` message must be sent after the succesful transfer.
+Binary message, MP3 file sent as is. `NewSpeech` message must be sent after the succesful transfer. Client should send `ReadyForSpeech` beforehand.
 
 ### New speech
 
