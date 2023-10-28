@@ -17,7 +17,6 @@ RichTextLabel/constants/shadow_offset_y = 3
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles")]
 script = ExtResource("1_bldvu")
-waiting_timer = 5.0
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 subtitles = NodePath("Subtitles")

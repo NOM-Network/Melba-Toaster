@@ -1,7 +1,8 @@
 extends Node2D
 
 @export_category("Variables")
-@export var waiting_timer: float = 3.0
+@export_range(0.5, 10, 0.01) var time_before_cleanout: float = 3.0
+@export_range(0.5, 10, 0.01) var time_before_ready: float = 2.0
 
 @export_category("Nodes")
 @export var client: WebSocketClient
@@ -102,12 +103,11 @@ func _on_new_speech(_prompt, text):
 
 func _on_speech_done():
 	subtitles.remove_theme_font_size_override("normal_font_size")
-	await get_tree().create_timer(waiting_timer).timeout
+	await get_tree().create_timer(time_before_cleanout).timeout
+
 	subtitles_cleanout = true
 
-	if not Globals.is_paused:
-		await get_tree().create_timer(2.0).timeout
-		Globals.ready_for_speech.emit()
+	get_ready_for_next_speech()
 
 func _on_cancel_speech():
 	Globals.is_speaking = false
@@ -116,8 +116,11 @@ func _on_cancel_speech():
 	subtitles.text = "[center][REDACTED]"
 	subtitles.remove_theme_font_size_override("normal_font_size")
 
+	get_ready_for_next_speech()
+
+func get_ready_for_next_speech():
 	if not Globals.is_paused:
-		await get_tree().create_timer(5.0).timeout
+		await get_tree().create_timer(time_before_ready).timeout
 		Globals.ready_for_speech.emit()
 
 func _on_connection_closed():
