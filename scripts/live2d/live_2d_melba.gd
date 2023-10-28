@@ -1,7 +1,6 @@
 extends Node2D
 
 @export var cubism_model: GDCubismUserModel
-@export var audio_player: AudioStreamPlayer
 
 # Effects
 @onready var eye_blink = %EyeBlink
@@ -14,15 +13,13 @@ func _ready() -> void:
 	intialize_toggles()
 
 func connect_signals() -> void:
-	Globals.new_speech.connect(play_audio.unbind(2))
-	Globals.cancel_speech.connect(stop_audio)
+	Globals.speech_done.connect(_on_speech_done)
 
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
 
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
-	audio_player.finished.connect(_on_audio_stream_player_finished)
 
 func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
@@ -76,18 +73,6 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 			else: opacity_tween.tween_property(toggle_opacity, "value", 0.0, 0.5)
 		Globals.toggles[toggle_name]["enabled"] = enabled
 
-func play_audio() -> void:
-	if Globals.current_audio:
-		Globals.is_speaking = true
-		audio_player.stream = Globals.current_audio
-		audio_player.play()
-	else:
-		printerr("NO AUDIO FOR THE MESSAGE!")
-
-func stop_audio() -> void:
-	audio_player.stop()
-	Globals.current_audio = null
-
 func reset_overrides():
 	eye_blink.active = true
 	mouth_movement.active = true
@@ -99,12 +84,7 @@ func _on_gd_cubism_user_model_motion_finished():
 	play_animation("idle")
 
 # DOES in run when audio has been forcibly stoped
-func _on_audio_stream_player_finished():
-	Globals.is_speaking = false
-	Globals.is_paused = false
-	Globals.current_audio = null
-
-	Globals.speech_done.emit()
+func _on_speech_done():
 	if Globals.last_animation == "idle":
 		play_animation("idle")
 

@@ -16,12 +16,13 @@ RichTextLabel/constants/outline_size = 5
 RichTextLabel/constants/shadow_offset_x = 3
 RichTextLabel/constants/shadow_offset_y = 3
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles", "cancel_sound")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles", "cancel_sound", "speech_player")]
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 subtitles = NodePath("Subtitles")
 cancel_sound = NodePath("CancelSound")
+speech_player = NodePath("SpeechPlayer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -55,5 +56,9 @@ selection_enabled = true
 deselect_on_focus_loss_enabled = false
 visible_characters_behavior = 1
 
+[node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]
+
 [node name="CancelSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_vd5ab")
+
+[connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]

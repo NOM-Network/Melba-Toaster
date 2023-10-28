@@ -7,10 +7,9 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_ujwmb"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
-[node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model", "audio_player")]
+[node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model")]
 script = ExtResource("1_gym56")
 cubism_model = NodePath("Sprite2D/GDCubismUserModel")
-audio_player = NodePath("AudioStreamPlayer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("ViewportTexture_ujwmb")
@@ -21,29 +20,29 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = -5.18998
-ParamAngleY = 2.78021
-ParamAngleZ = 0.97423
-ParamBodyAngleX = 1.45218
+ParamAngleX = 4.17242
+ParamAngleY = 3.54779
+ParamAngleZ = 3.20787
+ParamBodyAngleX = 0.491243
 ParamBodyAngleY = 0.0
 ParamBodyAngleZ = 0.0
-Param3 = -1.25449
+Param3 = 1.00018
 Param4 = 0.0
 Param5 = 0.0
-ParamEyeLOpen = 0.755155
+ParamEyeLOpen = 0.944913
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = -0.055155
-ParamEyeBallY = -0.055155
+ParamEyeBallX = -0.244913
+ParamEyeBallY = -0.244913
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.0735401
-Param6 = 0.00311338
-Param7 = 0.0544951
-Param8 = 0.000341843
-Param10 = 0.00610036
-Param11 = -0.0171399
-Param15 = 0.0
+ParamMouthOpenY = 0.326551
+Param6 = 0.28292
+Param7 = -0.345249
+Param8 = -0.76031
+Param10 = 0.119747
+Param11 = 1.09163
+Param15 = 1.33804
 Param16 = 0.0
 Param17 = 0.0
 Param9 = 0.0
@@ -57,14 +56,14 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.41524
+ParamBreath = 0.482264
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = -5.96046e-07
-Param12 = -5.00271e-05
-Param13 = -4.94221e-05
+Param = -0.00372917
+Param2 = 0.00750597
+Param12 = -0.00186803
+Param13 = -0.000657302
 Model = 1.0
 Head = 1.0
 Part4 = 1.0
@@ -111,5 +110,3 @@ blink_timer = NodePath("../../../BlinkTimer")
 unique_name_in_owner = true
 wait_time = 2.5
 autostart = true
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

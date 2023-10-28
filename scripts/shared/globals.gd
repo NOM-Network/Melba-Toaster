@@ -39,7 +39,6 @@ var last_expression := ""
 
 var is_speaking := false
 var is_paused := false
-var current_audio: AudioStreamMP3
 
 # endregion
 

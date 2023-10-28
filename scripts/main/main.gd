@@ -9,6 +9,7 @@ extends Node2D
 @export var control_panel: Window
 @export var subtitles: RichTextLabel
 @export var cancel_sound: AudioStreamPlayer
+@export var speech_player: AudioStreamPlayer
 
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
@@ -27,7 +28,6 @@ func _ready():
 	client.connection_closed.connect(_on_connection_closed)
 
 	# Signals
-	Globals.incoming_speech.connect(_on_incoming_speech)
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.speech_done.connect(_on_speech_done)
 	Globals.cancel_speech.connect(_on_cancel_speech)
@@ -48,6 +48,7 @@ func _on_data_received(data: Dictionary):
 				printerr("Binary data is not an MP3 file! Skipping...")
 				return
 
+			prepare_speech(data.message)
 			Globals.incoming_speech.emit(data.message)
 		else:
 			print_debug("Audio while blabbering")
@@ -81,11 +82,25 @@ func _process(delta):
 		if subtitles.visible_ratio > 0.0 && subtitles_cleanout:
 			subtitles.visible_ratio -= 0.05
 
-func _on_incoming_speech(message: PackedByteArray):
+func _on_speech_player_finished():
+	Globals.is_speaking = false
+	Globals.is_paused = false
+	speech_player.stream = null
+
+	Globals.speech_done.emit()
+
+func prepare_speech(message: PackedByteArray):
 	var stream = AudioStreamMP3.new()
 	stream.data = message
 	subtitles_duration = stream.get_length()
-	Globals.current_audio = stream
+	speech_player.stream = stream
+
+func play_audio() -> void:
+	if speech_player.stream:
+		Globals.is_speaking = true
+		speech_player.play()
+	# else:
+		printerr("NO AUDIO FOR THE MESSAGE!")
 
 func _on_ready_for_speech():
 	if not Globals.is_paused:
@@ -102,21 +117,28 @@ func _on_new_speech(_prompt, text):
 
 	subtitles.text = "[center]%s" % text
 
+	play_audio()
+
 func _on_speech_done():
-	subtitles.remove_theme_font_size_override("normal_font_size")
-	await get_tree().create_timer(time_before_cleanout).timeout
-
-	subtitles_cleanout = true
-
-	get_ready_for_next_speech()
+	trigger_cleanout()
 
 func _on_cancel_speech():
+	speech_player.stop()
+	speech_player.stream = null
+	cancel_sound.play()
+
 	Globals.is_speaking = false
 	subtitles_cleanout = false
 	subtitles.visible_ratio = 1.0
 	subtitles.text = "[center][TOASTED]"
+
+	trigger_cleanout()
+
+func trigger_cleanout():
 	subtitles.remove_theme_font_size_override("normal_font_size")
-	cancel_sound.play()
+	await get_tree().create_timer(time_before_cleanout).timeout
+
+	subtitles_cleanout = true
 
 	get_ready_for_next_speech()
 
