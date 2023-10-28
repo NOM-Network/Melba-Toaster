@@ -18,7 +18,9 @@ signal cancel_speech()
 
 var toggles := {
 	"toast": {"param": null, "enabled": false, "opacity": null},
-	"void": {"param": null, "enabled": false}
+	"void": {"param": null, "enabled": false},
+	"tears": {"param": null, "enabled": false},
+	"confused": {"param": null, "enabled": false}
 }
 
 var animations := {
@@ -29,7 +31,7 @@ var animations := {
 var last_animation := ""
 
 var expressions := {
-	"sampleExpression": {"id": "Sample"}
+	"toa": {"id": "toa"}
 }
 var last_expression := ""
 

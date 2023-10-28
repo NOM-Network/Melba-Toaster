@@ -28,7 +28,17 @@
 				"Name": "Toa",
 				"File": "Toa Toggle.exp3.json"
 			}
-		]
+		],
+		"Motions": {
+			"": [
+				{
+					"File": "Idle.motion3.json"
+				},
+				{
+					"File": "Sleep.motion3.json"
+				}
+			]
+		}
 	},
 	"Groups": [
 		{

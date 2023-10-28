@@ -28,6 +28,10 @@ func intialize_toggles() -> void:
 			Globals.toggles["toast"]["param"] = param
 		if param.get_id() == "Param14":
 			Globals.toggles["void"]["param"] = param
+		if param.get_id() == "Param20":
+			Globals.toggles["tears"]["param"] = param
+		if param.get_id() == "Param18":
+			Globals.toggles["confused"]["param"] = param
 	var part_opacities = cubism_model.get_part_opacities()
 	for opacity in part_opacities:
 		if opacity.get_id() == "Bread":

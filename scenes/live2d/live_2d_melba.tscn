@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ujwmb"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_7meg7"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model")]
@@ -12,7 +12,7 @@ script = ExtResource("1_gym56")
 cubism_model = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("ViewportTexture_ujwmb")
+texture = SubResource("ViewportTexture_7meg7")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/melba_final/melbatoast_model.model3.json"
@@ -20,28 +20,28 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = 7.13347
-ParamAngleY = 2.57871
-ParamAngleZ = 3.21464
-ParamBodyAngleX = -1.68207
-ParamBodyAngleY = 0.0
-ParamBodyAngleZ = 0.0
-Param3 = 1.76614
+ParamAngleX = -5.07008
+ParamAngleY = -3.81955
+ParamAngleZ = -5.06509
+ParamBodyAngleX = 0.486315
+ParamBodyAngleY = 0.0309075
+ParamBodyAngleZ = -0.0309075
+Param3 = -1.22346
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = 0.0
-ParamEyeBallY = 0.0
+ParamEyeBallX = -0.000510854
+ParamEyeBallY = -0.000510854
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.0
-Param6 = 0.0610858
-Param7 = 0.0160253
-Param8 = -0.0169171
-Param10 = 0.300446
-Param11 = -0.000542898
+ParamMouthOpenY = 0.0012363
+Param6 = -0.082077
+Param7 = 0.0576254
+Param8 = -0.0137645
+Param10 = -0.302415
+Param11 = -0.0264627
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
@@ -60,16 +60,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0124669
+ParamBreath = 0.413693
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = 0.0
-Param12 = 0.00106033
-Param13 = -0.000427579
-Param23 = -0.000227874
-Param22 = 8.94659e-06
+Param = -3.57628e-07
+Param2 = 5.96046e-07
+Param12 = 0.00150316
+Param13 = 0.000303488
+Param23 = 0.000362738
+Param22 = -2.01061e-06
 Part33 = 1.0
 Part31 = 1.0
 Part29 = 1.0
