@@ -20,7 +20,8 @@ var singing := false
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
 #	self.cubism_process.connect(_on_cubism_process)
-#	Globals.start_singing_motion.connect(_start_motion)
+	Globals.start_dancing_motion.connect(_start_motion)
+	Globals.end_dancing_motion.connect(_end_motion)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var any_param = model.get_parameters()
@@ -30,17 +31,23 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_angle_y = param
 		if param.id == param_body_angle_y_name:
 			param_body_angle_y = param
+	
+	
+	_start_motion(0, 120)
+	await get_tree().create_timer(10).timeout 
+	_end_motion() 
 
 func _start_motion(wait_time: float, bpm: float) -> void: 
 	singing = true 
 	bob_interval = 60.0 / bpm 
 	await get_tree().create_timer(wait_time).timeout  
 #	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Control"), -80.0)
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Control"), false)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Control"), true)
 	start_tween()
 
 func _end_motion() -> void:
 	singing = false 
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Control"), false)
 
 func start_tween() -> void:
 	if angle_y_tween: angle_y_tween.kill()

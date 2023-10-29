@@ -81,7 +81,9 @@ func manage_transitions() -> void:
 			tween_mouth_form.tween_property(param_mouth_form, "value", 0.0, 2)
 
 func manage_mouth_movement() -> void:
-	var volume = (AudioServer.get_bus_peak_volume_left_db(0,0) + AudioServer.get_bus_peak_volume_right_db(0,0)) / 2.0
+	var audio_bus = AudioServer.get_bus_index("Voice")
+	var volume = (AudioServer.get_bus_peak_volume_left_db(audio_bus, 0) + 
+	AudioServer.get_bus_peak_volume_right_db(audio_bus, 0)) / 2.0
 	if volume < -60.0 and previous_volume < -60.0: # If she is not speaking
 		blabbering = false
 		if Globals.is_speaking:

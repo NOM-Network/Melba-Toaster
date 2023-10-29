@@ -56,8 +56,10 @@ deselect_on_focus_loss_enabled = false
 visible_characters_behavior = 1
 
 [node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
 
 [node name="CancelSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_vd5ab")
+bus = &"Voice"
 
 [connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]
