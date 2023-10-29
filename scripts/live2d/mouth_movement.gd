@@ -7,34 +7,34 @@ class_name MouthMovement
 @export var param_eye_ball_x_name: String = "ParamEyeBallX"
 @export var param_eye_ball_y_name: String = "ParamEyeBallY"
 
+# Parameters 
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
 var param_eye_ball_x: GDCubismParameter
 var param_eye_ball_y: GDCubismParameter
+# Tween values 
 var mouth_pos = 0.6
 var mouth_form_pos = -0.8
 var eye_x_pos = 0.0
 var eye_y_pos = 0.0
+var previous_volume = 0.0
+# Tweens 
 var tween_mouth: Tween
 var tween_mouth_form: Tween
 var tween_eye_x: Tween
 var tween_eye_y: Tween
-var previous_volume = 0.0
 # State for volume analysis
 var blabbering = false
-# States for when reading audio
+# States for transitioning between reading and not reading audio
 var just_started = true
 var transition_fin = false
-# States for when not reading audio
 var just_ended = false
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
 	self.cubism_process.connect(_on_cubism_process)
-	self.cubism_term.connect(_on_cubism_term)
 
 func _on_cubism_init(model: GDCubismUserModel):
-	param_mouth = null
 	var any_param = model.get_parameters()
 
 	for param in any_param:
@@ -47,18 +47,11 @@ func _on_cubism_init(model: GDCubismUserModel):
 		if param.id == param_eye_ball_y_name:
 			param_eye_ball_y = param
 
-func _on_cubism_term(_model: GDCubismUserModel):
-	param_mouth = null
-	param_mouth_form = null
-	param_eye_ball_x = null
-	param_eye_ball_y = null
-
-
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
-	manage_mouth_form_and_eyes() # For mouth form and eye ball positions
+	manage_transitions() # For start and end of speech transitions 
 	manage_mouth_movement() # For mouth opening and closing
 
-func manage_mouth_form_and_eyes() -> void:
+func manage_transitions() -> void:
 	if Globals.is_speaking:
 		# Reset states for not reading audio
 		just_ended = true

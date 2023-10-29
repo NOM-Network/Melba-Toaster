@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=6 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
+[ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_7meg7"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
@@ -12,6 +13,7 @@ script = ExtResource("1_gym56")
 cubism_model = NodePath("Sprite2D/GDCubismUserModel")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 texture = SubResource("ViewportTexture_7meg7")
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
@@ -20,31 +22,31 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = -5.07008
-ParamAngleY = -3.81955
-ParamAngleZ = -5.06509
-ParamBodyAngleX = 0.486315
-ParamBodyAngleY = 0.0309075
-ParamBodyAngleZ = -0.0309075
-Param3 = -1.22346
+ParamAngleX = 4.28717
+ParamAngleY = -1.44267
+ParamAngleZ = -1.21187
+ParamBodyAngleX = 1.62664
+ParamBodyAngleY = 0.419071
+ParamBodyAngleZ = -0.419071
+Param3 = 1.02922
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = -0.000510854
-ParamEyeBallY = -0.000510854
+ParamEyeBallX = -0.00980968
+ParamEyeBallY = -0.00980968
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.0012363
-Param6 = -0.082077
-Param7 = 0.0576254
-Param8 = -0.0137645
-Param10 = -0.302415
-Param11 = -0.0264627
+ParamMouthOpenY = 0.0167628
+Param6 = 0.00148238
+Param7 = -0.0889085
+Param8 = 0.0256098
+Param10 = 0.0254894
+Param11 = 0.00179608
 Param15 = 0.0
-Param16 = 0.0
-Param17 = 0.0
+Param16 = 0.731409
+Param17 = -0.914276
 Param9 = 1.0
 Param14 = 0.0
 Param18 = 0.0
@@ -60,16 +62,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.413693
+ParamBreath = 0.343794
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -3.57628e-07
-Param2 = 5.96046e-07
-Param12 = 0.00150316
-Param13 = 0.000303488
-Param23 = 0.000362738
-Param22 = -2.01061e-06
+Param = 2.38419e-07
+Param2 = 0.0
+Param12 = 0.000163299
+Param13 = -4.69419e-05
+Param23 = 0.000176808
+Param22 = -1.24794e-06
 Part33 = 1.0
 Part31 = 1.0
 Part29 = 1.0
@@ -108,6 +110,7 @@ Part6 = 1.0
 Part7 = 1.0
 Part8 = 1.0
 Part9 = 1.0
+unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true
@@ -126,6 +129,9 @@ live_2d_melba = NodePath("../../..")
 unique_name_in_owner = true
 script = ExtResource("3_6ft37")
 blink_timer = NodePath("../../../BlinkTimer")
+
+[node name="SingingMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+script = ExtResource("4_xiarh")
 
 [node name="BlinkTimer" type="Timer" parent="."]
 unique_name_in_owner = true

@@ -31,7 +31,8 @@ var animations := {
 var last_animation := ""
 
 var expressions := {
-	"toa": {"id": "toa"}
+	"toa": {"id": "Toa"},
+	"end": {"id": "none"}
 }
 var last_expression := ""
 
