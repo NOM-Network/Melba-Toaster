@@ -31,11 +31,6 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_angle_y = param
 		if param.id == param_body_angle_y_name:
 			param_body_angle_y = param
-	
-	
-	_start_motion(0, 120)
-	await get_tree().create_timer(10).timeout 
-	_end_motion() 
 
 func _start_motion(wait_time: float, bpm: float) -> void: 
 	singing = true 
