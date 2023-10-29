@@ -84,7 +84,7 @@ func _process(delta):
 
 func _on_speech_player_finished():
 	Globals.is_speaking = false
-	Globals.is_paused = false
+	# Globals.is_paused = false
 	speech_player.stream = null
 
 	Globals.speech_done.emit()
