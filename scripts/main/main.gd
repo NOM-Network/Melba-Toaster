@@ -131,12 +131,13 @@ func _on_cancel_speech():
 	subtitles_cleanout = false
 	subtitles.visible_ratio = 1.0
 	subtitles.text = "[center][TOASTED]"
+	subtitles.remove_theme_font_size_override("normal_font_size")
 
 	trigger_cleanout()
 
 func trigger_cleanout():
-	subtitles.remove_theme_font_size_override("normal_font_size")
 	await get_tree().create_timer(time_before_cleanout).timeout
+	subtitles.remove_theme_font_size_override("normal_font_size")
 
 	subtitles_cleanout = true
 
