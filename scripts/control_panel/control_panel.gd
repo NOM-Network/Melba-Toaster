@@ -210,6 +210,17 @@ func _on_status_timer_timeout():
 
 # region UI FUNCTIONS
 
+func _on_dancing_toggle_toggled(button_pressed: bool):
+	var wait_time = float(%DancingWaitTime.value)
+	var bpm = float(%DancingBpm.value)
+
+	if button_pressed:
+		Globals.start_dancing_motion.emit(wait_time, bpm)
+		%DancingToggle.text = ">> Stop <<"
+	else:
+		Globals.end_dancing_motion.emit()
+		%DancingToggle.text = "Start"
+
 func _on_toggle_pressed(toggle: CheckButton):
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
 

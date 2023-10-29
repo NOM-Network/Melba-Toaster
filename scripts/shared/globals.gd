@@ -6,6 +6,9 @@ signal play_animation(anim_name: String)
 signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
 
+signal start_dancing_motion(wait_time: float, bpm: float)
+signal end_dancing_motion()
+
 signal ready_for_speech()
 signal incoming_speech(stream: PackedByteArray)
 signal new_speech(prompt: String, text: String)
@@ -61,6 +64,15 @@ func _ready() -> void:
 		"enabled": enabled
 	}))
 
+	start_dancing_motion.connect(func(wait_time, enabled): _debug_event("start_dancing_motion", {
+		"wait_time": wait_time,
+		"enabled": enabled
+	}))
+
+	end_dancing_motion.connect(_debug_event.bind("end_dancing_motion"))
+
+	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
+
 	incoming_speech.connect(func(stream): _debug_event("set_toggle", {
 		"stream": stream.size()
 	}))
@@ -69,6 +81,8 @@ func _ready() -> void:
 		"prompt": prompt,
 		"text": text
 	}))
+
+	speech_done.connect(_debug_event.bind("speech_done"))
 
 	cancel_speech.connect(_debug_event.bind("cancel_speech"))
 

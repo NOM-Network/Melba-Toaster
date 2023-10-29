@@ -19,6 +19,8 @@ func _ready():
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
+	# Defaults
+	subtitles.text = ""
 	Globals.is_paused = true
 
 	# Waiting for the backend
@@ -29,7 +31,6 @@ func _ready():
 
 	# Signals
 	Globals.new_speech.connect(_on_new_speech)
-	Globals.speech_done.connect(_on_speech_done)
 	Globals.cancel_speech.connect(_on_cancel_speech)
 
 	# Ready for speech
@@ -87,6 +88,7 @@ func _on_speech_player_finished():
 	# Globals.is_paused = false
 	speech_player.stream = null
 
+	trigger_cleanout()
 	Globals.speech_done.emit()
 
 func prepare_speech(message: PackedByteArray):
@@ -118,9 +120,6 @@ func _on_new_speech(_prompt, text):
 	subtitles.text = "[center]%s" % text
 
 	play_audio()
-
-func _on_speech_done():
-	trigger_cleanout()
 
 func _on_cancel_speech():
 	Globals.set_toggle.emit("void", true)
