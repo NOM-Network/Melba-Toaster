@@ -6,6 +6,7 @@ class_name SingingMovement
 
 @export var param_angle_y_name = "ParamAngleY"
 @export var param_body_angle_y_name = "ParamBodyAngleY"
+@export var bob_interval = 0.5 
 
 # Parameters 
 var param_angle_y
@@ -13,10 +14,13 @@ var param_body_angle_y
 # Tweens  
 var angle_y_tween: Tween
 var body_angle_y_tween: Tween 
+# States
+var singing := false 
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
-	self.cubism_process.connect(_on_cubism_process)
+#	self.cubism_process.connect(_on_cubism_process)
+#	Globals.start_singing_motion.connect(_start_motion)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var any_param = model.get_parameters()
@@ -26,13 +30,18 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_angle_y = param
 		if param.id == param_body_angle_y_name:
 			param_body_angle_y = param
-	
+
+func _start_motion(wait_time: float, bpm: float) -> void: 
+	singing = true 
+	bob_interval = 60.0 / bpm 
+	await get_tree().create_timer(wait_time).timeout  
+#	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Control"), -80.0)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Control"), false)
 	start_tween()
 
-func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
-	pass
-	
-var bob_interval = 0.25
+func _end_motion() -> void:
+	singing = false 
+
 func start_tween() -> void:
 	if angle_y_tween: angle_y_tween.kill()
 	if body_angle_y_tween: body_angle_y_tween.kill() 
@@ -40,8 +49,8 @@ func start_tween() -> void:
 	body_angle_y_tween = create_tween() 
 	
 	angle_y_tween.finished.connect(_on_tween_finished)
-	angle_y_tween.tween_property(param_angle_y, "value", 30.0, bob_interval)
-	body_angle_y_tween.tween_property(param_body_angle_y, "value", 30.0, bob_interval)
+	angle_y_tween.tween_property(param_angle_y, "value", 30.0, bob_interval / 2.0)
+	body_angle_y_tween.tween_property(param_body_angle_y, "value", 30.0, bob_interval / 2.0)
 
 func _on_tween_finished() -> void:
 	if angle_y_tween: angle_y_tween.kill()
@@ -49,7 +58,8 @@ func _on_tween_finished() -> void:
 	body_angle_y_tween = create_tween() 
 	angle_y_tween = create_tween()
 	
-	body_angle_y_tween.tween_property(param_body_angle_y, "value", -30.0, bob_interval)
-	await angle_y_tween.tween_property(param_angle_y, "value", -30.0, bob_interval).finished
+	body_angle_y_tween.tween_property(param_body_angle_y, "value", -30.0, bob_interval / 2.0)
+	await angle_y_tween.tween_property(param_angle_y, "value", -30.0, bob_interval / 2.0).finished
 	
-	start_tween()
+	if singing: 
+		start_tween()
