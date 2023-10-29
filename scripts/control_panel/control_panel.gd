@@ -56,15 +56,12 @@ func obs_connection() -> void:
 		_on_pause_speech_toggled(true)
 
 func connect_signals() -> void:
-	# Globals.play_animation.connect(update_model_controls.unbind(1))
-	# Globals.set_expression.connect(update_model_controls.unbind(2))
 	Globals.set_toggle.connect(update_toggle_controls)
 	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
 	Globals.new_speech.connect(_on_new_speech)
-	Globals.cancel_speech.connect(_on_cancel_speech)
 	print_debug("Control Panel: connected signals")
 
-# TODO: find a way to a make it a generic function lule
+# TODO: find a way to a make THIS a generic function lule
 func generate_model_controls():
 	for b in [%Animations, %Expressions, %Toggles]:
 		for n in b.get_children():
@@ -227,7 +224,6 @@ func _on_incoming_speech():
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
 	var toggle: CheckButton = %Toggles.get_node(ui_name)
-	print(toggle)
 	if toggle:
 		toggle.button_pressed = enabled
 
@@ -337,8 +333,6 @@ func _on_pause_speech_toggled(button_pressed: bool):
 
 func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()
-
-func _on_cancel_speech():
 	current_speech.add_theme_color_override("font_color", Color(1, 0, 0))
 
 func stop_processing():

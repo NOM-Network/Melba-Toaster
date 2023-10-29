@@ -77,7 +77,7 @@ func _on_data_received(data: Dictionary):
 func _process(delta):
 	if Globals.is_speaking:
 		if subtitles.visible_ratio <= 1.0:
-			subtitles.visible_ratio += ((1.0 / subtitles_duration) + 0.05) * delta
+			subtitles.visible_ratio += ((1.0 / subtitles_duration) + 0.01) * delta
 	else:
 		if subtitles.visible_ratio > 0.0 && subtitles_cleanout:
 			subtitles.visible_ratio -= 0.05
@@ -123,6 +123,8 @@ func _on_speech_done():
 	trigger_cleanout()
 
 func _on_cancel_speech():
+	Globals.set_toggle.emit("void", true)
+
 	speech_player.stop()
 	speech_player.stream = null
 	cancel_sound.play()
@@ -133,7 +135,8 @@ func _on_cancel_speech():
 	subtitles.text = "[center][TOASTED]"
 	subtitles.remove_theme_font_size_override("normal_font_size")
 
-	trigger_cleanout()
+	await trigger_cleanout()
+	Globals.set_toggle.emit("void", false)
 
 func trigger_cleanout():
 	await get_tree().create_timer(time_before_cleanout).timeout
