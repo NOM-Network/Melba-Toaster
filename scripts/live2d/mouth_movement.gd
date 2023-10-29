@@ -84,7 +84,8 @@ func manage_mouth_movement() -> void:
 	var audio_bus = AudioServer.get_bus_index("Voice")
 	var volume = (AudioServer.get_bus_peak_volume_left_db(audio_bus, 0) + 
 	AudioServer.get_bus_peak_volume_right_db(audio_bus, 0)) / 2.0
-	if volume < -60.0 and previous_volume < -60.0: # If she is not speaking
+	print(volume)
+	if volume < -54.0 and previous_volume < -54.0: # If she is not speaking
 		blabbering = false
 		if Globals.is_speaking:
 			param_mouth.value = 0.05
