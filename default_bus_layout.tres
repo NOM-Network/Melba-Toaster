@@ -1,4 +1,7 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://djao8qcvwmym6"]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://djao8qcvwmym6"]
+
+[sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_gq76t"]
+resource_name = "SpectrumAnalyzer"
 
 [resource]
 bus/1/name = &"Control"
@@ -13,6 +16,8 @@ bus/2/mute = false
 bus/2/bypass_fx = false
 bus/2/volume_db = 0.0
 bus/2/send = &"Control"
+bus/2/effect/0/effect = SubResource("AudioEffectSpectrumAnalyzer_gq76t")
+bus/2/effect/0/enabled = true
 bus/3/name = &"Song"
 bus/3/solo = false
 bus/3/mute = false

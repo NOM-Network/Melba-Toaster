@@ -22,6 +22,7 @@ func connect_signals() -> void:
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 
 func intialize_toggles() -> void:
+	# TODO: Tween values not opacities so that everything can fade in / fade out. 
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
 		if param.get_id() == "Param9":
