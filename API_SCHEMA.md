@@ -1,4 +1,4 @@
-# API Schema
+# API schema
 
 This document outlines the API schema of communication between backend and Toaster.
 
