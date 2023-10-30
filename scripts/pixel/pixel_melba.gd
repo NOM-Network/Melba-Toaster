@@ -15,7 +15,7 @@ enum States {
 }
 
 var state: States
-var audio_queue := [] 
+var audio_queue := []
 
 func _ready() -> void:
 	connect_signals()
