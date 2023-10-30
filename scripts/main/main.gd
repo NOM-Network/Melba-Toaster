@@ -35,24 +35,26 @@ func _ready():
 
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
-	# Globals.ready_for_speech.emit()
 
 func _on_data_received(data: Dictionary):
 	if Globals.is_paused:
 		return
 
 	if data.type == "binary":
-		if not Globals.is_speaking:
-			# Testing for MP3
-			var header = data.message.slice(0, 2)
-			if not header == PackedByteArray([255, 251]): # Magic number FF FB
-				printerr("Binary data is not an MP3 file! Skipping...")
-				return
+		if Globals.is_speaking:
+			printerr("Audio while blabbering")
+			return
 
-			prepare_speech(data.message)
-			Globals.incoming_speech.emit(data.message)
-		else:
-			print_debug("Audio while blabbering")
+		# Testing for MP3
+		var header = data.message.slice(0, 2)
+		print(header)
+		if not (header == PackedByteArray([255, 251]) or header == PackedByteArray([73, 68])):
+			printerr("Binary data is not an MP3 file! Skipping...")
+			return
+
+		# Preparing for speaking
+		prepare_speech(data.message)
+		Globals.incoming_speech.emit(data.message)
 	else:
 		var message = JSON.parse_string(data.message)
 
@@ -117,7 +119,10 @@ func _on_new_speech(_prompt, text):
 	else:
 		subtitles.remove_theme_font_size_override("normal_font_size")
 
-	subtitles.text = "[center]%s" % text
+	if text:
+		subtitles.text = "[center]%s" % text
+	else:
+		subtitles.text = "[center]tsh mebla"
 
 	play_audio()
 
@@ -139,11 +144,10 @@ func _on_cancel_speech():
 
 func trigger_cleanout():
 	await get_tree().create_timer(time_before_cleanout).timeout
-	subtitles.remove_theme_font_size_override("normal_font_size")
-
 	subtitles_cleanout = true
 
-	get_ready_for_next_speech()
+	await get_ready_for_next_speech()
+	subtitles.remove_theme_font_size_override("normal_font_size")
 
 func get_ready_for_next_speech():
 	if not Globals.is_paused:
