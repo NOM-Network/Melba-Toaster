@@ -108,7 +108,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 text = "What is your opinion on pinapple on pizza?"
 horizontal_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -123,7 +123,7 @@ alignment = 1
 layout_mode = 2
 text = "Eh, I gotta admit mate, I'm not the biggest fan of pineapple on pizza. It's just not my thing. Sure it has a sweet taste, but it just doesn't mix well with the savoury flavour of the cheese and the tomato. But hey, I ain't gonna be a hater, mate! To each their own, am I right? Some people might like pineapple on their pizza, and that's totally fine with me. I'll just stick to my jam, cheese, and peanut butter toast. (and yes, I do love to eat my peanut butter and jam toast!)"
 horizontal_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
