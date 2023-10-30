@@ -6,3 +6,6 @@
 
 # VS Code
 .vscode/
+
+# Stream config data
+prod.cfg

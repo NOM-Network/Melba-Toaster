@@ -1,17 +1,18 @@
 extends Node
 class_name WebSocketClient
 
-@export_group("Connection data (DO NOT EXPOSE!)")
-@export var host: String = "127.0.0.1"
-@export_range(1, 65535, 1) var port: int = 9876
+const URL_PATH: String = "%s://%s:%s"
+var socket := WebSocketPeer.new()
+var last_state = WebSocketPeer.STATE_CLOSED
+
+var secure: String = "wss" if Globals.config.get_backend("secure") else "ws"
+var host: String = Globals.config.get_backend("host")
+var port: String = Globals.config.get_backend("port")
+var password: String = Globals.config.get_backend("password")
 
 @export var handshake_headers: PackedStringArray
 @export var supported_protocols: PackedStringArray
 var tls_options: TLSOptions = null
-
-const URL_PATH: String = "ws://%s:%d"
-var socket := WebSocketPeer.new()
-var last_state = WebSocketPeer.STATE_CLOSED
 
 signal connection_established()
 signal connection_closed()
@@ -24,7 +25,7 @@ func _ready() -> void:
 	socket.supported_protocols = supported_protocols
 	socket.inbound_buffer_size = 200000000
 
-	var err := socket.connect_to_url(URL_PATH % [host, port], TLSOptions.client())
+	var err := socket.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
 	if err != OK:
 		printerr("Toaster client: Connection error ", err)
 		connection_closed.emit()

@@ -33,7 +33,6 @@ status_timer = NodePath("StatusTimer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")
-password = "geofEoCx41cwOUOB"
 
 [node name="BackgroundColor" type="ColorRect" parent="."]
 anchors_preset = 15

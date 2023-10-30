@@ -790,20 +790,14 @@ signal connection_authenticated()
 signal connection_closed()
 signal data_received(data: ObsMessage)
 
-const URL_PATH: String = "ws://%s:%d"
-
+const URL_PATH: String = "%s://%s:%s"
 var obs_client := WebSocketPeer.new()
-
-# @export_category("Timing")
-# @export_range(0.1, 1, 0.1) var poll_time: float = 0.1
-
-# var _poll_counter: float = 0.0
 var _poll_handler := _handle_hello
 
-@export_group("Connection data (DO NOT EXPOSE!)")
-@export var host: String = "127.0.0.1"
-@export_range(1, 65535, 1) var port: int = 4455
-@export var password: String = "CHANGE_ME"
+var secure: String = "wss" if Globals.config.get_obs("secure") else "ws"
+var host: String = Globals.config.get_obs("host")
+var port: String = Globals.config.get_obs("port")
+var password: String = Globals.config.get_obs("password")
 
 ###############################################################################
 # Builtin functions                                                           #
@@ -813,9 +807,6 @@ func _ready() -> void:
 	set_process(false)
 
 func _process(_delta: float) -> void:
-	# _poll_counter += delta
-	# if _poll_counter >= poll_time:
-	# 	_poll_counter = 0.0
 	match obs_client.get_ready_state():
 		WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CONNECTING, WebSocketPeer.STATE_CLOSING:
 			obs_client.poll()
@@ -952,7 +943,7 @@ func establish_connection() -> int:
 	print_debug("OBS WebSocket: Establishing connection")
 
 	set_process(true)
-	return obs_client.connect_to_url(URL_PATH % [host, port], TLSOptions.client())
+	return obs_client.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
 
 func break_connection(reason: String = "") -> void:
 	obs_client.close(1000, reason)

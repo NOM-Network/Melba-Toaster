@@ -45,6 +45,7 @@ var last_expression := ""
 
 var is_speaking := false
 var is_paused := false
+var config := ToasterConfig.new()
 
 # endregion
 

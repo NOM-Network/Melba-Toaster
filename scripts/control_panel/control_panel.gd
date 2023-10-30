@@ -17,9 +17,9 @@ var is_streaming = false
 # region MAIN
 
 func _ready() -> void:
-	obs_connection()
 	generate_model_controls()
 	connect_signals()
+	obs_connection()
 
 func _process(_delta) -> void:
 	var render_data = {
