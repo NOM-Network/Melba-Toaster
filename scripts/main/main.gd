@@ -8,9 +8,12 @@ extends Node2D
 @export var client: WebSocketClient
 @export var control_panel: Window
 @export var subtitles: RichTextLabel
+
+@export_group("Sound Bus")
 @export var cancel_sound: AudioStreamPlayer
 @export var speech_player: AudioStreamPlayer
 
+# Cleanout stuff
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
 

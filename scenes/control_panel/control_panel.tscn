@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "pause_button", "stats_timer", "status_timer")]
+[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "cancel_button", "pause_button", "stats_timer", "status_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -27,6 +27,7 @@ script = ExtResource("1_rhl0v")
 obs = NodePath("WebSocketClient")
 current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/CurrentPrompt")
 current_speech = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
+cancel_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
 pause_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
 stats_timer = NodePath("StatsTimer")
 status_timer = NodePath("StatusTimer")

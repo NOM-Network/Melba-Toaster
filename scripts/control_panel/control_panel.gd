@@ -1,9 +1,16 @@
 extends Window
 @onready var main: Node2D = get_parent()
+
+@export_category("General")
 @export var obs: ObsWebSocketClient
+
+@export_category("UI")
 @export var current_prompt: Label
 @export var current_speech: Label
+@export var cancel_button: Button
 @export var pause_button: Button
+
+@export_category("Timers")
 @export var stats_timer: Timer
 @export var status_timer: Timer
 
@@ -322,6 +329,14 @@ func insert_data(data: Dictionary, node: Node, template: String) -> void:
 # endregion
 
 # region WINDOW FUNCTIONS
+
+func _input(event):
+	if event.is_action_pressed("cancel_speech"):
+		cancel_button.emit_signal("pressed")
+
+	if event.is_action_pressed("pause_resume"):
+		pause_button.button_pressed = not pause_button.button_pressed
+		pause_button.emit_signal("toggled", pause_button.button_pressed)
 
 func backend_connected():
 	change_status_color(%BackendStatus, true)
