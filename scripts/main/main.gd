@@ -47,9 +47,8 @@ func _on_data_received(data: Dictionary):
 
 		# Testing for MP3
 		var header = data.message.slice(0, 2)
-		print(header)
 		if not (header == PackedByteArray([255, 251]) or header == PackedByteArray([73, 68])):
-			printerr("Binary data is not an MP3 file! Skipping...")
+			printerr("%s is not an MP3 file! Skipping..." % [header])
 			return
 
 		# Preparing for speaking
