@@ -22,14 +22,13 @@ signal cancel_speech()
 var toggles := {
 	"toast": {"param": null, "enabled": false, "opacity": null},
 	"void": {"param": null, "enabled": false},
-	"tears": {"param": null, "enabled": false},
-	"confused": {"param": null, "enabled": false}
+	"tears": {"param": null, "enabled": false, "opacity": null},
 }
 
 var animations := {
 	"end": {"id": -1, "override": "none"},
 	"idle": {"id": 0, "override": "none"},
-	"sleep": {"id": 1, "override": "eye_blink"}
+	"sleep": {"id": 1, "override": "eye_blink"},
 }
 var last_animation := ""
 

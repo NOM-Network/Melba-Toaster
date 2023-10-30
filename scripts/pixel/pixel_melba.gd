@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var server: ModelController = get_parent()
+@onready var server = get_parent()
 @onready var mouth_closed = $MouthClosed
 @onready var mouth_open = $MouthOpen
 @onready var toast = $Toast
