@@ -168,11 +168,6 @@ theme_override_constants/margin_bottom = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Model Controls"
-horizontal_alignment = 1
-
 [node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -298,15 +293,13 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
 layout_mode = 2
 text = "Godot Stats"
-horizontal_alignment = 1
+horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer/VBoxContainer2"]
+[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -417,15 +410,13 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
 layout_mode = 2
 text = "OBS Stats"
-horizontal_alignment = 1
+horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="StreamStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer/VBoxContainer"]
+[node name="StreamStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
