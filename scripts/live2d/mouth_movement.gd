@@ -3,23 +3,23 @@ class_name MouthMovement
 
 @export var live_2d_melba = Node # The node with live2d_melba.gd
 @export var audio_bus_name := "Voice"
+# Parameter Names 
 @export_category("Param Names")
-@export var param_mouth_name: String = "ParamMouthOpenY"
-@export var param_mouth_form_name: String = "ParamMouthForm"
-@export var param_eye_ball_x_name: String = "ParamEyeBallX"
-@export var param_eye_ball_y_name: String = "ParamEyeBallY"
-
+@export var param_mouth_name := "ParamMouthOpenY"
+@export var param_mouth_form_name := "ParamMouthForm"
+@export var param_eye_ball_x_name := "ParamEyeBallX"
+@export var param_eye_ball_y_name := "ParamEyeBallY"
+# Parameter Values 
+@export_category("Param Values")
+@export var mouth_pos = 0.6
+@export var mouth_form_pos = -0.8
+@export var eye_x_pos = 0.0
+@export var eye_y_pos = 0.0
 # Parameters
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
 var param_eye_ball_x: GDCubismParameter
 var param_eye_ball_y: GDCubismParameter
-# Tween values
-var mouth_pos = 0.6
-var mouth_form_pos = -0.8
-var eye_x_pos = 0.0
-var eye_y_pos = 0.0
-var previous_volume = 0.0
 # Tweens
 var tween_mouth: Tween
 var tween_mouth_form: Tween
@@ -31,6 +31,8 @@ var blabbering = false
 var just_started = true
 var transition_fin = false
 var just_ended = false
+# Sound analysis  
+var previous_volume = 0.0
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)

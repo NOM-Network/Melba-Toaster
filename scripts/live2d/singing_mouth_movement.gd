@@ -6,12 +6,17 @@ class_name SingingMouthMovement
 @export var min_db := 60.0 
 @export var min_voice_freq := 0 
 @export var max_voice_freq := 3200 
-@export var max_mouth_value := 0.7
+# Parameter Names 
 @export_category("Param Names")
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
 @export var param_eye_ball_x_name: String = "ParamEyeBallX"
 @export var param_eye_ball_y_name: String = "ParamEyeBallY"
+# Parameter Values 
+@export_category("Param Values")
+@export var max_mouth_value := 0.7
+@export var min_mouth_value := 0.2
+@export var mouth_form_value := 0.0
 # Parameters
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
@@ -58,18 +63,26 @@ func _end_movement() -> void:
 func position_eyes_and_mouth() -> void: 
 	pass 
 
-var freq_array := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-var freq_array_size := 6
+var freq_array := [0.0, 0.0, 0.0, 0.0]
 func manage_mouth_movement() -> void:
 	var magnitude: float = spectrum.get_magnitude_for_frequency_range(
 		min_voice_freq,
 		max_voice_freq
 	).length()
-	var volume = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
+	var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
 	
+	param_mouth_form.value = mouth_form_value
+	param_mouth.value = energy * max_mouth_value
+
+	# Update array
 	freq_array.remove_at(0)
-	freq_array.append(volume)
-#	print(freq_array)
-		
-	param_mouth.value = volume * max_mouth_value
+	freq_array.append(param_mouth.value)
 	
+	# param mouth value is only set to below min mouth value if
+	# all three values before it were less than the min mouth value.
+	if param_mouth.value < min_mouth_value and not freq_array.all(func(e): return e < min_mouth_value):
+		param_mouth.value = min_mouth_value	 
+	
+	if abs(freq_array[-2] - param_mouth.value) > 0.4: 
+		param_mouth.value = (freq_array[-2] + param_mouth.value) / 2.0
+			
