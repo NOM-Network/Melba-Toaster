@@ -6,6 +6,7 @@ class_name SingingMouthMovement
 @export var min_db := 60.0 
 @export var min_voice_freq := 0 
 @export var max_voice_freq := 3200 
+@export var max_mouth_value := 0.7
 @export_category("Param Names")
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
@@ -56,13 +57,19 @@ func _end_movement() -> void:
 
 func position_eyes_and_mouth() -> void: 
 	pass 
-	
+
+var freq_array := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+var freq_array_size := 6
 func manage_mouth_movement() -> void:
-	var m: float = spectrum.get_magnitude_for_frequency_range(
+	var magnitude: float = spectrum.get_magnitude_for_frequency_range(
 		min_voice_freq,
 		max_voice_freq
-	).length() 
-	var v = clamp((min_db + linear_to_db(m)) / min_db, 0.0, 1.0)
+	).length()
+	var volume = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
 	
-	param_mouth.value = v
-
+	freq_array.remove_at(0)
+	freq_array.append(volume)
+#	print(freq_array)
+		
+	param_mouth.value = volume * max_mouth_value
+	
