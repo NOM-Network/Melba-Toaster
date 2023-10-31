@@ -2,7 +2,7 @@ extends Node
 class_name ToasterConfig
 
 var config: ConfigFile
-var songs: Array
+var songs: Array[Dictionary]
 
 func _init() -> void:
 	config = _load_config_file("prod")

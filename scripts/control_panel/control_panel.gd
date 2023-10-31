@@ -19,7 +19,7 @@ var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var anim_menu: Array
 var expr_menu: Array
 
-var is_streaming = false
+var is_streaming := false
 
 # region MAIN
 
@@ -32,13 +32,16 @@ func _ready() -> void:
 
 func _process(_delta) -> void:
 	var render_data = {
-		"fps": Performance.get_monitor(Performance.Monitor.TIME_FPS),
-		"frameTime": Performance.get_monitor(Performance.Monitor.TIME_PROCESS),
-		"videoMemoryUsed": Performance.get_monitor(Performance.Monitor.RENDER_VIDEO_MEM_USED),
-		"audioLatency": Performance.get_monitor(Performance.Monitor.AUDIO_OUTPUT_LATENCY),
+		"fps": perf_mon("TIME_FPS"),
+		"frameTime": snapped(perf_mon("TIME_PROCESS"), 0.01),
+		"videoMemoryUsed": snapped(perf_mon("RENDER_VIDEO_MEM_USED") / 1024 / 1000, 0.01),
+		"audioLatency": snapped(perf_mon("AUDIO_OUTPUT_LATENCY"), 0.01),
 	}
 
 	insert_data(render_data, %GodotStats, Templates.godot_stats_template)
+
+func perf_mon(monitor: String) -> Variant:
+	return Performance.get_monitor(Performance[monitor])
 
 func obs_connection() -> void:
 	# OBS Connection
@@ -179,7 +182,21 @@ func _handle_request(data):
 
 	match data.requestType:
 		"GetStats":
-			insert_data(data.responseData, %StreamStats, Templates.obs_stats_template)
+			var res: Dictionary = data.responseData
+			var stats := {
+				"activeFps": snapped(res.activeFps, 0),
+				"cpuUsage": snapped(res.cpuUsage, 0.001),
+				"memoryUsage": snapped(res.memoryUsage, 0.1),
+				"availableDiskSpace": snapped(res.availableDiskSpace / 1024, 0.1),
+				"averageFrameRenderTime": snapped(res.averageFrameRenderTime, 0.1),
+				"renderTotalFrames": res.renderTotalFrames,
+				"renderSkippedFrames": res.renderSkippedFrames,
+				"outputTotalFrames": res.outputTotalFrames,
+				"outputSkippedFrames": res.outputSkippedFrames,
+				"webSocketSessionIncomingMessages": res.webSocketSessionIncomingMessages,
+				"webSocketSessionOutgoingMessages": res.webSocketSessionOutgoingMessages,
+			}
+			insert_data(stats, %StreamStats, Templates.obs_stats_template)
 
 		"GetStreamStatus":
 			var status = data.responseData
@@ -255,8 +272,8 @@ func _on_singing_toggle_pressed():
 		button.text = "Start"
 
 func _on_dancing_toggle_toggled(button_pressed: bool):
-	var wait_time = float(%DancingWaitTime.value)
-	var bpm = float(%DancingBpm.value)
+	var wait_time = %DancingWaitTime.value as float
+	var bpm = %DancingBpm.value as float
 
 	if button_pressed:
 		Globals.start_dancing_motion.emit(wait_time, bpm)
@@ -274,7 +291,7 @@ func _on_new_speech(prompt, text) -> void:
 	current_speech.text = text
 
 func _on_incoming_speech():
-	current_speech.text = str(randi())
+	current_speech.text = randi() as String
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
