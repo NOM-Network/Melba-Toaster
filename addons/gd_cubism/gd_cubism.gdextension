@@ -7,7 +7,7 @@ compatibility_minimum = 4.1
 
 macos.debug = "bin/libgd_cubism.macos.debug.framework"
 macos.release = "bin/libgd_cubism.macos.release.framework"
-windows.debug.x86_64 = "bin/libgd_cubism.windows.debug.x86_64.dll"
+windows.debug.x86_64 = "bin/libgd_cubism.windows.release.x86_64.dll"
 windows.release.x86_64 = "bin/libgd_cubism.windows.release.x86_64.dll"
 linux.debug.x86_64 = "bin/libgd_cubism.linux.debug.x86_64.so"
 linux.release.x86_64 = "bin/libgd_cubism.linux.release.x86_64.so"
