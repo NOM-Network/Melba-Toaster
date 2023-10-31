@@ -1,10 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=9 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
-[ext_resource type="Script" path="res://scripts/live2d/mouth_singing_movement.gd" id="5_cwbjx"]
+[ext_resource type="Script" path="res://scripts/live2d/singing_mouth_movement.gd" id="5_h6k5w"]
+[ext_resource type="AudioStream" uid="uid://dqop6iu7hgwco" path="res://Vocals.mp3" id="6_su53d"]
+[ext_resource type="AudioStream" uid="uid://8qabd804w6au" path="res://Song.mp3" id="7_vo7qx"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_smres"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
@@ -23,31 +25,31 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = -2.01945
-ParamAngleY = -3.81304
-ParamAngleZ = -0.0271688
-ParamBodyAngleX = 0.829648
-ParamBodyAngleY = 0.0354618
-ParamBodyAngleZ = -0.0354618
-Param3 = -0.497584
-Param4 = 0.0
-Param5 = -0.00535552
-ParamEyeLOpen = 1.0
+ParamAngleX = -4.86554
+ParamAngleY = -3.34915
+ParamAngleZ = -28.594
+ParamBodyAngleX = -3.03247
+ParamBodyAngleY = 9.23427
+ParamBodyAngleZ = -9.79865
+Param3 = -1.17673
+Param4 = -0.999466
+Param5 = -25.1548
+ParamEyeLOpen = 1.11567
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = -0.000581698
-ParamEyeBallY = -0.000581698
+ParamEyeBallX = -0.293959
+ParamEyeBallY = -0.283592
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.00141847
-Param6 = 0.00377256
-Param7 = 0.0555925
-Param8 = -0.0402116
-Param10 = 0.0189201
-Param11 = -0.00456586
-Param15 = 0.0
-Param16 = 0.0
-Param17 = 0.0
+ParamMouthOpenY = 0.389061
+Param6 = -0.501071
+Param7 = 0.205581
+Param8 = 0.0917446
+Param10 = -1.85481
+Param11 = 0.0396161
+Param15 = -8.09684
+Param16 = 16.2585
+Param17 = -21.6299
 Param9 = 1.0
 Param14 = 0.0
 Param18 = 0.0
@@ -63,16 +65,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.439774
+ParamBreath = 0.129798
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = 0.0
-Param12 = 0.00172713
-Param13 = 0.000290651
-Param23 = -0.000535328
-Param22 = -0.000442875
+Param = 0.0167085
+Param2 = -0.0142808
+Param12 = 0.000917291
+Param13 = 0.000547231
+Param23 = -0.00105804
+Param22 = 0.00115817
 Part33 = 1.0
 Part31 = 1.0
 Part29 = 1.0
@@ -135,13 +137,20 @@ blink_timer = NodePath("../../../BlinkTimer")
 unique_name_in_owner = true
 script = ExtResource("4_xiarh")
 
-[node name="MouthSingingMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel" node_paths=PackedStringArray("live_2d_melba", "mouth_movement")]
+[node name="SingingMouthMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel" node_paths=PackedStringArray("mouth_movement")]
 active = false
-script = ExtResource("5_cwbjx")
-live_2d_melba = NodePath("../../..")
+script = ExtResource("5_h6k5w")
 mouth_movement = NodePath("../MouthMovement")
 
 [node name="BlinkTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 2.5
 autostart = true
+
+[node name="Voice" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_su53d")
+bus = &"Voice"
+
+[node name="Song" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_vo7qx")
+bus = &"Song"

@@ -2,6 +2,8 @@ extends GDCubismEffectCustom
 class_name MouthMovement
 
 @export var live_2d_melba = Node # The node with live2d_melba.gd
+@export var audio_bus_name := "Voice"
+@export_category("Param Names")
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
 @export var param_eye_ball_x_name: String = "ParamEyeBallX"
@@ -81,7 +83,7 @@ func manage_transitions() -> void:
 			tween_mouth_form.tween_property(param_mouth_form, "value", 0.0, 2)
 
 func manage_mouth_movement() -> void:
-	var audio_bus = AudioServer.get_bus_index("Voice")
+	var audio_bus = AudioServer.get_bus_index(audio_bus_name)
 	var volume = (AudioServer.get_bus_peak_volume_left_db(audio_bus, 0) +
 	AudioServer.get_bus_peak_volume_right_db(audio_bus, 0)) / 2.0
 	# print(volume)

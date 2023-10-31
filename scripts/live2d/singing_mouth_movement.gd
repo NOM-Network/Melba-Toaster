@@ -1,31 +1,23 @@
 extends GDCubismEffectCustom
 class_name SingingMouthMovement
 
-@export var live_2d_melba = Node # The node with live2d_melba.gd
 @export var mouth_movement := MouthMovement # MouthMovement node 
+@export var audio_bus_name := "Voice"
+@export var min_db := 60.0 
+@export var min_voice_freq := 0 
+@export var max_voice_freq := 3200 
+@export_category("Param Names")
 @export var param_mouth_name: String = "ParamMouthOpenY"
 @export var param_mouth_form_name: String = "ParamMouthForm"
 @export var param_eye_ball_x_name: String = "ParamEyeBallX"
 @export var param_eye_ball_y_name: String = "ParamEyeBallY"
-
 # Parameters
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
 var param_eye_ball_x: GDCubismParameter
 var param_eye_ball_y: GDCubismParameter
-# Tween values
-var mouth_pos = 0.6
-var mouth_form_pos = -0.8
-var eye_x_pos = 0.0
-var eye_y_pos = 0.0
-var previous_volume = 0.0
-# Tweens
-var tween_mouth: Tween
-var tween_mouth_form: Tween
-var tween_eye_x: Tween
-var tween_eye_y: Tween
 # For voice analysis 
-var spectrum: AudioEffectSpectrumAnalyzer
+var spectrum: AudioEffectSpectrumAnalyzerInstance
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
@@ -45,6 +37,10 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_eye_ball_x = param
 		if param.id == param_eye_ball_y_name:
 			param_eye_ball_y = param
+	
+	var bus = AudioServer.get_bus_index(audio_bus_name)
+	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
+	
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	manage_mouth_movement() # For mouth opening and closing
@@ -62,5 +58,11 @@ func position_eyes_and_mouth() -> void:
 	pass 
 	
 func manage_mouth_movement() -> void:
-	pass 
+	var m: float = spectrum.get_magnitude_for_frequency_range(
+		min_voice_freq,
+		max_voice_freq
+	).length() 
+	var v = clamp((min_db + linear_to_db(m)) / min_db, 0.0, 1.0)
+	
+	param_mouth.value = v
 

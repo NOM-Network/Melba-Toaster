@@ -12,9 +12,17 @@ func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
 
+	# Singing Test 	
+#	Globals.start_dancing_motion.emit(0, 128)
+#	Globals.start_singing_mouth_movement.emit() 
+#	$Voice.play()
+#	$Song.play()
+#	await $Song.finished
+#	Globals.end_dancing_motion.emit()
+#	Globals.end_singing_mouth_movement.emit() 
+
 func connect_signals() -> void:
 	Globals.speech_done.connect(_on_speech_done)
-
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
