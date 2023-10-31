@@ -8,7 +8,7 @@ signal set_toggle(toggle_name: String, enabled: bool)
 
 signal start_dancing_motion(wait_time: float, bpm: float)
 signal end_dancing_motion()
-signal start_singing_mouth_movement() 
+signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()
 
 signal ready_for_speech()
@@ -46,6 +46,7 @@ var last_expression := ""
 
 var is_speaking := false
 var is_paused := false
+var is_singing := false
 var config := ToasterConfig.new()
 
 # endregion

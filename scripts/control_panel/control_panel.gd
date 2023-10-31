@@ -25,6 +25,8 @@ var is_streaming = false
 
 func _ready() -> void:
 	generate_model_controls()
+	generate_singing_controls()
+
 	connect_signals()
 	obs_connection()
 
@@ -67,6 +69,14 @@ func connect_signals() -> void:
 	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
 	Globals.new_speech.connect(_on_new_speech)
 	print_debug("Control Panel: connected signals")
+
+func generate_singing_controls():
+	var menu := %SingingMenu
+	menu.clear()
+
+	var songs = Globals.config.songs
+	for song in songs:
+		menu.add_item(song.id)
 
 # TODO: find a way to a make THIS a generic function lule
 func generate_model_controls():
@@ -216,6 +226,33 @@ func _on_status_timer_timeout():
 # endregion
 
 # region UI FUNCTIONS
+
+func _on_singing_toggle_pressed():
+	var button := %SingingToggle
+	var menu := %SingingMenu
+
+	print(Globals.config.songs)
+
+	if not Globals.is_singing:
+		var song: Dictionary = Globals.config.songs[menu.selected]
+		_on_pause_speech_toggled(true) # TODO: Use emit events
+		Globals.start_dancing_motion.emit(song.wait_time, song.bpm)
+		Globals.start_singing_mouth_movement.emit()
+
+		Globals.is_singing = true
+		menu.disabled = true
+		button.button_pressed = true
+		button.text = ">>> STOP <<<"
+	else:
+		_on_pause_speech_toggled(false) # TODO: Use emit events
+
+		Globals.end_dancing_motion.emit()
+		Globals.end_singing_mouth_movement.emit()
+
+		Globals.is_singing = false
+		menu.disabled = false
+		button.button_pressed = false
+		button.text = "Start"
 
 func _on_dancing_toggle_toggled(button_pressed: bool):
 	var wait_time = float(%DancingWaitTime.value)

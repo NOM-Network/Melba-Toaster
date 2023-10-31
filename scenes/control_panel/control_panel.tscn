@@ -282,31 +282,25 @@ layout_mode = 2
 toggle_mode = true
 text = "Start"
 
-[node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
+[node name="Singing" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+text = "Singing"
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
-layout_mode = 2
-text = "Godot Stats"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/SpeechBoxContainer/ObsStatsPanel/MarginContainer"]
+[node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-bbcode_enabled = true
-text = "Active FPS: 69
-Frame time: "
-fit_content = true
+item_count = 1
+popup/item_0/text = "money machine"
+popup/item_0/id = 0
+
+[node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start"
 
 [node name="ObsControlsContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
 layout_mode = 2
@@ -431,6 +425,32 @@ totalFrames / skippedFrames: 420
 incoming / outgoingMessages: 69/420"
 fit_content = true
 
+[node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel/MarginContainer"]
+layout_mode = 2
+text = "Godot Stats"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Active FPS: 69
+Frame time: "
+fit_content = true
+
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
 initial_position = 4
 size = Vector2i(324, 109)
@@ -459,6 +479,7 @@ vertical_alignment = 1
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
+[connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
