@@ -25,7 +25,7 @@ var toggles := {
 	"toast": Toggle.new("Param9", 0.5), 
 	"void": Toggle.new("Param14", 0.5), 
 	"tears": Toggle.new( "Param20", 0.5),
-	"toa": Toggle.new("Param21", 0.5),
+	"toa": Toggle.new("Param21", 1.0),
 	"confused": Toggle.new("Param18", 0.5)
 }
 
@@ -33,6 +33,7 @@ var animations := {
 	"end": {"id": -1, "override": "none"},
 	"idle": {"id": 0, "override": "none"},
 	"sleep": {"id": 1, "override": "eye_blink"},
+	"confused": {"id": 2, "override": "eye_blink"}
 }
 var last_animation := ""
 

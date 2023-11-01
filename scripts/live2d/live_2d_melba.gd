@@ -2,10 +2,8 @@ extends Node2D
 
 @export var cubism_model: GDCubismUserModel
 
-# Effects
+# Effects (For override) 
 @onready var eye_blink = %EyeBlink
-@onready var mouth_movement = %MouthMovement
-@onready var breath_effect = %GDCubismEffectBreath
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -67,8 +65,6 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 
 func reset_overrides():
 	eye_blink.active = true
-	mouth_movement.active = true
-	breath_effect.active = true
 
 # DOESN'T run when motion has been forcibly stoped
 func _on_gd_cubism_user_model_motion_finished():
@@ -77,6 +73,4 @@ func _on_gd_cubism_user_model_motion_finished():
 
 # DOES in run when audio has been forcibly stoped
 func _on_speech_done():
-	if Globals.last_animation == "idle":
-		play_animation("idle")
-
+	pass
