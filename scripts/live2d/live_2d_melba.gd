@@ -12,49 +12,27 @@ func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
 
-	# Singing Test 	
-#	Globals.start_dancing_motion.emit(0, 128)
-#	Globals.start_singing_mouth_movement.emit() 
-#	$Voice.play()
-#	$Song.play()
-#	await $Song.finished
-#	Globals.end_dancing_motion.emit()
-#	Globals.end_singing_mouth_movement.emit() 
-
 func connect_signals() -> void:
 	Globals.speech_done.connect(_on_speech_done)
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
-
+	
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
+	set_expression("end")
 
 func intialize_toggles() -> void:
 	# TODO: Tween values not opacities so that everything can fade in / fade out. 
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
-		if param.get_id() == "Param9":
-			Globals.toggles["toast"]["param"] = param
-		if param.get_id() == "Param14":
-			Globals.toggles["void"]["param"] = param
-		if param.get_id() == "Param20":
-			Globals.toggles["tears"]["param"] = param
-	var part_opacities = cubism_model.get_part_opacities()
-	for opacity in part_opacities:
-		if opacity.get_id() == "Bread":
-			Globals.toggles["toast"]["opacity"] = opacity
-		if opacity.get_id() == "Tears":
-			Globals.toggles["tears"]["opacity"] = opacity
+		for toggle in Globals.toggles.values(): 
+			if param.get_id() == toggle["id"]:
+				toggle["param"] = param
 
 func _process(_delta: float) -> void:
-	for toggle in Globals.toggles:
-		if Globals.toggles[toggle].has("opacity"):
-			Globals.toggles[toggle]["param"].set_value(true)
-		else:
-			if Globals.toggles[toggle]["enabled"]:
-				Globals.toggles[toggle]["param"].set_value(true)
-			else:
-				Globals.toggles[toggle]["param"].set_value(false)
+	for toggle in Globals.toggles.values():
+		if toggle["enabled"]:
+			toggle["param"].set_value(toggle["value"])
 
 func play_animation(anim_name: String) -> void:
 	Globals.last_animation = anim_name
@@ -79,12 +57,14 @@ func set_expression(expression_name: String) -> void:
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
-		if Globals.toggles[toggle_name].has("opacity"):
-			var opacity_tween = create_tween()
-			var toggle_opacity = Globals.toggles[toggle_name]["opacity"]
-			if enabled: opacity_tween.tween_property(toggle_opacity, "value", 1.0, 0.5)
-			else: opacity_tween.tween_property(toggle_opacity, "value", 0.0, 0.5)
-		Globals.toggles[toggle_name]["enabled"] = enabled
+		var value_tween = create_tween() 
+		var toggle = Globals.toggles[toggle_name]
+		if enabled:
+			toggle["enabled"] = true 
+			value_tween.tween_property(toggle, "value", 1.0, 0.5).finished
+		else: 
+			toggle["enabled"] = false
+			value_tween.tween_property(toggle, "value", 0.0, 0.5)
 
 func reset_overrides():
 	eye_blink.active = true
