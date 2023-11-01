@@ -22,11 +22,11 @@ signal cancel_speech()
 # region LIVE2D DATA
 
 var toggles := {
-	"toast": {"param": null, "enabled": false, "value": 0.0, "id": "Param9"},
-	"void": {"param": null, "enabled": false, "value": 0.0, "id": "Param14"},
-	"tears": {"param": null, "enabled": false, "value": 0.0, "id": "Param20"},
-	"toa": {"param": null, "enabled": false, "value": 0.0, "id": "Param21"},
-	"confused": {"param": null, "enabled": false, "value": 0.0, "id": "Param18"}
+	"toast": Toggle.new("Param9", 0.5), 
+	"void": Toggle.new("Param14", 0.5), 
+	"tears": Toggle.new( "Param20", 0.5),
+	"toa": Toggle.new("Param21", 0.5),
+	"confused": Toggle.new("Param18", 0.5)
 }
 
 var animations := {

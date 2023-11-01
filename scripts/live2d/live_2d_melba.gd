@@ -27,12 +27,11 @@ func intialize_toggles() -> void:
 	for param in parameters:
 		for toggle in Globals.toggles.values(): 
 			if param.get_id() == toggle["id"]:
-				toggle["param"] = param
+				toggle.param = param
 
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
-		if toggle["enabled"]:
-			toggle["param"].set_value(toggle["value"])
+		toggle.param.set_value(toggle.value)
 
 func play_animation(anim_name: String) -> void:
 	Globals.last_animation = anim_name
@@ -60,11 +59,11 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 		var value_tween = create_tween() 
 		var toggle = Globals.toggles[toggle_name]
 		if enabled:
-			toggle["enabled"] = true 
-			value_tween.tween_property(toggle, "value", 1.0, 0.5).finished
+			toggle.enabled = true 
+			value_tween.tween_property(toggle, "value", 1.0, toggle.duration).finished
 		else: 
-			toggle["enabled"] = false
-			value_tween.tween_property(toggle, "value", 0.0, 0.5)
+			toggle.enabled = false
+			value_tween.tween_property(toggle, "value", 0.0, toggle.duration)
 
 func reset_overrides():
 	eye_blink.active = true
