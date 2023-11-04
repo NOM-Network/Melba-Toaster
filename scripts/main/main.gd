@@ -12,6 +12,9 @@ extends Node2D
 @export_group("Sound Bus")
 @export var cancel_sound: AudioStreamPlayer
 @export var speech_player: AudioStreamPlayer
+@export var song_player: AudioStreamPlayer
+
+var voice_bus := AudioServer.get_bus_index("Voice")
 
 # Cleanout stuff
 var subtitles_cleanout := false
@@ -26,15 +29,17 @@ func _ready():
 	subtitles.text = ""
 	Globals.is_paused = true
 
+	# Signals
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
+
 	# Waiting for the backend
 	await client.connection_established
 	control_panel.backend_connected()
 	client.data_received.connect(_on_data_received)
 	client.connection_closed.connect(_on_connection_closed)
-
-	# Signals
-	Globals.new_speech.connect(_on_new_speech)
-	Globals.cancel_speech.connect(_on_cancel_speech)
 
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
@@ -80,7 +85,7 @@ func _on_data_received(data: Dictionary):
 				print("Unhandled data type: ", message)
 
 func _process(delta):
-	if Globals.is_speaking:
+	if Globals.is_speaking or Globals.is_singing:
 		if subtitles.visible_ratio <= 1.0:
 			subtitles.visible_ratio += ((1.0 / subtitles_duration) + 0.01) * delta
 	else:
@@ -89,8 +94,10 @@ func _process(delta):
 
 func _on_speech_player_finished():
 	Globals.is_speaking = false
-	# Globals.is_paused = false
 	speech_player.stream = null
+
+	if (Globals.is_singing):
+		Globals.stop_singing.emit()
 
 	trigger_cleanout()
 	Globals.speech_done.emit()
@@ -113,6 +120,11 @@ func _on_ready_for_speech():
 		client.send_message({"type": "ReadyForSpeech"})
 
 func _on_new_speech(_prompt, text):
+	_print_subtitles(text)
+
+	play_audio()
+
+func _print_subtitles(text):
 	subtitles_cleanout = false
 	subtitles.visible_ratio = 0.0
 
@@ -125,8 +137,6 @@ func _on_new_speech(_prompt, text):
 		subtitles.text = "[center]%s" % text
 	else:
 		subtitles.text = "[center]tsh mebla"
-
-	play_audio()
 
 func _on_cancel_speech():
 	Globals.set_toggle.emit("void", true)
@@ -158,3 +168,47 @@ func get_ready_for_next_speech():
 
 func _on_connection_closed():
 	control_panel.backend_disconnected()
+
+func _on_start_singing(song: Dictionary):
+	Globals.is_paused = true
+	Globals.is_singing = true
+
+	subtitles_duration = 3.0
+	_print_subtitles("{artist}\n\"{name}\"".format(song))
+
+	AudioServer.set_bus_effect_enabled(voice_bus, 1, true)
+
+	var song_track := _load_mp3(song, "song")
+	song_player.stream = song_track
+
+	var voice_track := _load_mp3(song, "voice")
+	speech_player.stream = voice_track
+
+	song_player.play()
+	speech_player.play()
+
+	Globals.start_dancing_motion.emit(song.wait_time, song.bpm)
+	Globals.start_singing_mouth_movement.emit()
+
+func _on_stop_singing():
+	Globals.is_singing = false
+
+	song_player.stop()
+	speech_player.stop()
+
+	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
+
+	Globals.end_dancing_motion.emit()
+	Globals.end_singing_mouth_movement.emit()
+
+func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
+	var path: String = song.path % type
+
+	if not FileAccess.file_exists(path):
+		printerr("No audio file %s" % path)
+
+	var file = FileAccess.open(path, FileAccess.READ)
+	var stream = AudioStreamMP3.new()
+	stream.data = file.get_buffer(file.get_length())
+	stream.bpm = song.bpm
+	return stream

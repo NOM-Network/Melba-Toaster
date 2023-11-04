@@ -69,8 +69,11 @@ func obs_connection() -> void:
 
 func connect_signals() -> void:
 	Globals.set_toggle.connect(update_toggle_controls)
-	Globals.incoming_speech.connect(_on_incoming_speech.unbind(1))
 	Globals.new_speech.connect(_on_new_speech)
+
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
+
 	print_debug("Control Panel: connected signals")
 
 func generate_singing_controls():
@@ -244,32 +247,28 @@ func _on_status_timer_timeout():
 
 # region UI FUNCTIONS
 
-func _on_singing_toggle_pressed():
+func _on_start_singing(_song: Dictionary):
+	_on_pause_speech_toggled(true, false) # TODO: Use emit events
+
 	var button := %SingingToggle
+	button.button_pressed = true
+	button.text = ">>> STOP <<<"
+
+func _on_stop_singing():
+	_on_pause_speech_toggled(false, false) # TODO: Use emit events
+
+	var button := %SingingToggle
+	button.button_pressed = false
+	button.text = "Start"
+
+func _on_singing_toggle_toggled(button_pressed: bool):
 	var menu := %SingingMenu
 
-	print(Globals.config.songs)
-
-	if not Globals.is_singing:
+	if button_pressed:
 		var song: Dictionary = Globals.config.songs[menu.selected]
-		_on_pause_speech_toggled(true) # TODO: Use emit events
-		Globals.start_dancing_motion.emit(song.wait_time, song.bpm)
-		Globals.start_singing_mouth_movement.emit()
-
-		Globals.is_singing = true
-		menu.disabled = true
-		button.button_pressed = true
-		button.text = ">>> STOP <<<"
+		Globals.start_singing.emit(song)
 	else:
-		_on_pause_speech_toggled(false) # TODO: Use emit events
-
-		Globals.end_dancing_motion.emit()
-		Globals.end_singing_mouth_movement.emit()
-
-		Globals.is_singing = false
-		menu.disabled = false
-		button.button_pressed = false
-		button.text = "Start"
+		Globals.stop_singing.emit()
 
 func _on_dancing_toggle_toggled(button_pressed: bool):
 	var wait_time = %DancingWaitTime.value as float
@@ -289,9 +288,6 @@ func _on_new_speech(prompt, text) -> void:
 	current_speech.remove_theme_color_override("font_color")
 	current_prompt.text = prompt
 	current_speech.text = text
-
-func _on_incoming_speech():
-	current_speech.text = randi() as String
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
@@ -398,7 +394,7 @@ func backend_connected():
 func backend_disconnected():
 	change_status_color(%BackendStatus, false)
 
-func _on_pause_speech_toggled(button_pressed: bool):
+func _on_pause_speech_toggled(button_pressed: bool, emit := true):
 	Globals.is_paused = button_pressed
 
 	if (button_pressed):
@@ -406,7 +402,9 @@ func _on_pause_speech_toggled(button_pressed: bool):
 		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
 			pause_button.add_theme_color_override(i, Color(1, 0, 0))
 	else:
-		Globals.ready_for_speech.emit()
+		if emit:
+			Globals.ready_for_speech.emit()
+
 		pause_button.text = "Pause"
 		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
 			pause_button.remove_theme_color_override(i)

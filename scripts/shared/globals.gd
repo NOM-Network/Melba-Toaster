@@ -6,6 +6,9 @@ signal play_animation(anim_name: String)
 signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
 
+signal start_singing(song: Dictionary)
+signal stop_singing()
+
 signal start_dancing_motion(wait_time: float, bpm: float)
 signal end_dancing_motion()
 signal start_singing_mouth_movement()
@@ -22,8 +25,8 @@ signal cancel_speech()
 # region LIVE2D DATA
 
 var toggles := {
-	"toast": Toggle.new("Param9", 0.5), 
-	"void": Toggle.new("Param14", 0.5), 
+	"toast": Toggle.new("Param9", 0.5),
+	"void": Toggle.new("Param14", 0.5),
 	"tears": Toggle.new( "Param20", 0.5),
 	"toa": Toggle.new("Param21", 1.0),
 	"confused": Toggle.new("Param18", 0.5)
@@ -67,6 +70,10 @@ func _ready() -> void:
 	set_toggle.connect(func(toggle_name, enabled): _debug_event("set_toggle", {
 		"name": toggle_name,
 		"enabled": enabled
+	}))
+
+	start_singing.connect(func(song): _debug_event("start_singing", {
+		"song": song
 	}))
 
 	start_dancing_motion.connect(func(wait_time, enabled): _debug_event("start_dancing_motion", {

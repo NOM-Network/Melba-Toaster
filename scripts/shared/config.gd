@@ -4,14 +4,23 @@ class_name ToasterConfig
 var config: ConfigFile
 var songs: Array[Dictionary]
 
+var song_path = 'res://assets/songs/%s/'
+
 func _init() -> void:
 	config = _load_config_file("prod")
 
-	var songs_list := _load_config_file("songs")
-	for section in songs_list.get_sections():
+	var list := _load_config_file("songs")
+	for section in list.get_sections():
 		var song := {}
-		for key in songs_list.get_section_keys(section):
-			song[key] = songs_list.get_value(section, key)
+		for key in list.get_section_keys(section):
+			song[key] = list.get_value(section, key)
+			song["path"] = song_path % list.get_value(section, "id") + '%s.mp3'
+
+		if not FileAccess.file_exists(song.path % "song") \
+			or not FileAccess.file_exists(song.path % "voice"):
+			printerr("No song files found for %s" % song.id)
+			continue
+
 		songs.push_back(song)
 
 	print_debug("Songs loaded: ", songs)

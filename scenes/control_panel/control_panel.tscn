@@ -301,6 +301,7 @@ popup/item_0/id = 0
 [node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "Start"
 
 [node name="ObsControlsContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
@@ -480,7 +481,7 @@ vertical_alignment = 1
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
-[connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_pressed"]
+[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]

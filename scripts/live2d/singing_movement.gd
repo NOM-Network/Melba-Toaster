@@ -38,12 +38,10 @@ func _start_motion(wait_time: float, bpm: float) -> void:
 	bob_interval = 60.0 / bpm
 	await get_tree().create_timer(wait_time).timeout
 #	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Control"), -80.0)
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(audio_bus_name), true)
 	start_tween()
 
 func _end_motion() -> void:
 	singing = false
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(audio_bus_name), false)
 
 func start_tween() -> void:
 	if angle_y_tween: angle_y_tween.kill()
