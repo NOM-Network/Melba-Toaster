@@ -174,6 +174,7 @@ func _on_start_singing(song: Dictionary):
 	Globals.is_paused = true
 	Globals.is_singing = true
 
+	mic.animation = "in"
 	mic.play()
 
 	subtitles_duration = 3.0
@@ -200,7 +201,8 @@ func _on_stop_singing():
 	song_player.stop()
 	speech_player.stop()
 
-	mic.play_backwards()
+	mic.animation = "out"
+	mic.play()
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
