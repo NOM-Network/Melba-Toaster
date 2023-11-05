@@ -262,6 +262,7 @@ text = "Dancing"
 [node name="DancingBpm" type="SpinBox" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "BPM (beats per minute)"
 max_value = 1000.0
 step = 0.1
 value = 128.0
@@ -271,9 +272,17 @@ custom_arrow_step = 0.1
 [node name="DancingWaitTime" type="SpinBox" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "timeout before starting dancing"
 max_value = 10.0
-step = 0.1
-value = 1.0
+step = 0.01
+alignment = 1
+
+[node name="DancingStopTime" type="SpinBox" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "timeout before stopping dancing, 0.0 if not needed"
+max_value = 600.0
+step = 0.01
 alignment = 1
 
 [node name="DancingToggle" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]

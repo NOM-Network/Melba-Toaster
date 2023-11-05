@@ -33,12 +33,15 @@ func _on_cubism_init(model: GDCubismUserModel):
 		if param.id == param_body_angle_y_name:
 			param_body_angle_y = param
 
-func _start_motion(wait_time: float, bpm: float) -> void:
+func _start_motion(bpm: float, wait_time: float, stop_time: float) -> void:
 	singing = true
 	bob_interval = 60.0 / bpm
 	await get_tree().create_timer(wait_time).timeout
-#	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Control"), -80.0)
 	start_tween()
+
+	if stop_time != 0.0:
+		await get_tree().create_timer(stop_time - wait_time).timeout
+		_end_motion()
 
 func _end_motion() -> void:
 	singing = false

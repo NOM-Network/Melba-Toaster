@@ -176,7 +176,8 @@ func _on_start_singing(song: Dictionary):
 	subtitles_duration = 3.0
 	_print_subtitles("{artist}\n\"{name}\"".format(song))
 
-	AudioServer.set_bus_effect_enabled(voice_bus, 1, true)
+	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
+	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
 
 	var song_track := _load_mp3(song, "song")
 	song_player.stream = song_track
@@ -187,7 +188,7 @@ func _on_start_singing(song: Dictionary):
 	song_player.play()
 	speech_player.play()
 
-	Globals.start_dancing_motion.emit(song.wait_time, song.bpm)
+	Globals.start_dancing_motion.emit(song.bpm, song.wait_time, song.stop_time)
 	Globals.start_singing_mouth_movement.emit()
 
 func _on_stop_singing():
@@ -196,6 +197,7 @@ func _on_stop_singing():
 	song_player.stop()
 	speech_player.stop()
 
+	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
 
 	Globals.end_dancing_motion.emit()

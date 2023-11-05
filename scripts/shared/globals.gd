@@ -9,7 +9,7 @@ signal set_toggle(toggle_name: String, enabled: bool)
 signal start_singing(song: Dictionary)
 signal stop_singing()
 
-signal start_dancing_motion(wait_time: float, bpm: float)
+signal start_dancing_motion(bpm: float, wait_time: float, stop_time: float)
 signal end_dancing_motion()
 signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()
@@ -76,9 +76,10 @@ func _ready() -> void:
 		"song": song
 	}))
 
-	start_dancing_motion.connect(func(wait_time, enabled): _debug_event("start_dancing_motion", {
+	start_dancing_motion.connect(func(bpm, wait_time, end_time): _debug_event("start_dancing_motion", {
+		"bpm": bpm,
 		"wait_time": wait_time,
-		"enabled": enabled
+		"end_time": end_time
 	}))
 
 	end_dancing_motion.connect(_debug_event.bind("end_dancing_motion"))
