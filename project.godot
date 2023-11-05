@@ -13,12 +13,11 @@ config_version=5
 config/name="Melba Toaster"
 run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
-run/max_fps=60
 boot_splash/show_image=false
 
 [audio]
 
-driver/output_latency=200
+driver/output_latency=1024
 
 [autoload]
 
@@ -38,7 +37,6 @@ window/subwindows/embed_subwindows=false
 window/stretch/mode="canvas_items"
 window/dpi/allow_hidpi=false
 window/per_pixel_transparency/allowed=true
-window/vsync/vsync_mode=2
 
 [editor]
 

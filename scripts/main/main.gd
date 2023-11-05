@@ -8,6 +8,7 @@ extends Node2D
 @export var client: WebSocketClient
 @export var control_panel: Window
 @export var subtitles: RichTextLabel
+@export var mic: AnimatedSprite2D
 
 @export_group("Sound Bus")
 @export var cancel_sound: AudioStreamPlayer
@@ -173,6 +174,8 @@ func _on_start_singing(song: Dictionary):
 	Globals.is_paused = true
 	Globals.is_singing = true
 
+	mic.play()
+
 	subtitles_duration = 3.0
 	_print_subtitles("{artist}\n\"{name}\"".format(song))
 
@@ -196,6 +199,8 @@ func _on_stop_singing():
 
 	song_player.stop()
 	speech_player.stop()
+
+	mic.play_backwards()
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)

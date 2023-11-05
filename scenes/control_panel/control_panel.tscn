@@ -456,7 +456,6 @@ vertical_alignment = 1
 [node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
 bbcode_enabled = true
 text = "Active FPS: 69
 Frame time: "
