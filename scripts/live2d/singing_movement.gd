@@ -36,12 +36,10 @@ func _on_cubism_init(model: GDCubismUserModel):
 func _start_motion(bpm: float, wait_time: float, stop_time: float) -> void:
 	singing = true
 	bob_interval = 60.0 / bpm
-	await get_tree().create_timer(wait_time).timeout
-	start_tween()
+	Globals.call_delayed(start_tween, wait_time)
 
 	if stop_time != 0.0:
-		await get_tree().create_timer(stop_time - wait_time).timeout
-		_end_motion()
+		Globals.call_delayed(_end_motion, stop_time - wait_time)
 
 func _end_motion() -> void:
 	singing = false

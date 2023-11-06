@@ -3,13 +3,13 @@ class_name MouthMovement
 
 @export var live_2d_melba = Node # The node with live2d_melba.gd
 @export var audio_bus_name := "Voice"
-# Parameter Names 
+# Parameter Names
 @export_category("Param Names")
 @export var param_mouth_name := "ParamMouthOpenY"
 @export var param_mouth_form_name := "ParamMouthForm"
 @export var param_eye_ball_x_name := "ParamEyeBallX"
 @export var param_eye_ball_y_name := "ParamEyeBallY"
-# Parameter Values 
+# Parameter Values
 @export_category("Param Values")
 @export var mouth_pos = 0.6
 @export var mouth_form_pos = -0.8
@@ -31,7 +31,7 @@ var blabbering = false
 var just_started = true
 var transition_fin = false
 var just_ended = false
-# Sound analysis  
+# Sound analysis
 var previous_volume = 0.0
 
 func _ready():

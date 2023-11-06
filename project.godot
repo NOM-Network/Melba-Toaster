@@ -67,3 +67,7 @@ pause_resume={
 
 2d/run_on_separate_thread=true
 3d/run_on_separate_thread=true
+
+[rendering]
+
+driver/threads/thread_model=2

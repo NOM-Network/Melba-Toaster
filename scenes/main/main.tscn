@@ -372,11 +372,9 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
+metadata/_edit_horizontal_guides_ = [1050.0]
 
 [node name="WebSocketClient" type="Node" parent="."]
-process_thread_group = 2
-process_thread_group_order = 0
-process_thread_messages = 0
 script = ExtResource("4_bxfqh")
 
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
@@ -392,18 +390,17 @@ animation = &"in"
 centered = false
 
 [node name="Subtitles" type="RichTextLabel" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = 60.0
-offset_top = 863.0
+offset_top = 820.0
 offset_right = 1860.0
-offset_bottom = 1043.0
+offset_bottom = 1075.0
 grow_horizontal = 2
-grow_vertical = 2
 theme = SubResource("Theme_q4aj4")
 bbcode_enabled = true
-text = "[center]According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. "
+text = "[center]wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
 fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false

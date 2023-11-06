@@ -17,6 +17,8 @@ extends Node2D
 
 var voice_bus := AudioServer.get_bus_index("Voice")
 
+var tween: Tween
+
 # Cleanout stuff
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
@@ -85,13 +87,8 @@ func _on_data_received(data: Dictionary):
 			_:
 				print("Unhandled data type: ", message)
 
-func _process(delta):
-	if Globals.is_speaking or Globals.is_singing:
-		if subtitles.visible_ratio <= 1.0:
-			subtitles.visible_ratio += ((1.0 / subtitles_duration) + 0.01) * delta
-	else:
-		if subtitles.visible_ratio > 0.0 && subtitles_cleanout:
-			subtitles.visible_ratio -= 0.05
+func _process(_delta: float) -> void:
+	pass
 
 func _on_speech_player_finished():
 	Globals.is_speaking = false
@@ -109,7 +106,7 @@ func prepare_speech(message: PackedByteArray):
 	subtitles_duration = stream.get_length()
 	speech_player.stream = stream
 
-func play_audio() -> void:
+func _play_audio() -> void:
 	if speech_player.stream:
 		Globals.is_speaking = true
 		speech_player.play()
@@ -123,21 +120,18 @@ func _on_ready_for_speech():
 func _on_new_speech(_prompt, text):
 	_print_subtitles(text)
 
-	play_audio()
+	_play_audio()
 
 func _print_subtitles(text):
-	subtitles_cleanout = false
-	subtitles.visible_ratio = 0.0
-
-	if text.length() > 300:
-		subtitles.add_theme_font_size_override("normal_font_size", 20)
-	else:
-		subtitles.remove_theme_font_size_override("normal_font_size")
-
 	if text:
 		subtitles.text = "[center]%s" % text
 	else:
 		subtitles.text = "[center]tsh mebla"
+
+	if subtitles.get_line_count() > 5:
+		subtitles.add_theme_font_size_override("normal_font_size", 20)
+
+	_tween_subtitles(0.0, 1.0, subtitles_duration)
 
 func _on_cancel_speech():
 	Globals.set_toggle.emit("void", true)
@@ -147,17 +141,17 @@ func _on_cancel_speech():
 	cancel_sound.play()
 
 	Globals.is_speaking = false
-	subtitles_cleanout = false
-	subtitles.visible_ratio = 1.0
 	subtitles.text = "[center][TOASTED]"
 	subtitles.remove_theme_font_size_override("normal_font_size")
+
+	_tween_subtitles(0.0, 1.0, cancel_sound.stream.get_length())
 
 	await trigger_cleanout()
 	Globals.set_toggle.emit("void", false)
 
 func trigger_cleanout():
 	await get_tree().create_timer(time_before_cleanout).timeout
-	subtitles_cleanout = true
+	_tween_subtitles(1.0, 0.0, 1.0)
 
 	await get_ready_for_next_speech()
 	subtitles.remove_theme_font_size_override("normal_font_size")
@@ -169,6 +163,15 @@ func get_ready_for_next_speech():
 
 func _on_connection_closed():
 	control_panel.backend_disconnected()
+
+func _tween_subtitles(start_val: float, final_val: float, duration: float) -> void:
+	subtitles.visible_ratio = start_val
+
+	if tween:
+		tween.kill()
+
+	tween = create_tween()
+	tween.tween_property(subtitles, "visible_ratio", final_val, duration - duration * 0.1)
 
 func _on_start_singing(song: Dictionary):
 	Globals.is_paused = true

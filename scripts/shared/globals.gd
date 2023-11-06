@@ -106,3 +106,10 @@ func _debug_event(eventName: String, data: Dictionary = {}) -> void:
 		print_debug("EVENT BUS: '%s' called - " % [eventName], data)
 	else:
 		print_debug("EVENT BUS: '%s' called" % [eventName])
+
+# region HELPERS
+
+func call_delayed(callable: Callable, delay: float):
+	get_tree().create_timer(delay).connect("timeout", callable)
+
+# endredion

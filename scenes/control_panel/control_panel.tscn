@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "cancel_button", "pause_button", "stats_timer", "status_timer")]
+[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "cancel_button", "pause_button", "godot_stats_timer", "obs_stats_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -29,8 +29,8 @@ current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxP
 current_speech = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
 cancel_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
 pause_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
-stats_timer = NodePath("StatsTimer")
-status_timer = NodePath("StatusTimer")
+godot_stats_timer = NodePath("Timers/GodotStatsTimer")
+obs_stats_timer = NodePath("Timers/ObsStatsTimer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")
@@ -481,9 +481,12 @@ text = "Do you really want to close the Toaster?
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StatusTimer" type="Timer" parent="."]
+[node name="Timers" type="Node" parent="."]
 
-[node name="StatsTimer" type="Timer" parent="."]
+[node name="GodotStatsTimer" type="Timer" parent="Timers"]
+autostart = true
+
+[node name="ObsStatsTimer" type="Timer" parent="Timers"]
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
@@ -493,5 +496,5 @@ vertical_alignment = 1
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
-[connection signal="timeout" from="StatusTimer" to="." method="_on_status_timer_timeout"]
-[connection signal="timeout" from="StatsTimer" to="." method="_on_stats_timer_timeout"]
+[connection signal="timeout" from="Timers/GodotStatsTimer" to="." method="_on_godot_stats_timer_timeout"]
+[connection signal="timeout" from="Timers/ObsStatsTimer" to="." method="_on_obs_stats_timer_timeout"]

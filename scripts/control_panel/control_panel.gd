@@ -11,8 +11,8 @@ extends Window
 @export var pause_button: Button
 
 @export_category("Timers")
-@export var stats_timer: Timer
-@export var status_timer: Timer
+@export var godot_stats_timer: Timer
+@export var obs_stats_timer: Timer
 
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 
@@ -24,6 +24,8 @@ var is_streaming := false
 # region MAIN
 
 func _ready() -> void:
+	godot_stats_timer.start()
+
 	generate_model_controls()
 	generate_singing_controls()
 
@@ -31,14 +33,7 @@ func _ready() -> void:
 	obs_connection()
 
 func _process(_delta) -> void:
-	var render_data = {
-		"fps": perf_mon("TIME_FPS"),
-		"frameTime": snapped(perf_mon("TIME_PROCESS"), 0.01),
-		"videoMemoryUsed": snapped(perf_mon("RENDER_VIDEO_MEM_USED") / 1024 / 1000, 0.01),
-		"audioLatency": snapped(perf_mon("AUDIO_OUTPUT_LATENCY"), 0.01),
-	}
-
-	insert_data(render_data, %GodotStats, Templates.godot_stats_template)
+	pass
 
 func perf_mon(monitor: String) -> Variant:
 	return Performance.get_monitor(Performance[monitor])
@@ -54,13 +49,11 @@ func obs_connection() -> void:
 	obs.send_command_batch([
 		"GetSceneList",
 		"GetInputList",
-		"GetStats",
-		# "GetStreamStatus"
+		"GetStats"
 	])
 
 	# OBS Stats timers
-	stats_timer.start()
-	# status_timer.start()
+	obs_stats_timer.start()
 
 	# Pause
 	if Globals.is_paused:
@@ -84,44 +77,44 @@ func generate_singing_controls():
 	for song in songs:
 		menu.add_item(song.id)
 
-# TODO: find a way to a make THIS a generic function lule
 func generate_model_controls():
-	for b in [%Animations, %Expressions, %Toggles]:
-		for n in b.get_children():
+	for type in ["animations", "expressions", "toggles"]:
+		var parent = get_node("%%%s" % type.capitalize())
+		for n in parent.get_children():
 			n.queue_free()
 
-	# Animations
-	var anim_label = Label.new()
-	anim_label.text = "Animations"
-	%Animations.add_child(anim_label)
+		_construct_model_control_buttons(type, parent, Globals[type])
 
-	for a in Globals.animations:
-		var anim = Button.new()
-		anim.text = a
-		anim.name = "Anim%s" % [a.to_camel_case().capitalize()]
-		anim.pressed.connect(func (): Globals.play_animation.emit(a))
-		%Animations.add_child(anim)
+func _construct_model_control_buttons(type: String, parent: Node, controls: Dictionary):
+	var label = Label.new()
+	label.text = type.capitalize()
+	parent.add_child(label)
 
-	# Expressions
-	var expr_label = Label.new()
-	expr_label.text = "Expressions"
-	%Expressions.add_child(expr_label)
+	var callback: Signal
+	var button_type := Button
+	match type:
+		"animations":
+			callback = Globals.play_animation
 
-	for a in Globals.expressions:
-		var expr = Button.new()
-		expr.text = a
-		expr.name = "Expr%s" % [a.to_camel_case().capitalize()]
-		expr.pressed.connect(func (): Globals.set_expression.emit(a))
-		%Expressions.add_child(expr)
+		"expressions":
+			callback = Globals.set_expression
 
-	# Toggles
-	for a in Globals.toggles:
-		var toggle = CheckButton.new()
-		toggle.text = a
-		toggle.name = "Toggle%s" % [a.to_camel_case().capitalize()]
-		toggle.button_pressed = Globals.toggles[a].enabled
-		toggle.pressed.connect(_on_toggle_pressed.bind(toggle))
-		%Toggles.add_child(toggle)
+		"toggles":
+			callback = Globals.play_animation
+			button_type = CheckButton
+
+	for control in controls:
+		var button = button_type.new()
+		button.text = control
+		button.name = type.capitalize() + control.to_pascal_case()
+
+		if type == "toggles":
+			button.button_pressed = controls[control].enabled
+			button.pressed.connect(_on_toggle_pressed.bind(button))
+		else:
+			button.pressed.connect(func (): callback.emit(control))
+
+		parent.add_child(button)
 
 # endregion
 
@@ -237,11 +230,19 @@ func _handle_request(data):
 
 # region TIMERS
 
-func _on_stats_timer_timeout():
+func _on_obs_stats_timer_timeout():
 	obs.send_command("GetStats")
 
-func _on_status_timer_timeout():
-	obs.send_command("GetStreamStatus")
+func _on_godot_stats_timer_timeout():
+	var render_data = {
+		"fps": perf_mon("TIME_FPS"),
+		"frameTime": snapped(perf_mon("TIME_PROCESS"), 0.01),
+		"videoMemoryUsed": snapped(perf_mon("RENDER_VIDEO_MEM_USED") / 1024 / 1000, 0.01),
+		"audioLatency": snapped(perf_mon("AUDIO_OUTPUT_LATENCY"), 0.01),
+	}
+
+	insert_data(render_data, %GodotStats, Templates.godot_stats_template)
+
 
 # endregion
 
@@ -291,7 +292,7 @@ func _on_new_speech(prompt, text) -> void:
 	current_speech.text = text
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
-	var ui_name := "Toggle%s" % [toggle_name.to_camel_case().capitalize()]
+	var ui_name := "Toggles%s" % [toggle_name.to_pascal_case()]
 	var toggle: CheckButton = %Toggles.get_node(ui_name)
 	if toggle:
 		toggle.button_pressed = enabled
@@ -300,13 +301,15 @@ func change_status_color(node: Node, active: bool) -> void:
 	node.get_theme_stylebox("panel").bg_color = Color(0, 1, 0) if active else Color(1, 0, 0)
 
 func update_stream_control_button():
+	var overrides := ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+
 	if is_streaming:
 		%ObsStreamControl.text = "Stop Stream"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		for i in overrides:
 			%ObsStreamControl.add_theme_color_override(i, Color(1, 0, 0))
 	else:
 		%ObsStreamControl.text = "Start Stream"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		for i in overrides:
 			%ObsStreamControl.remove_theme_color_override(i)
 
 func _on_obs_stream_control_pressed():
@@ -347,27 +350,29 @@ func generate_input_request(inputs):
 func generate_input_button(input):
 	var button = Button.new()
 	button.visible = false
-	button.name = input.inputName.to_camel_case()
+	button.name = input.inputName.to_pascal_case()
 	button.text = input.inputName
 	button.pressed.connect(_on_input_button_pressed.bind(button))
 	%ObsInputs.add_child(button)
 	change_input_state(input)
 
 func change_input_name(data):
-	var button = %ObsInputs.get_node(data.oldInputName.to_camel_case())
+	var button = %ObsInputs.get_node(data.oldInputName.to_pascal_case())
 	if button:
-		button.name = data.inputName.to_camel_case()
+		button.name = data.inputName.to_pascal_case()
 		button.text = data.inputName
 
 func change_input_state(data):
-	var button = %ObsInputs.get_node(data.inputName.to_camel_case())
+	var button = %ObsInputs.get_node(data.inputName.to_pascal_case())
+	var overrides = ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+
 	if button:
 		button.visible = true
 		if (data.inputMuted):
-			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			for i in overrides:
 				button.add_theme_color_override(i, Color(1, 0, 0))
 		else:
-			for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+			for i in overrides:
 				button.add_theme_color_override(i, Color(0, 1, 0))
 
 func _on_input_button_pressed(button):
@@ -398,16 +403,18 @@ func backend_disconnected():
 func _on_pause_speech_toggled(button_pressed: bool, emit := true):
 	Globals.is_paused = button_pressed
 
+	var overrides = ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+
 	if (button_pressed):
 		pause_button.text = ">>> RESUME <<<"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		for i in overrides:
 			pause_button.add_theme_color_override(i, Color(1, 0, 0))
 	else:
 		if emit:
 			Globals.ready_for_speech.emit()
 
 		pause_button.text = "Pause"
-		for i in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		for i in overrides:
 			pause_button.remove_theme_color_override(i)
 
 func _on_cancel_speech_pressed():
@@ -415,8 +422,7 @@ func _on_cancel_speech_pressed():
 	current_speech.add_theme_color_override("font_color", Color(1, 0, 0))
 
 func stop_processing():
-	stats_timer.stop()
-	status_timer.stop()
+	obs_stats_timer.stop()
 	obs.break_connection()
 	main.client.break_connection("from control panel")
 	change_status_color(%ObsClientStatus, false)
