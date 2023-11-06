@@ -47,7 +47,6 @@ func _on_cubism_init(model: GDCubismUserModel):
 	var bus = AudioServer.get_bus_index(audio_bus_name)
 	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
 
-
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	manage_mouth_movement() # For mouth opening and closing
 
@@ -63,7 +62,7 @@ func _end_movement() -> void:
 func position_eyes_and_mouth() -> void:
 	pass
 
-var freq_array := [0.0, 0.0, 0.0, 0.0]
+var prev_value := 0.0 # Stores the previous altered value 
 func manage_mouth_movement() -> void:
 	var magnitude: float = spectrum.get_magnitude_for_frequency_range(
 		min_voice_freq,
@@ -72,17 +71,14 @@ func manage_mouth_movement() -> void:
 	var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
 
 	param_mouth_form.value = mouth_form_value
-	param_mouth.value = energy * max_mouth_value
+	param_mouth.value = energy * max_mouth_value 
 
-	# Update array
-	freq_array.remove_at(0)
-	freq_array.append(param_mouth.value)
+	if abs(prev_value - param_mouth.value) > 0.07:
+		if prev_value > param_mouth.value: 
+			param_mouth.value = prev_value - 0.07
+		else: 
+			param_mouth.value = prev_value + 0.07
 
-	# param mouth value is only set to below min mouth value if
-	# all three values before it were less than the min mouth value.
-	if param_mouth.value < min_mouth_value and not freq_array.all(func(e): return e < min_mouth_value):
-		param_mouth.value = min_mouth_value
+	prev_value = param_mouth.value
 
-	if abs(freq_array[-2] - param_mouth.value) > 0.4:
-		param_mouth.value = (freq_array[-2] + param_mouth.value) / 2.0
 
