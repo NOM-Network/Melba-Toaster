@@ -55,12 +55,14 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	
 	if Globals.is_singing: 
 		manage_singing() 
-	else: 
+	elif Globals.is_speaking:
 		manage_speaking()  
+	else:
+		param_mouth.value = 0.0 
 		
 	prev_unaltered_values.remove_at(0)
 	prev_unaltered_values.append(unaltered_value)
-
+	
 func manage_singing() -> void:
 	if abs(prev_value - param_mouth.value) > 0.07:
 		if prev_value > param_mouth.value: 
