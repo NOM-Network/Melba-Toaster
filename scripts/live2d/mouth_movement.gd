@@ -1,42 +1,37 @@
 extends GDCubismEffectCustom
 class_name MouthMovement
 
-@export var live_2d_melba = Node # The node with live2d_melba.gd
+@export var mouth_movement := MouthMovement # MouthMovement node
 @export var audio_bus_name := "Voice"
+@export var min_db := 60.0
+@export var min_voice_freq := 0
+@export var max_voice_freq := 3200
 # Parameter Names
 @export_category("Param Names")
-@export var param_mouth_name := "ParamMouthOpenY"
-@export var param_mouth_form_name := "ParamMouthForm"
-@export var param_eye_ball_x_name := "ParamEyeBallX"
-@export var param_eye_ball_y_name := "ParamEyeBallY"
+@export var param_mouth_name: String = "ParamMouthOpenY"
+@export var param_mouth_form_name: String = "ParamMouthForm"
 # Parameter Values
 @export_category("Param Values")
-@export var mouth_pos = 0.6
-@export var mouth_form_pos = -0.8
-@export var eye_x_pos = 0.0
-@export var eye_y_pos = 0.0
+@export var max_mouth_value := 0.7
+@export var mouth_form_value := 0.0
 # Parameters
 var param_mouth: GDCubismParameter
 var param_mouth_form: GDCubismParameter
 var param_eye_ball_x: GDCubismParameter
 var param_eye_ball_y: GDCubismParameter
-# Tweens
-var tween_mouth: Tween
-var tween_mouth_form: Tween
-var tween_eye_x: Tween
-var tween_eye_y: Tween
-# State for volume analysis
-var blabbering = false
-# States for transitioning between reading and not reading audio
-var just_started = true
-var transition_fin = false
-var just_ended = false
-# Sound analysis
-var previous_volume = 0.0
+# For voice analysis
+var spectrum: AudioEffectSpectrumAnalyzerInstance
+var prev_value := 0.0 
+var prev_unaltered_values := []
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
 	self.cubism_process.connect(_on_cubism_process)
+	
+	var bus = AudioServer.get_bus_index(audio_bus_name)
+	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
+	prev_unaltered_values.resize(5)
+	prev_unaltered_values.fill(0.0)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var any_param = model.get_parameters()
@@ -46,73 +41,49 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_mouth = param
 		if param.id == param_mouth_form_name:
 			param_mouth_form = param
-		if param.id == param_eye_ball_x_name:
-			param_eye_ball_x = param
-		if param.id == param_eye_ball_y_name:
-			param_eye_ball_y = param
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
-	manage_transitions() # For start and end of speech transitions
-	manage_mouth_movement() # For mouth opening and closing
+	var magnitude: float = spectrum.get_magnitude_for_frequency_range(
+		min_voice_freq,
+		max_voice_freq
+	).length()
+	var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
+	
+	param_mouth_form.value = mouth_form_value
+	var unaltered_value = energy * max_mouth_value
+	param_mouth.value = energy * max_mouth_value
+	
+	if Globals.is_singing: 
+		manage_singing() 
+	else: 
+		manage_speaking()  
+		
+	prev_unaltered_values.remove_at(0)
+	prev_unaltered_values.append(unaltered_value)
 
-func manage_transitions() -> void:
-	if Globals.is_speaking:
-		# Reset states for not reading audio
-		just_ended = true
+func manage_singing() -> void:
+	if abs(prev_value - param_mouth.value) > 0.07:
+		if prev_value > param_mouth.value: 
+			param_mouth.value = prev_value - 0.07
+		else: 
+			param_mouth.value = prev_value + 0.07
 
-		param_mouth_form.value = mouth_form_pos
-		if just_started:
-			just_started = false
-			tween_eye_x = create_tween()
-			tween_eye_y = create_tween()
-			tween_eye_x.tween_property(param_eye_ball_x, "value", eye_x_pos, 1.5)
-			tween_eye_y.tween_property(param_eye_ball_y, "value", eye_y_pos, 1.5)
-			await tween_eye_x.finished
-			transition_fin = true
-		if transition_fin:
-			param_eye_ball_x.value = eye_x_pos
-			param_eye_ball_y.value = eye_y_pos
+	prev_value = param_mouth.value
 
-	else:
-		# Reset states for reading audio
-		transition_fin = false
-		just_started = true
-
-		if just_ended:
-			just_ended = false
-			param_mouth_form.value = mouth_form_pos
-			tween_mouth_form = create_tween()
-			tween_mouth_form.tween_property(param_mouth_form, "value", 0.0, 2)
-
-func manage_mouth_movement() -> void:
-	var audio_bus = AudioServer.get_bus_index(audio_bus_name)
-	var volume = (AudioServer.get_bus_peak_volume_left_db(audio_bus, 0) +
-	AudioServer.get_bus_peak_volume_right_db(audio_bus, 0)) / 2.0
-	# print(volume)
-	if volume < -54.0 and previous_volume < -54.0: # If she is not speaking
-		blabbering = false
-		if Globals.is_speaking:
-			param_mouth.value = 0.05
-		else:
-			param_mouth.value = 0.0
-	elif not blabbering: # If she just started speaking
-		blabbering = true
-		start_tween()
-	else: # If she has been speaking
-		pass
-	previous_volume = volume
-
-func start_tween() -> void:
-	if tween_mouth: tween_mouth.kill()
-	tween_mouth = create_tween()
-	tween_mouth.finished.connect(_on_tween_finished)
-	tween_mouth.tween_property(param_mouth, "value", mouth_pos, 0.15)
-
-func _on_tween_finished() -> void:
-	if tween_mouth: tween_mouth.kill()
-	tween_mouth = create_tween()
-	await tween_mouth.tween_property(param_mouth, "value", 0.1, 0.15).finished
-	if blabbering:
-		start_tween()
-	else:
-		param_mouth.value = 0.0
+func manage_speaking() -> void:
+	if param_mouth.value < 0.15:
+		var force_value := false
+		for i in prev_unaltered_values: 
+			if i != 0.0: 
+				force_value = true 
+		if force_value:
+			param_mouth.value = 0.15  
+	
+	if abs(prev_value - param_mouth.value) > 0.05:
+		if prev_value > param_mouth.value: 
+			param_mouth.value = prev_value - 0.05
+		else: 
+			param_mouth.value = prev_value + 0.05
+			
+	prev_value = param_mouth.value
+	
