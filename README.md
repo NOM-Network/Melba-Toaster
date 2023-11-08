@@ -30,14 +30,14 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 This project uses already built DLLs for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the libraries](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put them in `addons\gd_cubism\bin` folder.
 
-## Acknowledgments
-
-This project uses [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism).
-
 ## License
 
-(c) by NOM Network
+Melba Toast © 2023 NOM Network and contributors.
 
 Code is licensed under a [AGPL 3.0 (and later) license](LICENSE.md).
 
 Art assets are licensed under a [CC BY-SA 4.0 license](LICENSE-ASSETS.md).
+
+This project uses [New Bread font](https://www.dafont.com/new-bread.font) by Syafrizal a.k.a. Khurasan.
+
+This project uses [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism) by MizunagiKB.
