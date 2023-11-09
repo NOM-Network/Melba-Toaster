@@ -7,6 +7,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	cubism_model.parameter_mode = GDCubismUserModel.FULL_PARAMETER
 	connect_signals()
 	intialize_toggles()
 

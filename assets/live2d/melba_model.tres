@@ -1,0 +1,4 @@
+[gd_resource type="ViewportTexture" format=3 uid="uid://c8pi35r1kmq8m"]
+
+[resource]
+viewport_path = NodePath("Sprite2D/GDCubismUserModel")

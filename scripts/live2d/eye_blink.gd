@@ -11,7 +11,9 @@ func _ready():
 
 func _on_cubism_init(model: GDCubismUserModel):
 	blink_timer.timeout.connect(_on_timer_timeout)
+	
 	var any_param = model.get_parameters()
+	
 	for param in any_param:
 		if param.id == "ParamEyeLOpen":
 			param_eye = param

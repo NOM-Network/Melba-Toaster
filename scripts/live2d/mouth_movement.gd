@@ -27,11 +27,6 @@ var prev_unaltered_values := []
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
 	self.cubism_process.connect(_on_cubism_process)
-	
-	var bus = AudioServer.get_bus_index(audio_bus_name)
-	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
-	prev_unaltered_values.resize(5)
-	prev_unaltered_values.fill(0.0)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var any_param = model.get_parameters()
@@ -41,6 +36,11 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_mouth = param
 		if param.id == param_mouth_form_name:
 			param_mouth_form = param
+			
+	var bus = AudioServer.get_bus_index(audio_bus_name)
+	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
+	prev_unaltered_values.resize(5)
+	prev_unaltered_values.fill(0.0)
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	var magnitude: float = spectrum.get_magnitude_for_frequency_range(

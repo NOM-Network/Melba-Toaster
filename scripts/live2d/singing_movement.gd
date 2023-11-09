@@ -20,11 +20,11 @@ var singing := false
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
-#	self.cubism_process.connect(_on_cubism_process)
-	Globals.start_dancing_motion.connect(_start_motion)
-	Globals.end_dancing_motion.connect(_end_motion)
 
 func _on_cubism_init(model: GDCubismUserModel):
+	Globals.start_dancing_motion.connect(_start_motion)
+	Globals.end_dancing_motion.connect(_end_motion)
+	
 	var any_param = model.get_parameters()
 
 	for param in any_param:
