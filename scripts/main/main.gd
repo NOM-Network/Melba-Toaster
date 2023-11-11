@@ -208,7 +208,7 @@ func _tween_text(label: Label, tween_name: String, start_val: float, final_val: 
 	label.visible_ratio = start_val
 
 	tweens[tween_name] = create_tween()
-	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.1)
+	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.2)
 
 func _on_start_singing(song: Dictionary):
 	current_song = song

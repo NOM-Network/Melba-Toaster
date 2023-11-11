@@ -2,7 +2,7 @@ extends Node2D
 
 @export var cubism_model: GDCubismUserModel
 
-# Effects (For override) 
+# Effects (For override)
 @onready var eye_blink = %EyeBlink
 
 # Called when the node enters the scene tree for the first time.
@@ -15,15 +15,15 @@ func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
-	
+
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 	set_expression("end")
 
 func intialize_toggles() -> void:
-	# TODO: Tween values not opacities so that everything can fade in / fade out. 
+	# TODO: Tween values not opacities so that everything can fade in / fade out.
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
-		for toggle in Globals.toggles.values(): 
+		for toggle in Globals.toggles.values():
 			if param.get_id() == toggle["id"]:
 				toggle.param = param
 
@@ -54,11 +54,12 @@ func set_expression(expression_name: String) -> void:
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
-		var value_tween = create_tween() 
+		var value_tween = create_tween()
 		var toggle = Globals.toggles[toggle_name]
 		if enabled:
-			toggle.enabled = true 
-		else: 
+			toggle.enabled = true
+			value_tween.tween_property(toggle, "value", 1.0, toggle.duration)
+		else:
 			toggle.enabled = false
 			value_tween.tween_property(toggle, "value", 0.0, toggle.duration)
 
