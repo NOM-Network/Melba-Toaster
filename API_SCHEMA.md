@@ -37,7 +37,10 @@ JSON message, contains the initial prompt and the response from LLM. Must be sen
     {
         "type": "NewSpeech",
         "prompt": "<prompt_text>",
-        "text": "<response_text>"
+        "text": {
+            "response": "<response_text>",
+            "emotions": ["<array_of_emotions>"]
+        }
     }
 ```
 
