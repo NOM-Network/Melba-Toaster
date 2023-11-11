@@ -7,6 +7,7 @@ extends Window
 @export_category("UI")
 @export var current_prompt: Label
 @export var current_speech: Label
+@export var debug_button: Button
 @export var cancel_button: Button
 @export var pause_button: Button
 
@@ -25,6 +26,10 @@ var is_streaming := false
 
 func _ready() -> void:
 	godot_stats_timer.start()
+
+	# Defaults
+	debug_button.button_pressed = Globals.debug_mode
+	pause_button.button_pressed = Globals.is_paused
 
 	generate_model_controls()
 	generate_singing_controls()
@@ -54,11 +59,6 @@ func obs_connection() -> void:
 
 	# OBS Stats timers
 	obs_stats_timer.start()
-
-	# Pause
-	if Globals.is_paused:
-		pause_button.button_pressed = true
-		_on_pause_speech_toggled(true)
 
 func connect_signals() -> void:
 	Globals.set_toggle.connect(update_toggle_controls)
@@ -289,7 +289,7 @@ func _on_toggle_pressed(toggle: CheckButton):
 func _on_new_speech(prompt, text) -> void:
 	current_speech.remove_theme_color_override("font_color")
 	current_prompt.text = prompt
-	current_speech.text = text
+	current_speech.text = text.response
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggles%s" % [toggle_name.to_pascal_case()]
@@ -400,22 +400,36 @@ func backend_connected():
 func backend_disconnected():
 	change_status_color(%BackendStatus, false)
 
-func _on_pause_speech_toggled(button_pressed: bool, emit := true):
+func _on_pause_speech_toggled(button_pressed: bool, emit := true) -> void:
 	Globals.is_paused = button_pressed
 
 	var overrides = ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
 
 	if (button_pressed):
-		pause_button.text = ">>> RESUME <<<"
+		pause_button.text = ">>> RESUME (F9) <<<"
 		for i in overrides:
 			pause_button.add_theme_color_override(i, Color(1, 0, 0))
 	else:
 		if emit:
 			Globals.ready_for_speech.emit()
 
-		pause_button.text = "Pause"
+		pause_button.text = "Pause (F9)"
 		for i in overrides:
 			pause_button.remove_theme_color_override(i)
+
+func _on_debug_mode_button_toggled(button_pressed: bool) -> void:
+	Globals.debug_mode = button_pressed
+
+	var overrides = ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+
+	if (button_pressed):
+		debug_button.text = ">>> DEBUG MODE <<<"
+		for i in overrides:
+			debug_button.add_theme_color_override(i, Color(1, 0, 0))
+	else:
+		debug_button.text = "Debug Mode"
+		for i in overrides:
+			debug_button.remove_theme_color_override(i)
 
 func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()

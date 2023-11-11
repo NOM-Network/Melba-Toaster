@@ -7,7 +7,8 @@ extends Node2D
 @export_category("Nodes")
 @export var client: WebSocketClient
 @export var control_panel: Window
-@export var subtitles: RichTextLabel
+@export var prompt: Label
+@export var subtitles: Label
 @export var mic: AnimatedSprite2D
 
 @export_group("Sound Bus")
@@ -15,13 +16,18 @@ extends Node2D
 @export var speech_player: AudioStreamPlayer
 @export var song_player: AudioStreamPlayer
 
-var voice_bus := AudioServer.get_bus_index("Voice")
+@onready var voice_bus := AudioServer.get_bus_index("Voice")
 
-var tween: Tween
+# Tweens
+@onready var tweens := {}
 
 # Cleanout stuff
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
+
+# Defaults
+@onready var prompt_font_size := prompt.label_settings.font_size
+@onready var subtitles_font_size := subtitles.label_settings.font_size
 
 func _ready():
 	# Makes bg transparent
@@ -29,14 +35,16 @@ func _ready():
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
 	# Defaults
+	prompt.text = ""
 	subtitles.text = ""
-	Globals.is_paused = true
 
 	# Signals
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
+
+	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
 
 	# Waiting for the backend
 	await client.connection_established
@@ -47,24 +55,23 @@ func _ready():
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
-func _on_data_received(data: Dictionary):
+func _on_data_received(data: Variant):
 	if Globals.is_paused:
 		return
 
-	if data.type == "binary":
+	if typeof(data) == TYPE_PACKED_BYTE_ARRAY:
 		if Globals.is_speaking:
 			printerr("Audio while blabbering")
 			return
 
 		# Testing for MP3
-		var header = data.message.slice(0, 2)
+		var header = data.slice(0, 2)
 		if not (header == PackedByteArray([255, 251]) or header == PackedByteArray([73, 68])):
 			printerr("%s is not an MP3 file! Skipping..." % [header])
 			return
 
 		# Preparing for speaking
-		prepare_speech(data.message)
-		Globals.incoming_speech.emit(data.message)
+		prepare_speech(data)
 	else:
 		var message = JSON.parse_string(data.message)
 
@@ -117,21 +124,33 @@ func _on_ready_for_speech():
 	if not Globals.is_paused:
 		client.send_message({"type": "ReadyForSpeech"})
 
-func _on_new_speech(_prompt, text):
-	_print_subtitles(text)
+func _on_new_speech(p_prompt, p_text) -> void:
+	_print_prompt(p_prompt)
+	_print_subtitles(p_text.response)
 
 	_play_audio()
 
+func _print_prompt(text):
+	if text:
+		prompt.text = "%s" % text
+	else:
+		prompt.text = ""
+
+	while prompt.get_line_count() > prompt.get_visible_line_count():
+		prompt.label_settings.font_size -= 3
+
+	_tween_text(prompt, "prompt", 0.0, 1.0, 1.0)
+
 func _print_subtitles(text):
 	if text:
-		subtitles.text = "[center]%s" % text
+		subtitles.text = "%s" % text
 	else:
-		subtitles.text = "[center]tsh mebla"
+		subtitles.text = "tsh mebla"
 
-	if subtitles.get_line_count() > 5:
-		subtitles.add_theme_font_size_override("normal_font_size", 20)
+	while subtitles.get_line_count() > subtitles.get_visible_line_count():
+		subtitles.label_settings.font_size -= 3
 
-	_tween_subtitles(0.0, 1.0, subtitles_duration)
+	_tween_text(subtitles, "subtitles", 0.0, 1.0, subtitles_duration)
 
 func _on_cancel_speech():
 	Globals.set_toggle.emit("void", true)
@@ -140,21 +159,23 @@ func _on_cancel_speech():
 	speech_player.stream = null
 	cancel_sound.play()
 
-	Globals.is_speaking = false
-	subtitles.text = "[center][TOASTED]"
-	subtitles.remove_theme_font_size_override("normal_font_size")
+	prompt.text = ""
+	prompt.label_settings.font_size = prompt_font_size
 
-	_tween_subtitles(0.0, 1.0, cancel_sound.stream.get_length())
+	subtitles.text = "[TOASTED]"
+	subtitles.label_settings.font_size = subtitles_font_size
+	_tween_text(subtitles, "subtitles", 0.0, 1.0, cancel_sound.stream.get_length())
 
 	await trigger_cleanout()
 	Globals.set_toggle.emit("void", false)
 
 func trigger_cleanout():
 	await get_tree().create_timer(time_before_cleanout).timeout
-	_tween_subtitles(1.0, 0.0, 1.0)
+	_tween_text(prompt, "prompt", 1.0, 0.0, 1.0)
+	_tween_text(subtitles, "subtitles", 1.0, 0.0, 1.0)
 
 	await get_ready_for_next_speech()
-	subtitles.remove_theme_font_size_override("normal_font_size")
+	subtitles.label_settings.font_size = subtitles_font_size
 
 func get_ready_for_next_speech():
 	if not Globals.is_paused:
@@ -164,14 +185,14 @@ func get_ready_for_next_speech():
 func _on_connection_closed():
 	control_panel.backend_disconnected()
 
-func _tween_subtitles(start_val: float, final_val: float, duration: float) -> void:
-	subtitles.visible_ratio = start_val
+func _tween_text(label: Label, tween_name: String, start_val: float, final_val: float, duration: float) -> void:
+	if tweens.has(tween_name):
+		tweens[tween_name].kill()
 
-	if tween:
-		tween.kill()
+	label.visible_ratio = start_val
 
-	tween = create_tween()
-	tween.tween_property(subtitles, "visible_ratio", final_val, duration - duration * 0.1)
+	tweens[tween_name] = create_tween()
+	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.1)
 
 func _on_start_singing(song: Dictionary):
 	Globals.is_paused = true
@@ -181,6 +202,7 @@ func _on_start_singing(song: Dictionary):
 	mic.play()
 
 	subtitles_duration = 3.0
+	_print_prompt("")
 	_print_subtitles("{artist}\n\"{name}\"".format(song))
 
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)

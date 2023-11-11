@@ -15,7 +15,6 @@ signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()
 
 signal ready_for_speech()
-signal incoming_speech(stream: PackedByteArray)
 signal new_speech(prompt: String, text: String)
 signal speech_done()
 signal cancel_speech()
@@ -49,9 +48,10 @@ var last_expression := ""
 
 # region MELBA STATE
 
+var is_paused := true
 var is_speaking := false
-var is_paused := false
 var is_singing := false
+var debug_mode := true
 var config := ToasterConfig.new()
 
 # endregion
@@ -86,10 +86,6 @@ func _ready() -> void:
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
 
-	incoming_speech.connect(func(stream): _debug_event("set_toggle", {
-		"stream": stream.size()
-	}))
-
 	new_speech.connect(func(prompt, text): _debug_event("new_speech", {
 		"prompt": prompt,
 		"text": text
@@ -102,6 +98,9 @@ func _ready() -> void:
 	# endregion
 
 func _debug_event(eventName: String, data: Dictionary = {}) -> void:
+	if not debug_mode:
+		return
+
 	if data:
 		print_debug("EVENT BUS: '%s' called - " % [eventName], data)
 	else:

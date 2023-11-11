@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "cancel_button", "pause_button", "godot_stats_timer", "obs_stats_timer")]
+[node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "debug_button", "cancel_button", "pause_button", "godot_stats_timer", "obs_stats_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -24,15 +24,16 @@ size = Vector2i(924, 648)
 min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
-obs = NodePath("WebSocketClient")
-current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/CurrentPrompt")
+obs = NodePath("ObsWebSocketClient")
+current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentPrompt")
 current_speech = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
+debug_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode")
 cancel_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
 pause_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
 godot_stats_timer = NodePath("Timers/GodotStatsTimer")
 obs_stats_timer = NodePath("Timers/ObsStatsTimer")
 
-[node name="WebSocketClient" type="Node" parent="."]
+[node name="ObsWebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")
 
 [node name="BackgroundColor" type="ColorRect" parent="."]
@@ -95,21 +96,19 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 
+[node name="DebugMode" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+layout_mode = 2
+toggle_mode = true
+text = "Debug Mode"
+
 [node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
-text = "Cancel"
+text = "Cancel (F12)"
 
 [node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 toggle_mode = true
-text = "Pause"
-
-[node name="CurrentPrompt" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
-text = "What is your opinion on pinapple on pizza?"
-horizontal_alignment = 1
-autowrap_mode = 3
+text = "Pause (F9)"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -119,6 +118,13 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
+
+[node name="CurrentPrompt" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+text = "What is your opinion on pinapple on pizza?"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -489,6 +495,7 @@ autostart = true
 [node name="ObsStatsTimer" type="Timer" parent="Timers"]
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode" to="." method="_on_debug_mode_button_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]

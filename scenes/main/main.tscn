@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=92 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -354,19 +354,29 @@ animations = [{
 "speed": 30.0
 }]
 
-[sub_resource type="Theme" id="Theme_q4aj4"]
-default_font = ExtResource("5_pnxoy")
-default_font_size = 40
-RichTextLabel/colors/font_outline_color = Color(0.556863, 0.384314, 0.117647, 1)
-RichTextLabel/colors/font_shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
-RichTextLabel/constants/outline_size = 5
-RichTextLabel/constants/shadow_offset_x = 3
-RichTextLabel/constants/shadow_offset_y = 3
+[sub_resource type="LabelSettings" id="LabelSettings_8wgd5"]
+font = ExtResource("5_pnxoy")
+font_size = 30
+outline_size = 5
+outline_color = Color(0.556863, 0.384314, 0.117647, 1)
+shadow_size = 0
+shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
+shadow_offset = Vector2(3, 3)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "subtitles", "mic", "cancel_sound", "speech_player", "song_player")]
+[sub_resource type="LabelSettings" id="LabelSettings_rpyvj"]
+font = ExtResource("5_pnxoy")
+font_size = 40
+outline_size = 5
+outline_color = Color(0.556863, 0.384314, 0.117647, 1)
+shadow_size = 0
+shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
+shadow_offset = Vector2(3, 3)
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "prompt", "subtitles", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
+prompt = NodePath("Prompt")
 subtitles = NodePath("Subtitles")
 mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
@@ -390,24 +400,40 @@ sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
 
-[node name="Subtitles" type="RichTextLabel" parent="."]
-anchors_preset = 5
+[node name="Prompt" type="Label" parent="."]
+clip_contents = true
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = 694.0
+offset_right = 1360.0
+offset_bottom = 804.0
+grow_vertical = 0
+text = "cjmaxik: test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string"
+label_settings = SubResource("LabelSettings_8wgd5")
+vertical_alignment = 2
+autowrap_mode = 3
+text_overrun_behavior = 3
+visible_characters_behavior = 1
+
+[node name="Subtitles" type="Label" parent="."]
+anchors_preset = 7
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
+anchor_bottom = 1.0
 offset_left = 60.0
 offset_top = 820.0
 offset_right = 1860.0
 offset_bottom = 1075.0
 grow_horizontal = 2
-theme = SubResource("Theme_q4aj4")
-bbcode_enabled = true
-text = "[center]wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
-fit_content = true
-scroll_active = false
-shortcut_keys_enabled = false
-meta_underlined = false
-hint_underlined = false
-deselect_on_focus_loss_enabled = false
+grow_vertical = 0
+text = "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+label_settings = SubResource("LabelSettings_rpyvj")
+horizontal_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 4
 visible_characters_behavior = 1
 
 [node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]

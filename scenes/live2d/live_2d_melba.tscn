@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 
@@ -20,12 +20,12 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = -0.0267998
+ParamAngleX = 0.0249879
 ParamAngleY = 0.0
-ParamAngleZ = -0.107199
-ParamBodyAngleX = -0.0191427
-ParamBodyAngleY = 0.0382854
-ParamBodyAngleZ = -0.0382854
+ParamAngleZ = 0.0481909
+ParamBodyAngleX = 0.00892425
+ParamBodyAngleY = 0.0178485
+ParamBodyAngleZ = 0.0178485
 Param3 = 0.0
 Param4 = 0.0
 Param5 = 0.0
@@ -33,19 +33,19 @@ ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = -0.000630593
-ParamEyeBallY = -0.000630593
+ParamEyeBallX = 0.000535455
+ParamEyeBallY = -0.000535455
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.00153142
-Param6 = 0.00401954
-Param7 = -0.0655683
-Param8 = 0.205326
+ParamMouthOpenY = 0.00071394
+Param6 = -0.00326252
+Param7 = 0.00326252
+Param8 = 0.0
 Param10 = 0.0
-Param11 = 0.0207067
+Param11 = 0.0
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
-Param9 = 1.0
+Param9 = 0.0397907
 Param14 = 0.0
 Param18 = 0.0
 Param21 = 0.0
@@ -64,12 +64,12 @@ ParamBreath = 0.0
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = -5.96046e-07
-Param12 = 2.97785e-05
-Param13 = -2.97785e-05
-Param23 = -0.000302911
-Param22 = 0.000302911
+Param = 0.0657259
+Param2 = -0.176277
+Param12 = -2.41684e-05
+Param13 = 2.41684e-05
+Param23 = -0.000368752
+Param22 = 0.000368752
 Part33 = 1.0
 Part31 = 1.0
 Part29 = 1.0
