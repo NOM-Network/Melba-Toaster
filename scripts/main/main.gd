@@ -25,6 +25,12 @@ extends Node2D
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
 
+# Current song
+var current_song: Dictionary
+var song_playback: AudioStreamPlayback
+var wait_time_triggered := false
+var stop_time_triggered := false
+
 # Defaults
 @onready var prompt_font_size := prompt.label_settings.font_size
 @onready var subtitles_font_size := subtitles.label_settings.font_size
@@ -54,6 +60,19 @@ func _ready():
 
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
+
+func _process(_delta) -> void:
+	if Globals.is_singing and current_song:
+		if not wait_time_triggered or not stop_time_triggered:
+			var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix()
+			pos -= AudioServer.get_output_latency()
+			if pos >= current_song.wait_time and not wait_time_triggered:
+				Globals.start_dancing_motion.emit(current_song.bpm)
+				wait_time_triggered = true
+			if current_song.stop_time != 0.0:
+				if pos >= current_song.stop_time and not stop_time_triggered:
+					Globals.end_dancing_motion.emit()
+					stop_time_triggered = true
 
 func _on_data_received(data: Variant):
 	if Globals.is_paused:
@@ -93,9 +112,6 @@ func _on_data_received(data: Variant):
 
 			_:
 				print("Unhandled data type: ", message)
-
-func _process(_delta: float) -> void:
-	pass
 
 func _on_speech_player_finished():
 	Globals.is_speaking = false
@@ -195,6 +211,8 @@ func _tween_text(label: Label, tween_name: String, start_val: float, final_val: 
 	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.1)
 
 func _on_start_singing(song: Dictionary):
+	current_song = song
+
 	Globals.is_paused = true
 	Globals.is_singing = true
 
@@ -214,11 +232,11 @@ func _on_start_singing(song: Dictionary):
 	var voice_track := _load_mp3(song, "voice")
 	speech_player.stream = voice_track
 
+	wait_time_triggered = false
+	stop_time_triggered = false
+
 	song_player.play()
 	speech_player.play()
-
-	Globals.start_dancing_motion.emit(song.bpm, song.wait_time, song.stop_time)
-	Globals.start_singing_mouth_movement.emit()
 
 func _on_stop_singing():
 	Globals.is_singing = false
@@ -228,6 +246,8 @@ func _on_stop_singing():
 
 	mic.animation = "out"
 	mic.play()
+
+	current_song = {}
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)

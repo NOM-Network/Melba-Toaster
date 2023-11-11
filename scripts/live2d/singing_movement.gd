@@ -24,7 +24,7 @@ func _ready():
 func _on_cubism_init(model: GDCubismUserModel):
 	Globals.start_dancing_motion.connect(_start_motion)
 	Globals.end_dancing_motion.connect(_end_motion)
-	
+
 	var any_param = model.get_parameters()
 
 	for param in any_param:
@@ -33,13 +33,10 @@ func _on_cubism_init(model: GDCubismUserModel):
 		if param.id == param_body_angle_y_name:
 			param_body_angle_y = param
 
-func _start_motion(bpm: float, wait_time: float, stop_time: float) -> void:
+func _start_motion(bpm: float) -> void:
 	singing = true
 	bob_interval = 60.0 / bpm
-	Globals.call_delayed(start_tween, wait_time)
-
-	if stop_time != 0.0:
-		Globals.call_delayed(_end_motion, stop_time - wait_time)
+	start_tween()
 
 func _end_motion() -> void:
 	singing = false

@@ -273,11 +273,9 @@ func _on_singing_toggle_toggled(button_pressed: bool):
 
 func _on_dancing_toggle_toggled(button_pressed: bool):
 	var bpm = %DancingBpm.value as float
-	var wait_time = %DancingWaitTime.value as float
-	var stop_time = %DancingStopTime.value as float
 
 	if button_pressed:
-		Globals.start_dancing_motion.emit(bpm, wait_time, stop_time)
+		Globals.start_dancing_motion.emit(bpm)
 		%DancingToggle.text = ">> Stop <<"
 	else:
 		Globals.end_dancing_motion.emit()
