@@ -58,7 +58,6 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 		var toggle = Globals.toggles[toggle_name]
 		if enabled:
 			toggle.enabled = true 
-			value_tween.tween_property(toggle, "value", 1.0, toggle.duration).finished
 		else: 
 			toggle.enabled = false
 			value_tween.tween_property(toggle, "value", 0.0, toggle.duration)
