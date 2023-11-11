@@ -26,7 +26,9 @@ var param_eye_ball_y: GDCubismParameter
 # For voice analysis
 var spectrum: AudioEffectSpectrumAnalyzerInstance
 var prev_value := 0.0
+var prev_values_amount := 10
 var prev_unaltered_values := []
+var test_array := []
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
@@ -43,8 +45,11 @@ func _on_cubism_init(model: GDCubismUserModel):
 
 	var bus = AudioServer.get_bus_index(audio_bus_name)
 	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
-	prev_unaltered_values.resize(5)
+	prev_unaltered_values.resize(prev_values_amount)
 	prev_unaltered_values.fill(0.0)
+
+	test_array.resize(prev_values_amount - 1)
+	test_array.fill(0.0)
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	var magnitude: float = spectrum.get_magnitude_for_frequency_range(
@@ -90,6 +95,10 @@ func manage_speaking() -> void:
 			param_mouth.value = prev_value - 0.05
 		else:
 			param_mouth.value = prev_value + 0.05
+
+	if prev_unaltered_values[prev_values_amount - 1] != 0.0 \
+		and prev_unaltered_values.slice(0, prev_values_amount - 1) == test_array:
+		Globals.nudge_model.emit()
 
 	prev_value = param_mouth.value
 

@@ -5,6 +5,8 @@ extends Node2D
 # Effects (For override)
 @onready var eye_blink = %EyeBlink
 
+var tween: Tween
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
@@ -15,6 +17,7 @@ func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
+	Globals.nudge_model.connect(nudge_model)
 
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 	set_expression("end")
@@ -30,6 +33,14 @@ func intialize_toggles() -> void:
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
+
+func nudge_model() -> void:
+	if tween:
+		tween.kill()
+
+	tween = create_tween()
+	tween.tween_property(cubism_model, "speed_scale", 2, 0.5).set_ease(Tween.EASE_IN)
+	tween.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
 
 func play_animation(anim_name: String) -> void:
 	Globals.last_animation = anim_name

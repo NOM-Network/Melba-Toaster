@@ -13,6 +13,7 @@ signal start_dancing_motion(bpm: float)
 signal end_dancing_motion()
 signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()
+signal nudge_model()
 
 signal ready_for_speech()
 signal new_speech(prompt: String, text: String)
@@ -81,6 +82,8 @@ func _ready() -> void:
 	}))
 
 	end_dancing_motion.connect(_debug_event.bind("end_dancing_motion"))
+
+	nudge_model.connect(_debug_event.bind("nudge_model"))
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
 
