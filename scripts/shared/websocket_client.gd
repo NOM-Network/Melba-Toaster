@@ -5,6 +5,9 @@ const URL_PATH: String = "%s://%s:%s"
 var socket := WebSocketPeer.new()
 var last_state = WebSocketPeer.STATE_CLOSED
 
+@export var poll_time: float = 0.5
+var _poll_counter: float = 0.0
+
 var secure: String = "wss" if Globals.config.get_backend("secure") else "ws"
 var host: String = Globals.config.get_backend("host")
 var port: String = Globals.config.get_backend("port")
@@ -32,27 +35,30 @@ func _ready() -> void:
 
 	last_state = socket.get_ready_state()
 
-func _process(_delta: float) -> void:
-	if socket.get_ready_state() != socket.STATE_CLOSED:
-		socket.poll()
+func _process(delta: float) -> void:
+	_poll_counter += delta
 
-	var state = socket.get_ready_state()
-	if last_state != state:
-		last_state = state
-		if state == socket.STATE_OPEN:
-			connection_established.emit()
-		elif state == socket.STATE_CLOSED:
-			connection_closed.emit()
-			print_debug("Toaster client: Connection closed! ", socket.get_close_reason())
+	if _poll_counter >= poll_time:
+		_poll_counter = 0.0
+		if socket.get_ready_state() != socket.STATE_CLOSED:
+			socket.poll()
 
-	while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
-		data_received.emit(message_handler())
+		var state = socket.get_ready_state()
+		if last_state != state:
+			last_state = state
+			if state == socket.STATE_OPEN:
+				connection_established.emit()
+			elif state == socket.STATE_CLOSED:
+				connection_closed.emit()
+				print_debug("Toaster client: Connection closed! ", socket.get_close_reason())
+
+		while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
+			data_received.emit(message_handler())
 
 func message_handler() -> Variant:
-	if socket.get_available_packet_count() < 1:
-		return null
-
 	var packet = socket.get_packet()
+
+	print_debug("Incoming text...")
 	if socket.was_string_packet():
 		return {
 			"type": "text",
@@ -60,10 +66,7 @@ func message_handler() -> Variant:
 		}
 
 	print_debug("Incoming buffer...")
-	return {
-		"type": "binary",
-		"message": packet
-	}
+	return packet
 
 func send_message(json: Dictionary) -> void:
 	var message := JSON.stringify(json)
