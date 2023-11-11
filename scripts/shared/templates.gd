@@ -12,6 +12,6 @@ var obs_stats_template = "" \
 
 var godot_stats_template = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
-	+ "Frame Time: [b]{frameTime} MB[/b]\n" \
+	+ "Frame Time: [b]{frameTime} s[/b]\n" \
 	+ "Video Memory Used: [b]{videoMemoryUsed} MB[/b]\n" \
 	+ "Audio Latency: [b]{audioLatency} ms[/b]\n"

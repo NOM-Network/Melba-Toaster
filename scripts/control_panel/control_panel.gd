@@ -236,9 +236,9 @@ func _on_obs_stats_timer_timeout():
 func _on_godot_stats_timer_timeout():
 	var render_data = {
 		"fps": perf_mon("TIME_FPS"),
-		"frameTime": snapped(perf_mon("TIME_PROCESS"), 0.01),
+		"frameTime": snapped(perf_mon("TIME_PROCESS"), 0.0001),
 		"videoMemoryUsed": snapped(perf_mon("RENDER_VIDEO_MEM_USED") / 1024 / 1000, 0.01),
-		"audioLatency": snapped(perf_mon("AUDIO_OUTPUT_LATENCY"), 0.01),
+		"audioLatency": snapped(perf_mon("AUDIO_OUTPUT_LATENCY"), 0.0001),
 	}
 
 	insert_data(render_data, %GodotStats, Templates.godot_stats_template)
