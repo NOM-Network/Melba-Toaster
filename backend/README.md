@@ -1,6 +1,6 @@
 # Mock backend
 
-This folder contains the mock backend for the Toaster project. It just loops through two sound files over and over.
+This folder contains the mock backend for the Toaster project. It just loops through two sound files with prompt/response over and over.
 
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 
@@ -10,11 +10,11 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 2. Execute this command to install deps:
 
     ```bash
-    pip install asyncio websockets json
+    pip install -r reqs.txt
     ```
 
 3. Run the following command to start the backend:
 
     ```bash
-    python server.py
+    python backend.py
     ```
