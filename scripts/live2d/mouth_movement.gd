@@ -4,8 +4,8 @@ class_name MouthMovement
 @export var mouth_movement := MouthMovement # MouthMovement node
 @export var audio_bus_name := "Voice"
 @export var min_db := 60.0
-@export var min_voice_freq := 0
-@export var max_voice_freq := 3200
+@export var min_voice_freq := 200
+@export var max_voice_freq := 800
 
 # Parameter Names
 @export_category("Param Names")
