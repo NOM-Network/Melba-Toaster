@@ -34,9 +34,9 @@ var toggles := {
 
 var animations := {
 	"end": {"id": -1, "override": "none"},
-	"idle": {"id": 0, "override": "none"},
-	"sleep": {"id": 1, "override": "eye_blink"},
-	"confused": {"id": 2, "override": "eye_blink"}
+	"idle": {"id": 0, "override": "none", "duration": 3.7},
+	"sleep": {"id": 1, "override": "eye_blink", "duration": 10.3},
+	"confused": {"id": 2, "override": "eye_blink", "duration": 4.0}
 }
 var last_animation := ""
 

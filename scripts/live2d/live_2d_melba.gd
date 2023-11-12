@@ -2,8 +2,13 @@ extends Node2D
 
 @export var cubism_model: GDCubismUserModel
 
-# Effects (For override)
+# reagion Effects
+
 @onready var eye_blink = %EyeBlink
+
+# endregion
+
+@onready var anim_timer = $AnimTimer
 
 var tween: Tween
 
@@ -19,7 +24,7 @@ func connect_signals() -> void:
 	Globals.set_toggle.connect(set_toggle)
 	Globals.nudge_model.connect(nudge_model)
 
-	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
+	anim_timer.timeout.connect(_on_animation_finished)
 	set_expression("end")
 	play_animation("idle")
 
@@ -49,6 +54,8 @@ func play_animation(anim_name: String) -> void:
 		reset_overrides()
 		cubism_model.stop_motion()
 	elif Globals.animations.has(anim_name):
+		anim_timer.wait_time = Globals.animations[anim_name]["duration"]
+		anim_timer.start()
 		var anim_id = Globals.animations[anim_name]["id"]
 		var override = Globals.animations[anim_name]["override"]
 		match override:
@@ -78,18 +85,9 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 func reset_overrides():
 	eye_blink.active = true
 
-# DOESN'T run when motion has been forcibly stoped
-func _on_gd_cubism_user_model_motion_finished():
-	reset_overrides()
-	if Globals.last_animation != "idle":
-		play_animation("idle")
+func _on_animation_finished() -> void:
+	reset_overrides() 
+	play_animation("idle")
 
-func _on_idle_timer_timeout():
-	if Globals.last_animation == "idle":
-		play_animation("idle")
-
-# DOES in run when audio has been forcibly stoped
-func _on_speech_done():
+func _on_speech_done() -> void:
 	pass
-
-
