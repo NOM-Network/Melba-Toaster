@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 
@@ -20,32 +20,32 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Bread"
 anim_motion = "_0"
-ParamAngleX = 0.0249879
-ParamAngleY = 0.0
-ParamAngleZ = 0.0481909
-ParamBodyAngleX = 0.00892425
-ParamBodyAngleY = 0.0178485
-ParamBodyAngleZ = 0.0178485
-Param3 = 0.0
+ParamAngleX = -7.09008
+ParamAngleY = -3.99663
+ParamAngleZ = -5.02673
+ParamBodyAngleX = 1.02092
+ParamBodyAngleY = 0.0418528
+ParamBodyAngleZ = -0.0418528
+Param3 = -1.73436
 Param4 = 0.0
 Param5 = 0.0
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
 ParamEyeRSmile = 0.0
-ParamEyeBallX = 0.000535455
-ParamEyeBallY = -0.000535455
+ParamEyeBallX = -0.000725669
+ParamEyeBallY = -0.000725669
 ParamMouthForm = 0.0
-ParamMouthOpenY = 0.00071394
-Param6 = -0.00326252
-Param7 = 0.00326252
-Param8 = 0.0
-Param10 = 0.0
-Param11 = 0.0
+ParamMouthOpenY = 0.00167411
+Param6 = -0.0784267
+Param7 = 0.016342
+Param8 = -0.00104473
+Param10 = -0.319348
+Param11 = 0.0026841
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
-Param9 = 0.0397907
+Param9 = 1.0
 Param14 = 0.0
 Param18 = 0.0
 Param21 = 0.0
@@ -60,16 +60,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0
+ParamBreath = 6.61165e-05
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 0.0657259
-Param2 = -0.176277
-Param12 = -2.41684e-05
-Param13 = 2.41684e-05
-Param23 = -0.000368752
-Param22 = 0.000368752
+Param = -3.57628e-07
+Param2 = 0.0
+Param12 = 0.000734244
+Param13 = 0.000447666
+Param23 = -0.000162244
+Param22 = -1.54131e-05
 Part33 = 1.0
 Part31 = 1.0
 Part29 = 1.0
@@ -134,3 +134,9 @@ script = ExtResource("1_2m8bk")
 unique_name_in_owner = true
 wait_time = 2.5
 autostart = true
+
+[node name="IdleTimer" type="Timer" parent="."]
+wait_time = 3.7
+autostart = true
+
+[connection signal="timeout" from="IdleTimer" to="." method="_on_idle_timer_timeout"]

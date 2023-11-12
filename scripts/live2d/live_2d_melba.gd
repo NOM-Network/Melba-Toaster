@@ -21,6 +21,7 @@ func connect_signals() -> void:
 
 	cubism_model.motion_finished.connect(_on_gd_cubism_user_model_motion_finished)
 	set_expression("end")
+	play_animation("idle")
 
 func intialize_toggles() -> void:
 	# TODO: Tween values not opacities so that everything can fade in / fade out.
@@ -80,8 +81,17 @@ func reset_overrides():
 # DOESN'T run when motion has been forcibly stoped
 func _on_gd_cubism_user_model_motion_finished():
 	reset_overrides()
-	play_animation("idle")
+	if Globals.last_animation != "idle":
+		print("BACK TO IDLE")
+		play_animation("idle")
+
+func _on_idle_timer_timeout():
+	print("TIMEOUT!")
+	if Globals.last_animation == "idle":
+		play_animation("idle")
 
 # DOES in run when audio has been forcibly stoped
 func _on_speech_done():
 	pass
+
+
