@@ -23,7 +23,6 @@ driver/output_latency=1024
 [autoload]
 
 Globals="*res://scripts/shared/globals.gd"
-Templates="*res://scripts/shared/templates.gd"
 
 [display]
 

@@ -1,0 +1,67 @@
+extends Node
+class_name CpHelpers
+
+static var overrides := ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+
+static func construct_model_control_buttons(
+	type: String,
+	parent: Node,
+	controls: Dictionary,
+	target_call = null
+) -> void:
+	var label = Label.new()
+	label.text = type.capitalize()
+	parent.add_child(label)
+
+	var callback: Signal
+	var button_type := Button
+	match type:
+		"animations":
+			callback = Globals.play_animation
+
+		"expressions":
+			callback = Globals.set_expression
+
+		"toggles":
+			callback = Globals.play_animation
+			button_type = CheckButton
+
+	for control in controls:
+		var button = button_type.new()
+		button.text = control
+		button.name = type.capitalize() + control.to_pascal_case()
+
+		if type == "toggles":
+			button.button_pressed = controls[control].enabled
+			button.pressed.connect(target_call.bind(button))
+		else:
+			button.pressed.connect(func (): callback.emit(control))
+
+		parent.add_child(button)
+
+static func change_toggle_state(
+	toggle: Button,
+	button_pressed: bool,
+	enabled_text: String,
+	disabled_text: String,
+	apply_color = true
+):
+	toggle.text = enabled_text if button_pressed else disabled_text
+
+	if apply_color:
+		apply_color_override(toggle, button_pressed, Color.RED)
+
+static func apply_color_override(
+	node: Node,
+	state: bool,
+	active_color: Color,
+	inactive_color = null,
+):
+	for i in overrides:
+		if not state and not inactive_color:
+			node.remove_theme_color_override(i)
+		else:
+			node.add_theme_color_override(i, active_color if state else inactive_color)
+
+static func change_status_color(node: Node, active: bool) -> void:
+	node.get_theme_stylebox("panel").bg_color = Color.GREEN if active else Color.RED

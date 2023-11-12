@@ -24,50 +24,48 @@ signal cancel_speech()
 
 # region LIVE2D DATA
 
-var toggles := {
+static var toggles := {
 	"toast": Toggle.new("Param9", 0.5),
 	"void": Toggle.new("Param14", 0.5),
-	"tears": Toggle.new( "Param20", 0.5),
+	"tears": Toggle.new("Param20", 0.5),
 	"toa": Toggle.new("Param21", 1.0),
 	"confused": Toggle.new("Param18", 0.5)
 }
 
-var animations := {
+static var animations := {
 	"end": {"id": -1, "override": "none"},
-	"idle": {"id": 0, "override": "none", "duration": 3.7},
+	"idle": {"id": 0, "override": "none", "duration": 3.5},
 	"sleep": {"id": 1, "override": "eye_blink", "duration": 10.3},
 	"confused": {"id": 2, "override": "eye_blink", "duration": 4.0}
 }
-var last_animation := ""
+static var last_animation := ""
 
-var expressions := {
+static var expressions := {
 	"end": {"id": "none"}
 }
-var last_expression := ""
+static var last_expression := ""
 
 # endregion
 
 # region MELBA STATE
 
-var is_paused := true
-var is_speaking := false
-var is_singing := false
-var debug_mode := true
-var config := ToasterConfig.new()
+static var is_paused := true
+static var is_speaking := false
+static var is_singing := false
+static var debug_mode := false
+static var config := ToasterConfig.new()
 
 # endregion
 
-func _ready() -> void:
-	# region EVENT BUS DEBUG
+# region EVENT BUS DEBUG
 
+func _ready() -> void:
 	play_animation.connect(func(anim_name): _debug_event("play_animation", {
 		"name": anim_name,
 	}))
-
 	set_expression.connect(func(expression_name): _debug_event("set_expression", {
 		"name": expression_name,
 	}))
-
 	set_toggle.connect(func(toggle_name, enabled): _debug_event("set_toggle", {
 		"name": toggle_name,
 		"enabled": enabled
@@ -76,27 +74,24 @@ func _ready() -> void:
 	start_singing.connect(func(song): _debug_event("start_singing", {
 		"song": song
 	}))
+	stop_singing.connect(_debug_event.bind("stop_singing"))
 
 	start_dancing_motion.connect(func(bpm): _debug_event("start_dancing_motion", {
 		"bpm": bpm
 	}))
-
 	end_dancing_motion.connect(_debug_event.bind("end_dancing_motion"))
 
+	start_singing_mouth_movement.connect(_debug_event.bind("start_singing_mouth_movement"))
+	end_singing_mouth_movement.connect(_debug_event.bind("end_singing_mouth_movement"))
 	nudge_model.connect(_debug_event.bind("nudge_model"))
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
-
 	new_speech.connect(func(prompt, text): _debug_event("new_speech", {
 		"prompt": prompt,
 		"text": text
 	}))
-
 	speech_done.connect(_debug_event.bind("speech_done"))
-
 	cancel_speech.connect(_debug_event.bind("cancel_speech"))
-
-	# endregion
 
 func _debug_event(eventName: String, data: Dictionary = {}) -> void:
 	if not debug_mode:
@@ -107,9 +102,4 @@ func _debug_event(eventName: String, data: Dictionary = {}) -> void:
 	else:
 		print_debug("EVENT BUS: '%s' called" % [eventName])
 
-# region HELPERS
-
-func call_delayed(callable: Callable, delay: float):
-	get_tree().create_timer(delay).connect("timeout", callable)
-
-# endredion
+# endregion
