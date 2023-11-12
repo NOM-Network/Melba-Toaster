@@ -82,11 +82,9 @@ func reset_overrides():
 func _on_gd_cubism_user_model_motion_finished():
 	reset_overrides()
 	if Globals.last_animation != "idle":
-		print("BACK TO IDLE")
 		play_animation("idle")
 
 func _on_idle_timer_timeout():
-	print("TIMEOUT!")
 	if Globals.last_animation == "idle":
 		play_animation("idle")
 
