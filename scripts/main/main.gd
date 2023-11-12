@@ -4,6 +4,13 @@ extends Node2D
 @export_range(0.5, 10, 0.01) var time_before_cleanout: float = 3.0
 @export_range(0.5, 10, 0.01) var time_before_ready: float = 2.0
 
+@export_category("Model")
+@export var model: Node2D
+@onready var model_sprite := model.get_node("%Sprite2D")
+@onready var user_model := model.get_node("%GDCubismUserModel")
+@onready var model_target_point := model.get_node("%TargetPoint")
+var pressed: bool
+
 @export_category("Nodes")
 @export var client: WebSocketClient
 @export var control_panel: Window
@@ -16,8 +23,6 @@ extends Node2D
 @export var speech_player: AudioStreamPlayer
 @export var song_player: AudioStreamPlayer
 
-@onready var voice_bus := AudioServer.get_bus_index("Voice")
-
 # Tweens
 @onready var tweens := {}
 
@@ -25,7 +30,8 @@ extends Node2D
 var subtitles_cleanout := false
 var subtitles_duration := 0.0
 
-# Current song
+# Song-related
+@onready var voice_bus := AudioServer.get_bus_index("Voice")
 var current_song: Dictionary
 var song_playback: AudioStreamPlayback
 var wait_time_triggered := false
@@ -73,6 +79,24 @@ func _process(_delta) -> void:
 				if pos >= current_song.stop_time and not stop_time_triggered:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
+
+func _input(event):
+	if event as InputEventMouseButton:
+		pressed = event.is_pressed()
+
+	if event as InputEventMouseMotion:
+		if pressed == true:
+			var local_pos: Vector2 = model_sprite.to_local(event.position)
+			print(local_pos)
+
+			var render_size: Vector2 = Vector2(
+				float(user_model.size.x) * model_sprite.scale.x,
+				float(user_model.size.y) * model_sprite.scale.y * -1.0
+			) * 0.5
+			local_pos /= render_size
+			model_target_point.set_target(local_pos)
+		else:
+			model_target_point.set_target(Vector2.ZERO)
 
 func _on_data_received(data: Variant):
 	if Globals.is_paused:

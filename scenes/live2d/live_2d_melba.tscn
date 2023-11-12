@@ -130,6 +130,9 @@ script = ExtResource("4_xiarh")
 [node name="MouthMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
 script = ExtResource("1_2m8bk")
 
+[node name="TargetPoint" type="GDCubismEffectTargetPoint" parent="Sprite2D/GDCubismUserModel"]
+unique_name_in_owner = true
+
 [node name="BlinkTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 2.5

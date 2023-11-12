@@ -372,8 +372,9 @@ shadow_size = 0
 shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "prompt", "subtitles", "mic", "cancel_sound", "speech_player", "song_player")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("model", "client", "control_panel", "prompt", "subtitles", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
+model = NodePath("Live2DMelba")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 prompt = NodePath("Prompt")

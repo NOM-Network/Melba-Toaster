@@ -86,7 +86,7 @@ func reset_overrides():
 	eye_blink.active = true
 
 func _on_animation_finished() -> void:
-	reset_overrides() 
+	reset_overrides()
 	if Globals.last_animation != "end":
 		play_animation("idle")
 
