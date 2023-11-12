@@ -87,7 +87,8 @@ func reset_overrides():
 
 func _on_animation_finished() -> void:
 	reset_overrides() 
-	play_animation("idle")
+	if Globals.last_animation != "end":
+		play_animation("idle")
 
 func _on_speech_done() -> void:
 	pass
