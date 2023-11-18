@@ -8,7 +8,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 ## How to use
 
-1. Install the latest minor version of [Godot 4.1](https://godotengine.org/download/windows/) (we are currently using [4.1.3 RC1](https://godotengine.org/article/release-candidate-godot-4-1-3-rc-1/#downloads)).
+1. Install the latest minor version of [Godot 4.2](https://godotengine.org/download/windows/) (we are currently using [4.2 RC1](https://godotengine.org/article/release-candidate-godot-4-2-rc-1/#downloads)).
 
 2. Clone this repo via Git:
 
