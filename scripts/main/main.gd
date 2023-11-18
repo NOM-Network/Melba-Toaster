@@ -177,7 +177,7 @@ func _print_prompt(text):
 		prompt.text = ""
 
 	while prompt.get_line_count() > prompt.get_visible_line_count():
-		prompt.label_settings.font_size -= 3
+		prompt.label_settings.font_size -= 1
 
 	_tween_text(prompt, "prompt", 0.0, 1.0, 1.0)
 
@@ -188,7 +188,7 @@ func _print_subtitles(text):
 		subtitles.text = "tsh mebla"
 
 	while subtitles.get_line_count() > subtitles.get_visible_line_count():
-		subtitles.label_settings.font_size -= 3
+		subtitles.label_settings.font_size -= 1
 
 	_tween_text(subtitles, "subtitles", 0.0, 1.0, subtitles_duration)
 
@@ -232,7 +232,7 @@ func _tween_text(label: Label, tween_name: String, start_val: float, final_val: 
 	label.visible_ratio = start_val
 
 	tweens[tween_name] = create_tween()
-	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.2)
+	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.05)
 
 func _on_start_singing(song: Dictionary):
 	current_song = song
@@ -243,7 +243,7 @@ func _on_start_singing(song: Dictionary):
 	mic.animation = "in"
 	mic.play()
 
-	subtitles_duration = 3.0
+	subtitles_duration = song.wait_time if song.wait_time != 0.0 else 3.0
 	_print_prompt("")
 	_print_subtitles("{artist}\n\"{name}\"".format(song))
 
