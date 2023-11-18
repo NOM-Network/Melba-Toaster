@@ -1,8 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://bjp2bck62tl2m"]
+[gd_scene load_steps=14 format=3 uid="uid://bjp2bck62tl2m"]
 
 [ext_resource type="Script" path="res://scripts/control_panel/control_panel.gd" id="1_rhl0v"]
 [ext_resource type="Script" path="res://scripts/control_panel/obs_websocket_client.gd" id="2_1sf50"]
 [ext_resource type="Texture2D" uid="uid://cobm5phwndmwn" path="res://assets/control_panel/toast.png" id="3_ewt3g"]
+
+[sub_resource type="Theme" id="Theme_lkaxc"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[sub_resource type="Theme" id="Theme_bb14g"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crp4d"]
 corner_radius_top_left = 4
@@ -16,6 +28,38 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="Theme" id="Theme_4c3ua"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[sub_resource type="Theme" id="Theme_t6gb4"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[sub_resource type="Theme" id="Theme_16b5c"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_1ht7x"]
+
+[sub_resource type="Theme" id="Theme_ed0ip"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[sub_resource type="Theme" id="Theme_1fh6k"]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
 [node name="ControlPanel" type="Window" node_paths=PackedStringArray("obs", "current_prompt", "current_speech", "debug_button", "cancel_button", "pause_button", "godot_stats_timer", "obs_stats_timer")]
 disable_3d = true
 title = "Control Panel - Toaster"
@@ -25,11 +69,11 @@ min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
 obs = NodePath("ObsWebSocketClient")
-current_prompt = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentPrompt")
-current_speech = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
-debug_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode")
-cancel_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
-pause_button = NodePath("Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
+current_prompt = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentPrompt")
+current_speech = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/CurrentSpeech")
+debug_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode")
+cancel_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
+pause_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
 godot_stats_timer = NodePath("Timers/GodotStatsTimer")
 obs_stats_timer = NodePath("Timers/ObsStatsTimer")
 
@@ -65,207 +109,200 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme = SubResource("Theme_lkaxc")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Margins"]
 layout_mode = 2
 theme_override_constants/autohide = 0
 
-[node name="SpeechBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
+[node name="LeftPanel" type="VBoxContainer" parent="Margins/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SpeechBoxPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
+[node name="SpeechBoxPanel" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SpeechBoxContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel"]
+[node name="SpeechBoxContainer" type="MarginContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme = SubResource("Theme_bb14g")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer"]
 layout_mode = 2
 
-[node name="Buttons" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
+[node name="Buttons" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="DebugMode" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+[node name="DebugMode" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 toggle_mode = true
 text = "Debug Mode"
 
-[node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+[node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 text = "Cancel (F12)"
 
-[node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+[node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 toggle_mode = true
 text = "Pause (F9)"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="CurrentPrompt" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="CurrentPrompt" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 text = "What is your opinion on pinapple on pizza?"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="CurrentSpeech" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Eh, I gotta admit mate, I'm not the biggest fan of pineapple on pizza. It's just not my thing. Sure it has a sweet taste, but it just doesn't mix well with the savoury flavour of the cheese and the tomato. But hey, I ain't gonna be a hater, mate! To each their own, am I right? Some people might like pineapple on their pizza, and that's totally fine with me. I'll just stick to my jam, cheese, and peanut butter toast. (and yes, I do love to eat my peanut butter and jam toast!)"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_crp4d")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/ObsClientStatus"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/ObsClientStatus"]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "OBS Client"
 horizontal_alignment = 1
 
-[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_fief3")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/BackendStatus"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/BackendStatus"]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "Backend"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ModelControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/SpeechBoxContainer"]
+[node name="ModelControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme = SubResource("Theme_4c3ua")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ModelControls" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="Animations" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+[node name="Animations" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Animations"
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
 
-[node name="Expressions" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+[node name="Expressions" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Expressions"
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
 text = "Test"
 
-[node name="Toggles" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+[node name="Toggles" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
+[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
 layout_mode = 2
 text = "Test 1"
 
-[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
+[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
 layout_mode = 2
 text = "Test  2"
 
-[node name="Dancing" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+[node name="Dancing" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 layout_mode = 2
 text = "Dancing"
 
-[node name="DancingBpm" type="SpinBox" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
+[node name="DancingBpm" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "BPM (beats per minute)"
@@ -275,21 +312,21 @@ value = 128.0
 alignment = 1
 custom_arrow_step = 0.1
 
-[node name="DancingToggle" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
+[node name="DancingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "Start"
 
-[node name="Singing" type="HFlowContainer" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+[node name="Singing" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 layout_mode = 2
 text = "Singing"
 
-[node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+[node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 1
@@ -297,31 +334,28 @@ selected = 0
 popup/item_0/text = "money machine"
 popup/item_0/id = 0
 
-[node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+[node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "Start"
 
-[node name="ObsControlsContainer" type="VBoxContainer" parent="Margins/HSplitContainer"]
+[node name="RightPanel" type="VBoxContainer" parent="Margins/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
+[node name="ObsControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme = SubResource("Theme_t6gb4")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="ObsStreamControl" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsStreamControl" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"1"
@@ -329,89 +363,125 @@ toggle_mode = true
 keep_pressed_outside = true
 text = "Start Stream"
 
-[node name="ScenesLabel" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ScenesLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Scenes"
 horizontal_alignment = 1
 
-[node name="ObsScenes" type="HFlowContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsScenes" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
 layout_mode = 2
 text = "Test"
 
-[node name="InputsLabel" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="InputsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Inputs"
 horizontal_alignment = 1
 
-[node name="ObsInputs" type="HFlowContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsInputs" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
 layout_mode = 2
 text = "Test"
 
-[node name="ReconnectButton" type="Button" parent="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ReconnectButton" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Reconnect"
 
-[node name="StreamStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
+[node name="SceneController" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/RightPanel/SceneController"]
+layout_mode = 2
+theme = SubResource("Theme_16b5c")
+
+[node name="Positions" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="PositionsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+layout_mode = 2
+text = "Positions"
+
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+layout_mode = 2
+toggle_mode = true
+text = "Test"
+
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_1ht7x")
+text = "Test"
+
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_1ht7x")
+text = "Test"
+
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_1ht7x")
+text = "Test"
+
+[node name="StreamStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/RightPanel/StreamStatsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme = SubResource("Theme_ed0ip")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/RightPanel/StreamStatsPanel/MarginContainer"]
 layout_mode = 2
 text = "OBS Stats"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="StreamStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/StreamStatsPanel/MarginContainer"]
+[node name="StreamStats" type="RichTextLabel" parent="Margins/HSplitContainer/RightPanel/StreamStatsPanel/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -426,24 +496,21 @@ totalFrames / skippedFrames: 420
 incoming / outgoingMessages: 69/420"
 fit_content = true
 
-[node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/ObsControlsContainer"]
+[node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplitContainer/RightPanel/ObsStatsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme = SubResource("Theme_1fh6k")
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel/MarginContainer"]
+[node name="Label" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsStatsPanel/MarginContainer"]
 layout_mode = 2
 text = "Godot Stats"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/ObsControlsContainer/ObsStatsPanel/MarginContainer"]
+[node name="GodotStats" type="RichTextLabel" parent="Margins/HSplitContainer/RightPanel/ObsStatsPanel/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 bbcode_enabled = true
@@ -479,13 +546,13 @@ autostart = true
 [node name="ObsStatsTimer" type="Timer" parent="Timers"]
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
-[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode" to="." method="_on_debug_mode_button_toggled"]
-[connection signal="pressed" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
-[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
-[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
-[connection signal="toggled" from="Margins/HSplitContainer/SpeechBoxContainer/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
-[connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
-[connection signal="pressed" from="Margins/HSplitContainer/ObsControlsContainer/ControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
+[connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode" to="." method="_on_debug_mode_button_toggled"]
+[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
+[connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
+[connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
+[connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
+[connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
+[connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="Timers/GodotStatsTimer" to="." method="_on_godot_stats_timer_timeout"]
 [connection signal="timeout" from="Timers/ObsStatsTimer" to="." method="_on_obs_stats_timer_timeout"]

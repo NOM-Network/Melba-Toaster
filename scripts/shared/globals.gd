@@ -15,12 +15,29 @@ signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()
 signal nudge_model()
 
+signal change_position(name: String)
+
 signal ready_for_speech()
 signal new_speech(prompt: String, text: String)
 signal speech_done()
 signal cancel_speech()
 
 # endregion
+
+# region SCENE DATA
+
+static var positions := {
+	# use Tulpes - [ position, scale ]
+	"default": {
+		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
+		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+	},
+	"gaming": {
+		"model": [ Vector2(240, 1307), Vector2(0.74, 0.74) ],
+		"lower_third": [ Vector2(457, 794), Vector2(0.777, 0.777) ],
+	},
+}
+static var active_position := "default"
 
 # region LIVE2D DATA
 
@@ -84,6 +101,10 @@ func _ready() -> void:
 	start_singing_mouth_movement.connect(_debug_event.bind("start_singing_mouth_movement"))
 	end_singing_mouth_movement.connect(_debug_event.bind("end_singing_mouth_movement"))
 	nudge_model.connect(_debug_event.bind("nudge_model"))
+
+	change_position.connect(func(position): _debug_event("change_position", {
+		"position": position
+	}))
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
 	new_speech.connect(func(prompt, text): _debug_event("new_speech", {

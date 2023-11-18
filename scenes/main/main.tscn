@@ -372,18 +372,16 @@ shadow_size = 0
 shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("model", "client", "control_panel", "prompt", "subtitles", "mic", "cancel_sound", "speech_player", "song_player")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("model", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
 model = NodePath("Live2DMelba")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
-prompt = NodePath("Prompt")
-subtitles = NodePath("Subtitles")
+lower_third = NodePath("LowerThird")
 mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
-metadata/_edit_horizontal_guides_ = [1050.0]
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -393,7 +391,7 @@ initial_position = 3
 current_screen = 0
 
 [node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
-position = Vector2(656, 1146)
+position = Vector2(737, 1124)
 
 [node name="Microphone" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 408)
@@ -401,16 +399,22 @@ sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
 
-[node name="Prompt" type="Label" parent="."]
+[node name="LowerThird" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 34.0
+offset_top = 722.0
+offset_right = 1884.0
+offset_bottom = 1060.0
+
+[node name="Prompt" type="Label" parent="LowerThird"]
 clip_contents = true
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 60.0
-offset_top = 694.0
-offset_right = 1360.0
-offset_bottom = 804.0
-grow_vertical = 0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = -494.0
+offset_bottom = 118.0
+grow_horizontal = 2
 text = "cjmaxik: test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string"
 label_settings = SubResource("LabelSettings_8wgd5")
 vertical_alignment = 2
@@ -418,16 +422,14 @@ autowrap_mode = 3
 text_overrun_behavior = 3
 visible_characters_behavior = 1
 
-[node name="Subtitles" type="Label" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
+[node name="Subtitles" type="Label" parent="LowerThird"]
+layout_mode = 1
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 60.0
-offset_top = 820.0
-offset_right = 1860.0
-offset_bottom = 1075.0
+offset_top = -200.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"

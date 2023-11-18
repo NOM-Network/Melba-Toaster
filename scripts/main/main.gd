@@ -14,8 +14,7 @@ var pressed: bool
 @export_category("Nodes")
 @export var client: WebSocketClient
 @export var control_panel: Window
-@export var prompt: Label
-@export var subtitles: Label
+@export var lower_third: Control
 @export var mic: AnimatedSprite2D
 
 @export_group("Sound Bus")
@@ -38,31 +37,30 @@ var wait_time_triggered := false
 var stop_time_triggered := false
 
 # Defaults
-@onready var prompt_font_size := prompt.label_settings.font_size
-@onready var subtitles_font_size := subtitles.label_settings.font_size
+@onready var prompt: Label = lower_third.get_node("Prompt")
+@onready var subtitles: Label = lower_third.get_node("Subtitles")
+
+var prompt_font_size: int
+var subtitles_font_size: int
 
 func _ready():
+	# Defaults
+	prompt_font_size = prompt.label_settings.font_size
+	subtitles_font_size = subtitles.label_settings.font_size
+
+	prompt.text = ""
+	subtitles.text = ""
+
 	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
-	# Defaults
-	prompt.text = ""
-	subtitles.text = ""
-
 	# Signals
-	Globals.new_speech.connect(_on_new_speech)
-	Globals.cancel_speech.connect(_on_cancel_speech)
-	Globals.start_singing.connect(_on_start_singing)
-	Globals.stop_singing.connect(_on_stop_singing)
-
-	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
+	connect_signals()
+	Globals.change_position.emit(Globals.active_position)
 
 	# Waiting for the backend
-	await client.connection_established
-	control_panel.backend_connected()
-	client.data_received.connect(_on_data_received)
-	client.connection_closed.connect(_on_connection_closed)
+	await connect_backend()
 
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
@@ -87,7 +85,6 @@ func _input(event):
 	if event as InputEventMouseMotion:
 		if pressed == true:
 			var local_pos: Vector2 = model_sprite.to_local(event.position)
-			print(local_pos)
 
 			var render_size: Vector2 = Vector2(
 				float(user_model.size.x) * model_sprite.scale.x,
@@ -97,6 +94,21 @@ func _input(event):
 			model_target_point.set_target(local_pos)
 		else:
 			model_target_point.set_target(Vector2.ZERO)
+
+func connect_signals() -> void:
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
+	Globals.change_position.connect(_on_change_position)
+
+	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
+
+func connect_backend() -> void:
+	await client.connection_established
+	control_panel.backend_connected()
+	client.data_received.connect(_on_data_received)
+	client.connection_closed.connect(_on_connection_closed)
 
 func _on_data_received(data: Variant):
 	if Globals.is_paused:
@@ -290,3 +302,18 @@ func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	stream.data = file.get_buffer(file.get_length())
 	stream.bpm = song.bpm
 	return stream
+
+func _on_change_position(new_position: String) -> void:
+	if Globals.positions.has(new_position):
+		var positions: Dictionary = Globals.positions[new_position]
+
+		for p in positions:
+			var node = get(p)
+
+			if tweens.has(p):
+				tweens[p].kill()
+
+			tweens[p] = create_tween().set_trans(Tween.TRANS_BACK)
+			tweens[p].set_parallel()
+			tweens[p].tween_property(node, "position", positions[p][0], 1)
+			tweens[p].tween_property(node, "scale", positions[p][1], 1)

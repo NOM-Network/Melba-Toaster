@@ -31,6 +31,7 @@ func _ready() -> void:
 	debug_button.button_pressed = Globals.debug_mode
 	pause_button.button_pressed = Globals.is_paused
 
+	generate_position_controls()
 	generate_model_controls()
 	generate_singing_controls()
 
@@ -61,7 +62,33 @@ func connect_signals() -> void:
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 
+	Globals.change_position.connect(_on_change_position)
+
 	print_debug("Control Panel: connected signals")
+
+func generate_position_controls() -> void:
+	var positions := %Positions
+	for n in positions.get_children():
+		n.queue_free()
+
+	var label = Label.new()
+	label.text = "Positions"
+	positions.add_child(label)
+
+	var button_group = ButtonGroup.new()
+	button_group.pressed.connect(_on_position_button_pressed)
+
+	for p in Globals.positions:
+		var button = Button.new()
+		button.text = p
+		button.toggle_mode = true
+		button.button_pressed = p == "default"
+		button.name = "Position" + p.to_pascal_case()
+		button.button_group = button_group
+		positions.add_child(button)
+
+func _on_position_button_pressed(button: BaseButton) -> void:
+	Globals.change_position.emit(button.text)
 
 func generate_singing_controls():
 	var menu := %SingingMenu
@@ -258,6 +285,23 @@ func _on_obs_stream_control_pressed():
 
 func _on_scene_button_pressed(button):
 	obs.send_command("SetCurrentProgramScene", { "sceneName": button.text })
+
+	match button.text:
+		"Main", "Song":
+			await get_tree().create_timer(0.2).timeout
+			Globals.change_position.emit("default")
+
+		"Debut":
+			await get_tree().create_timer(0.2).timeout
+			Globals.change_position.emit("gaming")
+
+func _on_change_position(new_position: String) -> void:
+	var buttons := %Positions
+
+	for b in buttons.get_children():
+		if b.text == new_position:
+			b.button_pressed = true
+			return
 
 func generate_scene_buttons(data):
 	var active_scene = null
