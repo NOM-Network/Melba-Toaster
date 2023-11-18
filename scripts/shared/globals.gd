@@ -16,6 +16,7 @@ signal end_singing_mouth_movement()
 signal nudge_model()
 
 signal change_position(name: String)
+signal change_scene(scene: String)
 
 signal ready_for_speech()
 signal new_speech(prompt: String, text: String)
@@ -37,7 +38,6 @@ static var positions := {
 		"lower_third": [ Vector2(457, 794), Vector2(0.777, 0.777) ],
 	},
 }
-static var active_position := "default"
 
 # region LIVE2D DATA
 
@@ -104,6 +104,9 @@ func _ready() -> void:
 
 	change_position.connect(func(position): _debug_event("change_position", {
 		"position": position
+	}))
+	change_scene.connect(func(scene): _debug_event("change_scene", {
+		"scene": scene
 	}))
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))

@@ -63,6 +63,7 @@ func connect_signals() -> void:
 	Globals.stop_singing.connect(_on_stop_singing)
 
 	Globals.change_position.connect(_on_change_position)
+	Globals.change_scene.connect(_on_change_scene)
 
 	print_debug("Control Panel: connected signals")
 
@@ -229,14 +230,15 @@ func _on_start_singing(_song: Dictionary):
 	_on_pause_speech_toggled(true, false) # TODO: Use emit events
 
 func _on_stop_singing():
-	pass
+	%SingingToggle.button_pressed = false
+	_on_singing_toggle_toggled(false, false)
 
-func _on_singing_toggle_toggled(button_pressed: bool):
+func _on_singing_toggle_toggled(button_pressed: bool, emit = true):
 	if button_pressed:
 		var song: Dictionary = Globals.config.songs[%SingingMenu.selected]
-		Globals.start_singing.emit(song)
+		if emit: Globals.start_singing.emit(song)
 	else:
-		Globals.stop_singing.emit()
+		if emit: Globals.stop_singing.emit()
 
 	CpHelpers.change_toggle_state(
 		%SingingToggle,
@@ -283,16 +285,19 @@ func update_stream_control_button():
 func _on_obs_stream_control_pressed():
 	obs.send_command("ToggleStream")
 
+func _on_change_scene(scene_name: String) -> void:
+	obs.send_command("SetCurrentProgramScene", { "sceneName": scene_name })
+
 func _on_scene_button_pressed(button):
-	obs.send_command("SetCurrentProgramScene", { "sceneName": button.text })
+	Globals.change_scene.emit(button.text)
 
 	match button.text:
 		"Main", "Song":
-			await get_tree().create_timer(0.2).timeout
+			# await get_tree().create_timer(0.2).timeout
 			Globals.change_position.emit("default")
 
 		"Debut":
-			await get_tree().create_timer(0.2).timeout
+			# await get_tree().create_timer(0.2).timeout
 			Globals.change_position.emit("gaming")
 
 func _on_change_position(new_position: String) -> void:

@@ -57,7 +57,7 @@ func _ready():
 
 	# Signals
 	connect_signals()
-	Globals.change_position.emit(Globals.active_position)
+	Globals.change_position.emit("default")
 
 	# Waiting for the backend
 	await connect_backend()
@@ -77,6 +77,7 @@ func _process(_delta) -> void:
 				if pos >= current_song.stop_time and not stop_time_triggered:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
+					trigger_cleanout()
 
 func _input(event):
 	if event as InputEventMouseButton:
@@ -268,6 +269,8 @@ func _on_start_singing(song: Dictionary):
 	var voice_track := _load_mp3(song, "voice")
 	speech_player.stream = voice_track
 
+	Globals.change_scene.emit("Song")
+
 	wait_time_triggered = false
 	stop_time_triggered = false
 
@@ -290,6 +293,8 @@ func _on_stop_singing():
 
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
+
+	Globals.change_scene.emit("Main")
 
 func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	var path: String = song.path % type
