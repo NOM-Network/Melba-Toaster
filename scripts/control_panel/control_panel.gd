@@ -150,7 +150,7 @@ func _handle_request(data):
 
 	match data.requestType:
 		"GetStats":
-			insert_data(%StreamStats, CpHelpers.format_obs_stats(data.responseData))
+			insert_data(%StreamStats, Templates.format_obs_stats(data.responseData))
 
 		"GetStreamStatus":
 			var status = data.responseData
