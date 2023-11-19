@@ -1,0 +1,69 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "melbatoast_model.moc3",
+		"Textures": [
+			"melbatoast_model.4096/texture_00.png"
+		],
+		"Physics": "melbatoast_model.physics3.json",
+		"DisplayInfo": "melbatoast_model.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "Bread",
+				"File": "Bread Toggle.exp3.json"
+			},
+			{
+				"Name": "Void",
+				"File": "Void Toggle.exp3.json"
+			},
+			{
+				"Name": "Confuse",
+				"File": "Confuse Toggle.exp3.json"
+			},
+			{
+				"Name": "Tears",
+				"File": "Tears Toggle.exp3.json"
+			},
+			{
+				"Name": "Toa",
+				"File": "Toa Toggle.exp3.json"
+			},
+			{
+				"Name": "Gymbag",
+				"File": "Gymbag Toggle.exp3.json"
+			}
+		],
+		"Motions": {
+			"": [
+				{
+					"File": "Idle_1.motion3.json"
+				},
+				{
+					"File": "Idle_2.motion3.json"
+				},
+				{
+					"File": "Idle_3.motion3.json"	
+				},
+				{
+					"File": "Sleep.motion3.json"
+				}, 
+				{
+					"File": "Confuse.motion3.json"
+				}
+			]
+		}
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		}
+	],
+	"HitAreas": []
+}

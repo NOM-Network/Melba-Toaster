@@ -18,7 +18,6 @@ func _ready() -> void:
 	intialize_toggles()
 
 func connect_signals() -> void:
-	Globals.speech_done.connect(_on_speech_done)
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
@@ -26,10 +25,9 @@ func connect_signals() -> void:
 
 	anim_timer.timeout.connect(_on_animation_finished)
 	set_expression("end")
-	play_animation("idle")
+	play_random_idle_animation()
 
 func intialize_toggles() -> void:
-	# TODO: Tween values not opacities so that everything can fade in / fade out.
 	var parameters = cubism_model.get_parameters()
 	for param in parameters:
 		for toggle in Globals.toggles.values():
@@ -88,7 +86,14 @@ func reset_overrides():
 func _on_animation_finished() -> void:
 	reset_overrides()
 	if Globals.last_animation != "end":
-		play_animation("idle")
+		play_random_idle_animation()
 
-func _on_speech_done() -> void:
-	pass
+func play_random_idle_animation() -> void: 
+	var anim_no: String
+	var random_int: int = randi_range(1, 10)
+	if random_int <= 2: # 20% chance 
+		play_animation("idle2")
+	elif random_int <= 5: # 30% chance
+		play_animation("idle3")
+	elif random_int <= 10: #50 % chance
+		play_animation("idle1")

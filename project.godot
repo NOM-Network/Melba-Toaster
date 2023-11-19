@@ -27,8 +27,7 @@ Globals="*res://scripts/shared/globals.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=2
-window/size/resizable=false
+window/size/mode=3
 window/size/borderless=true
 window/size/transparent=true
 window/subwindows/embed_subwindows=false

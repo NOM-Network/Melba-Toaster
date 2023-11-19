@@ -46,14 +46,17 @@ static var toggles := {
 	"void": Toggle.new("Param14", 0.5),
 	"tears": Toggle.new("Param20", 0.5),
 	"toa": Toggle.new("Param21", 1.0),
-	"confused": Toggle.new("Param18", 0.5)
+	"confused": Toggle.new("Param18", 0.5),
+	"gymbag": Toggle.new("Param28", 0.5)
 }
 
 static var animations := {
 	"end": {"id": -1, "override": "none"},
-	"idle": {"id": 0, "override": "none", "duration": 3.5},
-	"sleep": {"id": 1, "override": "eye_blink", "duration": 10.3},
-	"confused": {"id": 2, "override": "eye_blink", "duration": 4.0}
+	"idle1": {"id": 0, "override": "none", "duration": 7}, # Original: 8.067
+	"idle2": {"id": 1, "override": "none", "duration": 4}, # Original: 4.267
+	"idle3": {"id": 2, "override": "none", "duration": 5}, # Original: 5.367
+	"sleep": {"id": 1, "override": "eye_blink", "duration": 10.3}, # Original: 10.3
+	"confused": {"id": 2, "override": "eye_blink", "duration": 4.0} # Original: 10
 }
 static var last_animation := ""
 
