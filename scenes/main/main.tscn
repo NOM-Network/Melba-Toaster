@@ -1,4 +1,4 @@
-[gd_scene load_steps=92 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=95 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -372,6 +372,67 @@ shadow_size = 0
 shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="Animation" id="Animation_focdv"]
+resource_name = "intro"
+length = 7.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Live2DMelba:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9, 4.9, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(711, 2036), Vector2(723, 1694), Vector2(723, 1694), Vector2(737, 1124)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:target_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.4, 3.2, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-0.7, 0.7), Vector2(0.7, 0.7), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_gq6hp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Live2DMelba:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(737, 1124)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:target_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(700, 200)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hww7n"]
+_data = {
+"RESET": SubResource("Animation_gq6hp"),
+"intro": SubResource("Animation_focdv")
+}
+
 [node name="Main" type="Node2D" node_paths=PackedStringArray("model", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
 model = NodePath("Live2DMelba")
@@ -382,6 +443,7 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
+target_position = Vector2(700, 200)
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -448,5 +510,10 @@ bus = &"Song"
 [node name="CancelSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_vd5ab")
 bus = &"Voice"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_hww7n")
+}
 
 [connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]

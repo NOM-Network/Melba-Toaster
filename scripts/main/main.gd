@@ -43,6 +43,10 @@ var stop_time_triggered := false
 var prompt_font_size: int
 var subtitles_font_size: int
 
+# For AnimationPlayer
+@export_category("Nodes")
+@export var target_position: Vector2 
+
 func _ready():
 	# Defaults
 	prompt_font_size = prompt.label_settings.font_size
@@ -58,12 +62,17 @@ func _ready():
 	# Signals
 	connect_signals()
 	Globals.change_position.emit("default")
-
+	
+	await get_tree().create_timer(1).timeout
+	$AnimationPlayer.play("intro")
+	
 	# Waiting for the backend
 	await connect_backend()
 
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
+
+	
 
 func _process(_delta) -> void:
 	if Globals.is_singing and current_song:
@@ -78,6 +87,8 @@ func _process(_delta) -> void:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
 					trigger_cleanout()
+	if $AnimationPlayer.is_playing(): 
+		model_target_point.set_target(target_position) 
 
 func _input(event):
 	if event as InputEventMouseButton:
@@ -93,7 +104,9 @@ func _input(event):
 			) * 0.5
 			local_pos /= render_size
 			model_target_point.set_target(local_pos)
+			print("POS: ", local_pos)
 		else:
+			print("RESETING")
 			model_target_point.set_target(Vector2.ZERO)
 
 func connect_signals() -> void:
