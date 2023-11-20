@@ -373,58 +373,44 @@ shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
 [sub_resource type="Animation" id="Animation_gq6hp"]
-length = 0.001
-tracks/0/type = "value"
+length = 5.0
+tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Live2DMelba:position")
+tracks/0/path = NodePath("Live2DMelba:position:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(737, 1124)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:target_position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(700, 200)]
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(2036, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
 }
 
 [sub_resource type="Animation" id="Animation_focdv"]
 resource_name = "intro"
-length = 7.0
+length = 10.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Live2DMelba:position")
-tracks/0/interp = 1
+tracks/0/path = NodePath(".:target_position")
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.9, 4.9, 6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(711, 2036), Vector2(723, 1694), Vector2(723, 1694), Vector2(737, 1124)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:target_position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.4, 3.2, 6),
+"times": PackedFloat32Array(0, 3.3, 5.3, 10),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(-0.7, 0.7), Vector2(0.7, 0.7), Vector2(0, 0)]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Live2DMelba:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0),
+"points": PackedFloat32Array(2036, -0.25, 0, 0.25, 0, 2036, -0.25, 0, 0.25, 0, 1648, -0.6, -2, 0.25, 0, 1652, -0.5, -37.7632, 0.133333, 10.0702, 1886, -0.678343, -7, 0.921657, 3, 1124, -2.67834, -7, 0, 0),
+"times": PackedFloat32Array(0, 1.3, 3.1, 6.4, 7.5, 10)
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hww7n"]
@@ -444,7 +430,6 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
-target_position = Vector2(700, 200)
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -454,7 +439,7 @@ initial_position = 3
 current_screen = 0
 
 [node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
-position = Vector2(737, 1124)
+position = Vector2(737, 2036)
 
 [node name="Microphone" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 408)
@@ -516,5 +501,6 @@ bus = &"Voice"
 libraries = {
 "": SubResource("AnimationLibrary_hww7n")
 }
+blend_times = [&"intro", &"intro", 2.0, &"intro", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"RESET", &"RESET", 2.0]
 
 [connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]

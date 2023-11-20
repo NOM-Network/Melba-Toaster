@@ -70,24 +70,29 @@ func connect_signals() -> void:
 func generate_position_controls() -> void:
 	var positions := %Positions
 	for n in positions.get_children():
-		n.queue_free()
-
-	var label = Label.new()
-	label.text = "Positions"
-	positions.add_child(label)
+		if n.get_class() == "Button":
+			n.queue_free()
 
 	var button_group = ButtonGroup.new()
 	button_group.pressed.connect(_on_position_button_pressed)
 
-	var animations: PackedStringArray = main.get_model_animations()
-	for p in animations:
+	for p in Globals.positions:
 		var button = Button.new()
 		button.text = p
 		button.toggle_mode = true
-		button.button_pressed = p == "default"
+		button.button_pressed = p == "intro_start"
 		button.name = "Position" + p.to_pascal_case()
 		button.button_group = button_group
 		positions.add_child(button)
+
+	var menu := %NextPositionMenu
+	positions.move_child(menu, -1)
+
+	menu.add_item("NO OVERRIDE")
+	for p in Globals.positions:
+		menu.add_item(p)
+
+	Globals.change_position.emit("intro_start")
 
 func _on_position_button_pressed(button: BaseButton) -> void:
 	Globals.change_position.emit(button.text)
@@ -292,14 +297,22 @@ func _on_change_scene(scene_name: String) -> void:
 func _on_scene_button_pressed(button):
 	Globals.change_scene.emit(button.text)
 
-	match button.text:
-		"Main", "Song":
-			# await get_tree().create_timer(0.2).timeout
-			Globals.change_position.emit("default")
+	var next_position: String
+	var selected_override: int = %NextPositionMenu.selected - 1
+	if selected_override != -1:
+		next_position = Globals.positions.keys()[selected_override]
 
-		"Debut":
-			# await get_tree().create_timer(0.2).timeout
-			Globals.change_position.emit("gaming")
+	if not next_position:
+		match button.text:
+			"Main", "Song":
+				next_position = "default"
+
+			"Debut":
+				next_position = "gaming"
+
+	%NextPositionMenu.selected = 0
+	if next_position:
+		Globals.change_position.emit(next_position)
 
 func _on_change_position(new_position: String) -> void:
 	var buttons := %Positions

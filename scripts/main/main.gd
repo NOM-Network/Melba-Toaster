@@ -122,7 +122,7 @@ func _tween_mouse_to_prop(prop: String, change: Vector2, absolute := false) -> v
 
 	var new_value = change if absolute else model[prop] + change
 	tweens[tween_name] = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens[tween_name].tween_property(model, prop, new_value, 0.05)
+	tweens[tween_name].tween_property(model, prop, new_value, 0.005)
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	if is_pressed:
@@ -268,6 +268,8 @@ func trigger_cleanout():
 	_tween_text(subtitles, "subtitles", 1.0, 0.0, 1.0)
 
 	await get_ready_for_next_speech()
+	prompt.text = ""
+	subtitles.text = ""
 	subtitles.label_settings.font_size = subtitles_font_size
 
 func get_ready_for_next_speech():
@@ -285,7 +287,7 @@ func _tween_text(label: Label, tween_name: String, start_val: float, final_val: 
 	label.visible_ratio = start_val
 
 	tweens[tween_name] = create_tween()
-	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.05)
+	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.01)
 
 func _on_start_singing(song: Dictionary):
 	current_song = song
@@ -348,23 +350,28 @@ func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	stream.bpm = song.bpm
 	return stream
 
-func _on_change_position(anim: String) -> void:
-	assert(model_parent_animation.has_animation(anim))
+func _on_change_position(new_position: String) -> void:
+	if Globals.positions.has(new_position):
+		var positions: Dictionary = Globals.positions[new_position]
 
-	model_parent_animation.play(anim, 0.5)
-	# if Globals.positions.has(new_position):
-	# 	var positions: Dictionary = Globals.positions[new_position]
+		match new_position:
+			"intro":
+				assert(model_parent_animation.has_animation(new_position))
 
-	# 	for p in positions:
-	# 		var node = get(p)
+				model_parent_animation.play("intro")
+				model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
 
-	# 		if tweens.has(p):
-	# 			tweens[p].kill()
+			_:
+				for p in positions:
+					var node = get(p)
 
-	# 		tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
-	# 		tweens[p].set_parallel()
-	# 		tweens[p].tween_property(node, "position", positions[p][0], 1)
-	# 		tweens[p].tween_property(node, "scale", positions[p][1], 1)
+					if tweens.has(p):
+						tweens[p].kill()
+
+					tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
+					tweens[p].set_parallel()
+					tweens[p].tween_property(node, "position", positions[p][0], 1)
+					tweens[p].tween_property(node, "scale", positions[p][1], 1)
 
 func get_model_animations() -> PackedStringArray:
 	return model_parent_animation.get_animation_list()

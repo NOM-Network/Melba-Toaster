@@ -64,7 +64,7 @@ MarginContainer/constants/margin_top = 10
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
-size = Vector2i(924, 648)
+size = Vector2i(1024, 768)
 min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
@@ -466,6 +466,11 @@ layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_1ht7x")
 text = "Test"
+
+[node name="NextPositionMenu" type="OptionButton" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Override next position"
 
 [node name="StreamStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2

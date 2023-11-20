@@ -975,10 +975,5 @@ func send_command_batch(commands: Array) -> void:
 		req = req.get_as_dict()
 		requests.push_back(req.d)
 
-	# print(requests)
-
-	var req := RequestBatch.new("1", requests)
-
-	# print(req)
-
-	_send_message(req.get_as_json().to_utf8_buffer())
+	var req_batch := RequestBatch.new("1", requests)
+	_send_message(req_batch.get_as_json().to_utf8_buffer())

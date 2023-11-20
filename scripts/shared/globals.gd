@@ -29,14 +29,26 @@ signal cancel_speech()
 
 static var positions := {
 	# use Tulpes - [ position, scale ]
+	"intro_start": {
+		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
+	},
 	"default": {
 		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
 	"gaming": {
-		"model": [ Vector2(240, 1307), Vector2(0.74, 0.74) ],
-		"lower_third": [ Vector2(457, 794), Vector2(0.777, 0.777) ],
+		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
+		"lower_third": [ Vector2(40, 810), Vector2(0.777, 0.777) ],
 	},
+	"full_height": {
+		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
+		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+	},
+	"close": {
+		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
+		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+	},
+	"intro": {}, # placeholder for intro animation
 }
 
 static var scale_change := Vector2(0.05, 0.05)
