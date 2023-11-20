@@ -79,7 +79,8 @@ func generate_position_controls() -> void:
 	var button_group = ButtonGroup.new()
 	button_group.pressed.connect(_on_position_button_pressed)
 
-	for p in Globals.positions:
+	var animations: PackedStringArray = main.get_model_animations()
+	for p in animations:
 		var button = Button.new()
 		button.text = p
 		button.toggle_mode = true

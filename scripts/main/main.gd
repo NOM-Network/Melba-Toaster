@@ -9,6 +9,7 @@ extends Node2D
 @onready var model_sprite := model.get_node("%Sprite2D")
 @onready var user_model := model.get_node("%GDCubismUserModel")
 @onready var model_target_point := model.get_node("%TargetPoint")
+@export var model_parent_animation: AnimationPlayer
 var pressed: bool
 
 @export_category("Nodes")
@@ -61,7 +62,6 @@ func _ready():
 
 	# Signals
 	connect_signals()
-	Globals.change_position.emit("default")
 
 	# Waiting for the backend
 	await connect_backend()
@@ -82,18 +82,20 @@ func _process(_delta) -> void:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
 					trigger_cleanout()
-	if $ModelParentAnimation.is_playing():
+
+	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
 
 func _input(event: InputEvent):
-	if event as InputEventMouseButton:
-		pressed = event.is_pressed()
-
-	if pressed == true:
-		if event as InputEventMouseMotion:
+	if event as InputEventMouseMotion:
+		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
 			_tween_mouse_to_prop("position", event.relative)
 
-		if event as InputEventMouseButton:
+		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
+			_move_eyes(event, true)
+
+	if event as InputEventMouseButton:
+		if event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_UP:
 					_tween_mouse_to_prop("scale", Globals.scale_change)
@@ -102,9 +104,14 @@ func _input(event: InputEvent):
 					_tween_mouse_to_prop("scale", -Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
-					_reset_model_prop()
+					_reset_model_props()
+		else:
+			match event.button_index:
+				MOUSE_BUTTON_RIGHT:
+					_move_eyes(event, false)
 
-func _reset_model_prop():
+func _reset_model_props():
+	# TODO: Use animation states
 	_tween_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
 	_tween_mouse_to_prop("position", Globals.positions.default.model[0], true)
 
@@ -116,6 +123,18 @@ func _tween_mouse_to_prop(prop: String, change: Vector2, absolute := false) -> v
 	var new_value = change if absolute else model[prop] + change
 	tweens[tween_name] = create_tween().set_trans(Tween.TRANS_QUINT)
 	tweens[tween_name].tween_property(model, prop, new_value, 0.05)
+
+func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
+	if is_pressed:
+		var local_pos: Vector2 = model.to_local(event.position)
+		var render_size: Vector2 = Vector2(
+			float(user_model.size.x) * model.scale.x,
+			float(user_model.size.y) * model.scale.y * -1.0
+		) * 0.5
+		local_pos /= render_size
+		model_target_point.set_target(local_pos)
+	else:
+		model_target_point.set_target(Vector2.ZERO)
 
 func connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
@@ -329,17 +348,23 @@ func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	stream.bpm = song.bpm
 	return stream
 
-func _on_change_position(new_position: String) -> void:
-	if Globals.positions.has(new_position):
-		var positions: Dictionary = Globals.positions[new_position]
+func _on_change_position(anim: String) -> void:
+	assert(model_parent_animation.has_animation(anim))
 
-		for p in positions:
-			var node = get(p)
+	model_parent_animation.play(anim, 0.5)
+	# if Globals.positions.has(new_position):
+	# 	var positions: Dictionary = Globals.positions[new_position]
 
-			if tweens.has(p):
-				tweens[p].kill()
+	# 	for p in positions:
+	# 		var node = get(p)
 
-			tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
-			tweens[p].set_parallel()
-			tweens[p].tween_property(node, "position", positions[p][0], 1)
-			tweens[p].tween_property(node, "scale", positions[p][1], 1)
+	# 		if tweens.has(p):
+	# 			tweens[p].kill()
+
+	# 		tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
+	# 		tweens[p].set_parallel()
+	# 		tweens[p].tween_property(node, "position", positions[p][0], 1)
+	# 		tweens[p].tween_property(node, "scale", positions[p][1], 1)
+
+func get_model_animations() -> PackedStringArray:
+	return model_parent_animation.get_animation_list()

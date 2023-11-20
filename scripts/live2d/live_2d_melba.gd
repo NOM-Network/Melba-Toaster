@@ -16,10 +16,10 @@ var tween: Tween
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
-	
+
 	set_expression("end")
 	play_random_idle_animation()
-	
+
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
@@ -87,19 +87,17 @@ func _on_animation_finished() -> void:
 	if Globals.last_animation != "end":
 		play_random_idle_animation()
 
-func play_random_idle_animation() -> void: 
-	var random_int: int 
-	
+func play_random_idle_animation() -> void:
+	var random_int: int
+
 	if Globals.last_animation == "idle2":
 		random_int = randi_range(4, 10)
-	else: 
+	else:
 		random_int = randi_range(1, 10)
-	
+
 	if random_int <= 3: # 30% chance, 0 % when idle2 was last_animation
 		play_animation("idle2")
 	elif random_int <= 6: # 30% chance, ~43% when idle2 was last_animation
-		play_animation("idle3") 
-	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation 
+		play_animation("idle3")
+	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation
 		play_animation("idle1")
-
-
