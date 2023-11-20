@@ -85,7 +85,7 @@ func _process(_delta) -> void:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
 					trigger_cleanout()
-	if $AnimationPlayer.is_playing():
+	if $ModelParentAnimation.is_playing():
 		model_target_point.set_target(target_position)
 
 func _input(event: InputEvent):
