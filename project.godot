@@ -31,7 +31,6 @@ window/size/mode=3
 window/size/borderless=true
 window/size/transparent=true
 window/subwindows/embed_subwindows=false
-window/stretch/mode="canvas_items"
 window/dpi/allow_hidpi=false
 window/per_pixel_transparency/allowed=true
 
