@@ -63,9 +63,6 @@ func _ready():
 	connect_signals()
 	Globals.change_position.emit("default")
 	
-	await get_tree().create_timer(1).timeout
-	$AnimationPlayer.play("intro")
-	
 	# Waiting for the backend
 	await connect_backend()
 
@@ -104,9 +101,7 @@ func _input(event):
 			) * 0.5
 			local_pos /= render_size
 			model_target_point.set_target(local_pos)
-			print("POS: ", local_pos)
 		else:
-			print("RESETING")
 			model_target_point.set_target(Vector2.ZERO)
 
 func connect_signals() -> void:
