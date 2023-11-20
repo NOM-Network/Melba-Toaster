@@ -513,7 +513,7 @@ bus = &"Song"
 stream = ExtResource("6_vd5ab")
 bus = &"Voice"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_hww7n")
 }
