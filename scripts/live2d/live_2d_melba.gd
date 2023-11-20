@@ -16,16 +16,16 @@ var tween: Tween
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
-
+	
+	set_expression("end")
+	play_random_idle_animation()
+	
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
 	Globals.set_toggle.connect(set_toggle)
 	Globals.nudge_model.connect(nudge_model)
-
 	anim_timer.timeout.connect(_on_animation_finished)
-	set_expression("end")
-	play_random_idle_animation()
 
 func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
@@ -47,9 +47,9 @@ func nudge_model() -> void:
 	tween.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
 
 func play_animation(anim_name: String) -> void:
+	reset_overrides()
 	Globals.last_animation = anim_name
 	if anim_name == "end":
-		reset_overrides()
 		cubism_model.stop_motion()
 	elif Globals.animations.has(anim_name):
 		anim_timer.wait_time = Globals.animations[anim_name]["duration"]
@@ -84,16 +84,22 @@ func reset_overrides():
 	eye_blink.active = true
 
 func _on_animation_finished() -> void:
-	reset_overrides()
 	if Globals.last_animation != "end":
 		play_random_idle_animation()
 
 func play_random_idle_animation() -> void: 
-	var anim_no: String
-	var random_int: int = randi_range(1, 10)
-	if random_int <= 2: # 20% chance 
+	var random_int: int 
+	
+	if Globals.last_animation == "idle2":
+		random_int = randi_range(4, 10)
+	else: 
+		random_int = randi_range(1, 10)
+	
+	if random_int <= 3: # 30% chance, 0 % when idle2 was last_animation
 		play_animation("idle2")
-	elif random_int <= 5: # 30% chance
-		play_animation("idle3")
-	elif random_int <= 10: #50 % chance
+	elif random_int <= 6: # 30% chance, ~43% when idle2 was last_animation
+		play_animation("idle3") 
+	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation 
 		play_animation("idle1")
+
+

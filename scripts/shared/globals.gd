@@ -55,8 +55,8 @@ static var animations := {
 	"idle1": {"id": 0, "override": "none", "duration": 7}, # Original: 8.067
 	"idle2": {"id": 1, "override": "none", "duration": 4}, # Original: 4.267
 	"idle3": {"id": 2, "override": "none", "duration": 5}, # Original: 5.367
-	"sleep": {"id": 1, "override": "eye_blink", "duration": 10.3}, # Original: 10.3
-	"confused": {"id": 2, "override": "eye_blink", "duration": 4.0} # Original: 10
+	"sleep": {"id": 3, "override": "eye_blink", "duration": 10.3}, # Original: 10.3
+	"confused": {"id": 4, "override": "eye_blink", "duration": 4.0} # Original: 10
 }
 static var last_animation := ""
 
