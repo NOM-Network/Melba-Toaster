@@ -63,9 +63,6 @@ func _ready():
 	connect_signals()
 	Globals.change_position.emit("default")
 
-	await get_tree().create_timer(1).timeout
-	$AnimationPlayer.play("intro")
-
 	# Waiting for the backend
 	await connect_backend()
 

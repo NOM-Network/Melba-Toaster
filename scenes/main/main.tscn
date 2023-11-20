@@ -435,8 +435,6 @@ _data = {
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("model", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
-time_before_cleanout = null
-time_before_ready = null
 model = NodePath("Live2DMelba")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
