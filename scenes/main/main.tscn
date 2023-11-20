@@ -501,6 +501,6 @@ bus = &"Voice"
 libraries = {
 "": SubResource("AnimationLibrary_hww7n")
 }
-blend_times = [&"intro", &"intro", 2.0, &"intro", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"RESET", &"RESET", 2.0]
+blend_times = [&"RESET", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"intro", &"RESET", 2.0, &"intro", &"intro", 2.0]
 
 [connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]

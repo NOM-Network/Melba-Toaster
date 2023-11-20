@@ -294,16 +294,13 @@ func _on_obs_stream_control_pressed():
 func _on_change_scene(scene_name: String) -> void:
 	obs.send_command("SetCurrentProgramScene", { "sceneName": scene_name })
 
-func _on_scene_button_pressed(button):
-	Globals.change_scene.emit(button.text)
-
 	var next_position: String
 	var selected_override: int = %NextPositionMenu.selected - 1
 	if selected_override != -1:
 		next_position = Globals.positions.keys()[selected_override]
 
 	if not next_position:
-		match button.text:
+		match scene_name:
 			"Main", "Song":
 				next_position = "default"
 
@@ -313,6 +310,9 @@ func _on_scene_button_pressed(button):
 	%NextPositionMenu.selected = 0
 	if next_position:
 		Globals.change_position.emit(next_position)
+
+func _on_scene_button_pressed(button):
+	Globals.change_scene.emit(button.text)
 
 func _on_change_position(new_position: String) -> void:
 	var buttons := %Positions
