@@ -92,33 +92,20 @@ func _input(event: InputEvent):
 	if event as InputEventMouseButton:
 		pressed = event.is_pressed()
 
-	if pressed == true:
-		if event as InputEventMouseMotion:
-			_tween_mouse_to_prop("position", event.relative)
+	if event as InputEventMouseMotion:
+		if pressed == true:
+			var local_pos: Vector2 = model_sprite.to_local(event.position)
 
-		if event as InputEventMouseButton:
-			match event.button_index:
-				MOUSE_BUTTON_WHEEL_UP:
-					_tween_mouse_to_prop("scale", Globals.scale_change)
-
-				MOUSE_BUTTON_WHEEL_DOWN:
-					_tween_mouse_to_prop("scale", -Globals.scale_change)
-
-				MOUSE_BUTTON_MIDDLE:
-					_reset_model_prop()
-
-func _reset_model_prop():
-	_tween_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-	_tween_mouse_to_prop("position", Globals.positions.default.model[0], true)
-
-func _tween_mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	var tween_name = "model_%s" % prop
-	if tweens.has(tween_name):
-		tweens[tween_name].kill()
-
-	var new_value = change if absolute else model[prop] + change
-	tweens[tween_name] = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens[tween_name].tween_property(model, prop, new_value, 0.05)
+			var render_size: Vector2 = Vector2(
+				float(user_model.size.x) * model_sprite.scale.x,
+				float(user_model.size.y) * model_sprite.scale.y * -1.0
+			) * 0.5
+			local_pos /= render_size
+			model_target_point.set_target(local_pos)
+			print("POS: ", local_pos)
+		else:
+			print("RESETING")
+			model_target_point.set_target(Vector2.ZERO)
 
 func connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
