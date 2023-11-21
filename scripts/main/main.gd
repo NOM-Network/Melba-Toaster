@@ -33,6 +33,7 @@ var subtitles_duration := 0.0
 # Song-related
 @onready var voice_bus := AudioServer.get_bus_index("Voice")
 var current_song: Dictionary
+var current_subtitles: Array
 var song_playback: AudioStreamPlayback
 var wait_time_triggered := false
 var stop_time_triggered := false
@@ -71,9 +72,18 @@ func _ready():
 
 func _process(_delta) -> void:
 	if Globals.is_singing and current_song:
+		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix()
+		pos -= AudioServer.get_output_latency()
+
+		if current_subtitles:
+			if pos > current_subtitles[0][0]:
+				var line: Array = current_subtitles.pop_front()
+				if line[1] == "CLEAR":
+					subtitles.text = ""
+				else:
+					subtitles.text = line[1]
+
 		if not wait_time_triggered or not stop_time_triggered:
-			var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix()
-			pos -= AudioServer.get_output_latency()
 			if pos >= current_song.wait_time and not wait_time_triggered:
 				Globals.start_dancing_motion.emit(current_song.bpm)
 				wait_time_triggered = true
@@ -81,7 +91,7 @@ func _process(_delta) -> void:
 				if pos >= current_song.stop_time and not stop_time_triggered:
 					Globals.end_dancing_motion.emit()
 					stop_time_triggered = true
-					trigger_cleanout()
+					# trigger_cleanout()
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
@@ -223,7 +233,7 @@ func _on_new_speech(p_prompt, p_text) -> void:
 
 	_play_audio()
 
-func _print_prompt(text):
+func _print_prompt(text: String, duration := 0.0) -> void:
 	if text:
 		prompt.text = "%s" % text
 	else:
@@ -232,9 +242,9 @@ func _print_prompt(text):
 	while prompt.get_line_count() > prompt.get_visible_line_count():
 		prompt.label_settings.font_size -= 1
 
-	_tween_text(prompt, "prompt", 0.0, 1.0, 1.0)
+	_tween_text(prompt, "prompt", 0.0, 1.0, duration if duration != 0.0 else 1.0)
 
-func _print_subtitles(text):
+func _print_subtitles(text: String, duration := 0.0) -> void:
 	if text:
 		subtitles.text = "%s" % text
 	else:
@@ -243,7 +253,7 @@ func _print_subtitles(text):
 	while subtitles.get_line_count() > subtitles.get_visible_line_count():
 		subtitles.label_settings.font_size -= 1
 
-	_tween_text(subtitles, "subtitles", 0.0, 1.0, subtitles_duration)
+	_tween_text(subtitles, "subtitles", 0.0, 1.0, duration if duration != 0.0 else subtitles_duration)
 
 func _on_cancel_speech():
 	Globals.set_toggle.emit("void", true)
@@ -299,8 +309,14 @@ func _on_start_singing(song: Dictionary):
 	mic.play()
 
 	subtitles_duration = song.wait_time if song.wait_time != 0.0 else 3.0
-	_print_prompt("")
-	_print_subtitles("{artist}\n\"{name}\"".format(song))
+
+	if song.subtitles:
+		current_subtitles = song.subtitles
+		_print_prompt("{artist} - \"{name}\"".format(song), song.wait_time)
+		_print_subtitles(" ")
+	else:
+		_print_prompt(" ")
+		_print_subtitles("{artist}\n\"{name}\"".format(song), song.wait_time)
 
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
@@ -329,6 +345,7 @@ func _on_stop_singing():
 	mic.play()
 
 	current_song = {}
+	current_subtitles = []
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)

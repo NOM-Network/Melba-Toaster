@@ -21,9 +21,34 @@ func _init() -> void:
 			printerr("No song files found for %s" % song.id)
 			continue
 
+		if song.subtitles:
+			song.subtitles = _load_subtitles_file(song_path % song.id)
+
 		songs.push_back(song)
 
 	print_debug("Songs loaded: ", songs)
+
+func _load_subtitles_file(path: String) -> Variant:
+	if not FileAccess.file_exists(path + "subtitles.txt"):
+		printerr("No subtitles found in %s" % path)
+		return null
+
+	var file := FileAccess.open(path + "subtitles.txt", FileAccess.READ)
+	var subtitles := []
+	while not file.eof_reached():
+		var file_line := file.get_line()
+		var line := file_line.split("\t")
+		print(line)
+
+		if line[0] == "":
+			continue
+
+		subtitles.push_back([
+			line[0].to_float(),
+			line[2]
+		])
+
+	return subtitles
 
 func _load_config_file(filename: String) -> ConfigFile:
 	var file := ConfigFile.new()

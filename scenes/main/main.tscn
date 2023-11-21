@@ -442,7 +442,7 @@ current_screen = 0
 position = Vector2(737, 2036)
 
 [node name="Microphone" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, 408)
+position = Vector2(100, 408)
 sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
