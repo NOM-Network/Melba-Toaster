@@ -503,4 +503,21 @@ libraries = {
 }
 blend_times = [&"RESET", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"intro", &"RESET", 2.0, &"intro", &"intro", 2.0]
 
+[node name="BeatsCounter" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 743.0
+offset_right = 1077.0
+offset_bottom = 798.0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 40
+text = "420"
+
 [connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]

@@ -46,6 +46,7 @@ var subtitles_font_size: int
 @export var target_position: Vector2
 
 var pending_speech: Dictionary
+var current_bpm := 0
 
 func _ready():
 	# Defaults
@@ -70,20 +71,38 @@ func _ready():
 
 func _process(_delta) -> void:
 	if Globals.is_singing and current_song:
-		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix()
-		pos -= AudioServer.get_output_latency()
+		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() + (1 / Engine.get_frames_per_second()) * 2
+
+		if Globals.show_beats:
+			var beat := int(pos * current_bpm / 60.0)
+			var seconds := int(pos)
+			var duration := int(current_song.duration)
+			$BeatsCounter.text = "BPM: %d, TIME: %d:%s (%f) / %d:%s (%d), BEAT: %d / 4" % [
+				current_bpm,
+				seconds / 60.0,
+				strsec(seconds % 60),
+				pos,
+				duration / 60.0,
+				strsec(duration % 60),
+				current_song.duration,
+				beat % 4 + 1,
+			]
+			$BeatsCounter.show()
+		else:
+			$BeatsCounter.hide()
 
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
 				var line: Array = current_subtitles.pop_front()
 				var command: PackedStringArray = line[1].split(" ")
-				# print(command)
+
 				match command[0]:
 					"&CLEAR":
 						subtitles.text = ""
 
 					"&START":
-						Globals.start_dancing_motion.emit(command[1].to_int())
+						current_bpm = command[1].to_int()
+						Globals.start_dancing_motion.emit(current_bpm)
 
 					"&STOP":
 						Globals.end_dancing_motion.emit()
@@ -93,6 +112,12 @@ func _process(_delta) -> void:
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
+
+func strsec(secs):
+	var s = str(secs)
+	if (secs < 10):
+		s = "0" + s
+	return s
 
 func _input(event: InputEvent):
 	if event as InputEventMouseMotion:
@@ -354,6 +379,7 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 
 	var song_track := _load_mp3(song, "song")
 	song_player.stream = song_track
+	current_song.duration = song_track.get_length()
 
 	var voice_track := _load_mp3(song, "voice")
 	speech_player.stream = voice_track

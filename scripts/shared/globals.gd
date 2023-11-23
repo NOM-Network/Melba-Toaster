@@ -25,8 +25,8 @@ signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
 
-signal pin_item() 
-signal stop_pin_item() 
+signal pin_item()
+signal stop_pin_item()
 
 # endregion
 
@@ -93,6 +93,7 @@ static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
 static var debug_mode := false
+static var show_beats := false
 
 static var time_before_cleanout := 2.0
 static var time_before_ready := 1.0

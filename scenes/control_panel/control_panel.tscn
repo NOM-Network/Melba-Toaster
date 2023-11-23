@@ -358,6 +358,11 @@ layout_mode = 2
 toggle_mode = true
 text = "Start"
 
+[node name="ShowBeats" type="CheckBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Show Beats (debug)"
+
 [node name="Misc" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
 alignment = 1
@@ -632,6 +637,7 @@ autostart = true
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
+[connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/ShowBeats" to="." method="_on_show_beats_toggled"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeCleanout" to="." method="_on_time_before_cleanout_value_changed"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeReady" to="." method="_on_time_before_ready_value_changed"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeSpeech" to="." method="_on_time_before_speech_value_changed"]

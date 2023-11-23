@@ -33,6 +33,7 @@ func _ready() -> void:
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
 	%TimeBeforeReady.value = Globals.time_before_ready
 	%TimeBeforeSpeech.value = Globals.time_before_speech
+	%ShowBeats.button_pressed = Globals.show_beats
 
 	generate_position_controls()
 	generate_model_controls()
@@ -452,6 +453,9 @@ func _on_cancel_speech_pressed():
 
 func _on_reset_subtitles_pressed() -> void:
 	Globals.reset_subtitles.emit()
+
+func _on_show_beats_toggled(toggled_on: bool) -> void:
+	Globals.show_beats = toggled_on
 
 func stop_processing():
 	obs_stats_timer.stop()
