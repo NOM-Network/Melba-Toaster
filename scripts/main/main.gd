@@ -122,7 +122,7 @@ func strsec(secs):
 func _input(event: InputEvent):
 	if event as InputEventMouseMotion:
 		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
-			_tween_mouse_to_prop("position", event.relative)
+			_mouse_to_prop("position", event.relative)
 
 		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
 			_move_eyes(event, true)
@@ -131,10 +131,10 @@ func _input(event: InputEvent):
 		if event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_UP:
-					_tween_mouse_to_prop("scale", Globals.scale_change)
+					_mouse_to_prop("scale", Globals.scale_change)
 
 				MOUSE_BUTTON_WHEEL_DOWN:
-					_tween_mouse_to_prop("scale", -Globals.scale_change)
+					_mouse_to_prop("scale", -Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
 					_reset_model_props()
@@ -144,18 +144,12 @@ func _input(event: InputEvent):
 					_move_eyes(event, false)
 
 func _reset_model_props():
-	# TODO: Use animation states
-	_tween_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-	_tween_mouse_to_prop("position", Globals.positions.default.model[0], true)
+	_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
+	_mouse_to_prop("position", Globals.positions.default.model[0], true)
 
-func _tween_mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	var tween_name = "model_%s" % prop
-	if tweens.has(tween_name):
-		tweens[tween_name].kill()
-
+func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
 	var new_value = change if absolute else model[prop] + change
-	tweens[tween_name] = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens[tween_name].tween_property(model, prop, new_value, 0.005)
+	model[prop] = new_value
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	if is_pressed:
