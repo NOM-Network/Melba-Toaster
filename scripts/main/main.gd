@@ -87,9 +87,8 @@ func _process(_delta) -> void:
 				current_song.duration,
 				beat % 4 + 1,
 			]
-			$BeatsCounter.show()
-		else:
-			$BeatsCounter.hide()
+
+		$BeatsCounter.visible = Globals.show_beats
 
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
@@ -105,6 +104,7 @@ func _process(_delta) -> void:
 						Globals.start_dancing_motion.emit(current_bpm)
 
 					"&STOP":
+						current_bpm = 0
 						Globals.end_dancing_motion.emit()
 
 					"&PIN":
@@ -366,7 +366,7 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 	subtitles_duration = song.wait_time if song.wait_time != 0.0 else 3.0
 
 	if song.subtitles:
-		current_subtitles = song.subtitles
+		current_subtitles = song.subtitles.duplicate()
 		_print_prompt("{artist} - \"{name}\"".format(song), song.wait_time)
 		_print_subtitles(" ")
 	else:
@@ -402,6 +402,8 @@ func _on_stop_singing():
 
 	current_song = {}
 	current_subtitles = []
+	current_bpm = 0
+	$BeatsCounter.visible = false
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)

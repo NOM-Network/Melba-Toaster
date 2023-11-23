@@ -430,6 +430,7 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
+target_position = null
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -504,6 +505,7 @@ libraries = {
 blend_times = [&"RESET", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"intro", &"RESET", 2.0, &"intro", &"intro", 2.0]
 
 [node name="BeatsCounter" type="Label" parent="."]
+visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
