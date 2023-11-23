@@ -423,6 +423,9 @@ func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()
 	current_speech.add_theme_color_override("font_color", Color.RED)
 
+func _on_reset_subtitles_pressed() -> void:
+	Globals.reset_subtitles.emit()
+
 func stop_processing():
 	obs_stats_timer.stop()
 	obs.break_connection()

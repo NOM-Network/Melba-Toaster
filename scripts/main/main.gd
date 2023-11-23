@@ -149,6 +149,7 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 func connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
@@ -271,6 +272,12 @@ func _on_cancel_speech():
 
 	await trigger_cleanout()
 	Globals.set_toggle.emit("void", false)
+
+func _on_reset_subtitles() -> void:
+	prompt.visible_ratio = 1.0
+	subtitles.visible_ratio = 1.0
+	prompt.text = ""
+	subtitles.text = ""
 
 func trigger_cleanout(timeout := true):
 	if timeout:
