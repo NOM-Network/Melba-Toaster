@@ -25,6 +25,9 @@ signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
 
+signal pin_item() 
+signal stop_pin_item() 
+
 # endregion
 
 # region SCENE DATA

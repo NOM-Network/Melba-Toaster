@@ -7,13 +7,21 @@ extends Node2D
 @export var x_offset = 0.0
 @export var y_offset = 0.0
 
-#reagion Effects
+#region EFFECTS
 @onready var eye_blink = %EyeBlink
 #endregion
 
+#region OTHER NODES
 @onready var anim_timer = $AnimTimer
+#endregion 
 
+#region STATE VARIABLES
+var item_is_pinned := false 
+#endregion
+
+#region TWEENS
 var tween: Tween
+#endregion 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,6 +30,10 @@ func _ready() -> void:
 
 	set_expression("end")
 	play_random_idle_animation()
+	
+	Globals.pin_item.emit()
+	await get_tree().create_timer(5).timeout
+	Globals.stop_pin_item.emit()
 
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
@@ -29,6 +41,8 @@ func connect_signals() -> void:
 	Globals.set_toggle.connect(set_toggle)
 	Globals.nudge_model.connect(nudge_model)
 	anim_timer.timeout.connect(_on_animation_finished)
+	Globals.pin_item.connect(_on_pin_item)
+	Globals.stop_pin_item.connect(_on_stop_pin_item)
 
 func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
@@ -40,13 +54,27 @@ func intialize_toggles() -> void:
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
-		
+	
+	if item_is_pinned: 
+		pin_item()
+
+func _on_pin_item() -> void: 
+	item_is_pinned = true 
+	$AnimatedSprite2D.visible = true 
+	$AnimatedSprite2D.play()
+	
+func _on_stop_pin_item() -> void: 
+	item_is_pinned = false 
+	$AnimatedSprite2D.visible = false
+	$AnimatedSprite2D.stop()
+
+func pin_item() -> void: 
 	var dict_mesh = cubism_model.get_meshes()
 	var ary_mesh: ArrayMesh = dict_mesh["ArtMesh19"]
 	var ary_surface = ary_mesh.surface_get_arrays(0)
 	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][0]
 	$AnimatedSprite2D.position = Vector2(pos.x - 950 + x_offset, pos.y - 1000 + y_offset)
-	
+
 func nudge_model() -> void:
 	if tween:
 		tween.kill()
