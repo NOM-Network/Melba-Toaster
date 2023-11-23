@@ -453,39 +453,50 @@ layout_mode = 2
 layout_mode = 2
 theme = SubResource("Theme_16b5c")
 
-[node name="Positions" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer"]
+layout_mode = 2
+
+[node name="Positions" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="PositionsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+[node name="PositionsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
 layout_mode = 2
 text = "Positions"
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
 layout_mode = 2
 toggle_mode = true
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_1ht7x")
-text = "Test"
-
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_1ht7x")
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_1ht7x")
 text = "Test"
 
-[node name="NextPositionMenu" type="OptionButton" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/Positions"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_1ht7x")
+text = "Test"
+
+[node name="Overrides" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Overrides"]
+layout_mode = 2
+text = "Overrides"
+
+[node name="NextPositionMenu" type="OptionButton" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Overrides"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Override next position"

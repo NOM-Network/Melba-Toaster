@@ -30,6 +30,7 @@ func _ready() -> void:
 	# Defaults
 	debug_button.button_pressed = Globals.debug_mode
 	pause_button.button_pressed = Globals.is_paused
+	%BackendStatus/Label.text = "Backend %s" % Globals.config.get_backend("host")
 
 	generate_position_controls()
 	generate_model_controls()
