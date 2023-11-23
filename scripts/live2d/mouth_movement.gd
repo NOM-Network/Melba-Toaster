@@ -14,7 +14,7 @@ class_name MouthMovement
 
 # Parameter Values
 @export_category("Param Values")
-@export var max_mouth_value := 0.7
+@export var max_mouth_value := 0.6
 @export var mouth_form_value := 0.0
 
 # Parameters
@@ -82,19 +82,21 @@ func manage_singing() -> void:
 	prev_value = param_mouth.value
 
 func manage_speaking() -> void:
-	if param_mouth.value < 0.15:
+	param_mouth.value = find_avg(prev_unaltered_values.slice(-4))
+	
+	if param_mouth.value < 0.1:
 		var force_value := false
 		for i in prev_unaltered_values:
 			if i != 0.0:
 				force_value = true
 		if force_value:
-			param_mouth.value = 0.15
+			param_mouth.value = 0.1
 
-	if abs(prev_value - param_mouth.value) > 0.05:
-		if prev_value > param_mouth.value:
-			param_mouth.value = prev_value - 0.05
-		else:
-			param_mouth.value = prev_value + 0.05
+	#if abs(prev_value - param_mouth.value) > 0.06:
+		#if prev_value > param_mouth.value:
+			#param_mouth.value = prev_value - 0.06
+		#else:
+			#param_mouth.value = prev_value + 0.06
 
 	if prev_unaltered_values[prev_values_amount - 1] != 0.0 \
 		and prev_unaltered_values.slice(0, prev_values_amount - 1) == test_array:
@@ -102,3 +104,10 @@ func manage_speaking() -> void:
 
 	prev_value = param_mouth.value
 
+
+func find_avg(numbers: Array) -> float: 
+	var total := 0.0
+	for num in numbers: 
+		total += num
+	var avg: float = total / float(numbers.size())
+	return avg
