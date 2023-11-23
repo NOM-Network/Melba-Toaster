@@ -334,6 +334,12 @@ selected = 0
 popup/item_0/text = "money machine"
 popup/item_0/id = 0
 
+[node name="SingingSeekTime" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 6000.0
+step = 0.01
+
 [node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2

@@ -307,7 +307,7 @@ func _tween_text(label: Label, tween_name: String, start_val: float, final_val: 
 	tweens[tween_name] = create_tween()
 	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.01)
 
-func _on_start_singing(song: Dictionary):
+func _on_start_singing(song: Dictionary, seek_time := 0.0):
 	current_song = song
 
 	Globals.is_paused = true
@@ -340,8 +340,8 @@ func _on_start_singing(song: Dictionary):
 	wait_time_triggered = false
 	stop_time_triggered = false
 
-	song_player.play()
-	speech_player.play()
+	song_player.play(seek_time)
+	speech_player.play(seek_time)
 
 func _on_stop_singing():
 	Globals.is_singing = false

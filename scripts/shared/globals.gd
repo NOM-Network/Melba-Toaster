@@ -6,7 +6,7 @@ signal play_animation(anim_name: String)
 signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
 
-signal start_singing(song: Dictionary)
+signal (song: Dictionary, seek_time: float)
 signal stop_singing()
 
 signal start_dancing_motion(bpm: float)
@@ -22,6 +22,7 @@ signal ready_for_speech()
 signal new_speech(prompt: String, text: String)
 signal speech_done()
 signal cancel_speech()
+signal reset_subtitles()
 
 # endregion
 
@@ -105,8 +106,9 @@ func _ready() -> void:
 		"enabled": enabled
 	}))
 
-	start_singing.connect(func(song): _debug_event("start_singing", {
-		"song": song
+	start_singing.connect(func(song, seek_time): _debug_event("start_singing", {
+		"song": song,
+		"seek_time": seek_time,
 	}))
 	stop_singing.connect(_debug_event.bind("stop_singing"))
 

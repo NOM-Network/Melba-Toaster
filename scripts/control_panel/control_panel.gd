@@ -232,19 +232,22 @@ func _on_godot_stats_timer_timeout():
 
 # region UI FUNCTIONS
 
-func _on_start_singing(_song: Dictionary):
+func _on_start_singing(_song, _seek_time):
 	_on_pause_speech_toggled(true, false) # TODO: Use emit events
 
 func _on_stop_singing():
 	%SingingToggle.button_pressed = false
 	_on_singing_toggle_toggled(false, false)
 
-func _on_singing_toggle_toggled(button_pressed: bool, emit = true):
-	if button_pressed:
+func _on_singing_toggle_toggled(button_pressed: bool, emit := true) -> void:
+	if emit:
 		var song: Dictionary = Globals.config.songs[%SingingMenu.selected]
-		if emit: Globals.start_singing.emit(song)
-	else:
-		if emit: Globals.stop_singing.emit()
+		var seek_time: float = %SingingSeekTime.value
+
+		if button_pressed:
+			Globals.start_singing.emit(song, seek_time)
+		else:
+			Globals.stop_singing.emit()
 
 	CpHelpers.change_toggle_state(
 		%SingingToggle,
