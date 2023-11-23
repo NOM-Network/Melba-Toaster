@@ -83,11 +83,11 @@ static var last_expression := ""
 
 # region MELBA STATE
 
+static var config := ToasterConfig.new()
 static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
 static var debug_mode := false
-static var config := ToasterConfig.new()
 
 # endregion
 

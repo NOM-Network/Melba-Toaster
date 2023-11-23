@@ -78,20 +78,19 @@ func _process(_delta) -> void:
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
 				var line: Array = current_subtitles.pop_front()
-				if line[1] == "CLEAR":
-					subtitles.text = ""
-				else:
-					subtitles.text = line[1]
+				var command: PackedStringArray = line[1].split(" ")
+				match command[0]:
+					"&CLEAR":
+						subtitles.text = ""
 
-		if not wait_time_triggered or not stop_time_triggered:
-			if pos >= current_song.wait_time and not wait_time_triggered:
-				Globals.start_dancing_motion.emit(current_song.bpm)
-				wait_time_triggered = true
-			if current_song.stop_time != 0.0:
-				if pos >= current_song.stop_time and not stop_time_triggered:
-					Globals.end_dancing_motion.emit()
-					stop_time_triggered = true
-					# trigger_cleanout()
+					"&START":
+						Globals.start_dancing_motion.emit(command[1].to_int())
+
+					"&STOP":
+						Globals.end_dancing_motion.emit()
+
+					_:
+						subtitles.text = line[1]
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
@@ -272,8 +271,9 @@ func _on_cancel_speech():
 	await trigger_cleanout()
 	Globals.set_toggle.emit("void", false)
 
-func trigger_cleanout():
-	await get_tree().create_timer(time_before_cleanout).timeout
+func trigger_cleanout(timeout := true):
+	if timeout:
+		await get_tree().create_timer(time_before_cleanout).timeout
 	_tween_text(prompt, "prompt", 1.0, 0.0, 1.0)
 	_tween_text(subtitles, "subtitles", 1.0, 0.0, 1.0)
 
@@ -353,6 +353,7 @@ func _on_stop_singing():
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
 
+	trigger_cleanout(false)
 	Globals.change_scene.emit("Main")
 
 func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:

@@ -926,8 +926,8 @@ func _get_message() -> Dictionary:
 	return json as Dictionary
 
 func _send_message(data: PackedByteArray) -> void:
-	# TODO even though a text session is never requested, obs-websocket assumes a text session?
-	obs_client.send(data, WebSocketPeer.WRITE_MODE_TEXT)
+	if obs_client.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		obs_client.send(data, WebSocketPeer.WRITE_MODE_TEXT)
 
 static func _generate_auth(passw: String, challenge: String, salt: String) -> String:
 	var combined_secret := "%s%s" % [passw, salt]
@@ -946,6 +946,7 @@ func establish_connection() -> int:
 	return obs_client.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
 
 func break_connection(reason: String = "") -> void:
+	set_process(false)
 	obs_client.close(1000, reason)
 
 func send_command(command: String, data: Dictionary = {}, request_id: String = "1") -> void:

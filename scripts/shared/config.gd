@@ -38,7 +38,6 @@ func _load_subtitles_file(path: String) -> Variant:
 	while not file.eof_reached():
 		var file_line := file.get_line()
 		var line := file_line.split("\t")
-		print(line)
 
 		if line[0] == "":
 			continue
