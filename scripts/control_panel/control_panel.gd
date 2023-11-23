@@ -30,7 +30,11 @@ func _ready() -> void:
 	# Defaults
 	debug_button.button_pressed = Globals.debug_mode
 	pause_button.button_pressed = Globals.is_paused
+
 	%BackendStatus/Label.text = "Backend %s" % Globals.config.get_backend("host")
+	%TimeBeforeCleanout.value = Globals.time_before_cleanout
+	%TimeBeforeReady.value = Globals.time_before_ready
+	%TimeBeforeSpeech.value = Globals.time_before_speech
 
 	generate_position_controls()
 	generate_model_controls()
@@ -375,6 +379,15 @@ func change_input_state(data):
 
 func _on_input_button_pressed(button):
 	obs.send_command("ToggleInputMute", { "inputName": button.text }, button.text)
+
+func _on_time_before_cleanout_value_changed(value: float) -> void:
+	Globals.time_before_cleanout = value
+
+func _on_time_before_ready_value_changed(value: float) -> void:
+	Globals.time_before_ready = value
+
+func _on_time_before_speech_value_changed(value: float) -> void:
+	Globals.time_before_speech = value
 
 func insert_data(node: Node, text: String) -> void:
 	node.clear()

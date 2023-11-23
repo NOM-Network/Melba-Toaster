@@ -421,8 +421,6 @@ _data = {
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("model", "model_parent_animation", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
-time_before_cleanout = null
-time_before_ready = null
 model = NodePath("Live2DMelba")
 model_parent_animation = NodePath("ModelParentAnimation")
 client = NodePath("WebSocketClient")
@@ -432,7 +430,6 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
-target_position = null
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")

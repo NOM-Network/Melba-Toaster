@@ -90,6 +90,10 @@ static var is_speaking := false
 static var is_singing := false
 static var debug_mode := false
 
+static var time_before_cleanout := 3.0
+static var time_before_ready := 2.0
+static var time_before_speech := 1.0
+
 # endregion
 
 # region EVENT BUS DEBUG

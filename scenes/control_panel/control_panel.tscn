@@ -301,16 +301,18 @@ alignment = 1
 [node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 layout_mode = 2
 text = "Dancing"
+horizontal_alignment = 1
 
 [node name="DancingBpm" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 tooltip_text = "BPM (beats per minute)"
 max_value = 1000.0
 step = 0.1
 value = 128.0
 alignment = 1
-custom_arrow_step = 0.1
 
 [node name="DancingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
@@ -339,6 +341,8 @@ unique_name_in_owner = true
 layout_mode = 2
 max_value = 6000.0
 step = 0.01
+alignment = 1
+suffix = "s"
 
 [node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
@@ -353,6 +357,39 @@ alignment = 1
 [node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
 layout_mode = 2
 text = "Misc"
+
+[node name="TimeBeforeCleanout" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Time before cleanout"
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+value = 0.1
+alignment = 1
+suffix = "s"
+
+[node name="TimeBeforeReady" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Time before ready"
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+value = 0.1
+alignment = 1
+suffix = "s"
+
+[node name="TimeBeforeSpeech" type="SpinBox" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Time before ready"
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+value = 0.1
+alignment = 1
+suffix = "s"
 
 [node name="ResetSubtitles" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
 layout_mode = 2
@@ -587,6 +624,9 @@ autostart = true
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
+[connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeCleanout" to="." method="_on_time_before_cleanout_value_changed"]
+[connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeReady" to="." method="_on_time_before_ready_value_changed"]
+[connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeSpeech" to="." method="_on_time_before_speech_value_changed"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/ResetSubtitles" to="." method="_on_reset_subtitles_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
