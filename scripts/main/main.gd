@@ -1,9 +1,5 @@
 extends Node2D
 
-@export_category("Variables")
-@export_range(0.5, 10, 0.01) var time_before_cleanout: float = 3.0
-@export_range(0.5, 10, 0.01) var time_before_ready: float = 2.0
-
 @export_category("Model")
 @export var model: Node2D
 @onready var model_sprite := model.get_node("%Sprite2D")
@@ -48,6 +44,8 @@ var subtitles_font_size: int
 # For AnimationPlayer
 @export_category("Nodes")
 @export var target_position: Vector2
+
+var pending_speech: Dictionary
 
 func _ready():
 	# Defaults
@@ -198,7 +196,7 @@ func _on_data_received(data: Variant):
 
 			"NewSpeech":
 				if not Globals.is_speaking:
-					Globals.new_speech.emit(message.prompt, message.text)
+					Globals.new_speech.emit(message.prompt, message.text.response, message.text.emotions)
 				else:
 					print_debug("NewSpeech while blabbering")
 
@@ -232,11 +230,24 @@ func _on_ready_for_speech():
 	if not Globals.is_paused:
 		client.send_message({"type": "ReadyForSpeech"})
 
-func _on_new_speech(p_prompt, p_text) -> void:
-	_print_prompt(p_prompt)
-	_print_subtitles(p_text.response)
+func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void:
+	pending_speech = {
+		"prompt": p_prompt,
+		"response": p_text,
+		"emotions": p_emotions,
+	}
 
+	await get_tree().create_timer(Globals.time_before_speech).timeout
+
+	if pending_speech != {}:
+		_speak()
+
+func _speak():
+	Globals.start_speech.emit()
+	_print_prompt(pending_speech.prompt)
+	_print_subtitles(pending_speech.response)
 	_play_audio()
+	pending_speech = {}
 
 func _print_prompt(text: String, duration := 0.0) -> void:
 	if text:
@@ -260,21 +271,29 @@ func _print_subtitles(text: String, duration := 0.0) -> void:
 
 	_tween_text(subtitles, "subtitles", 0.0, 1.0, duration if duration != 0.0 else subtitles_duration)
 
-func _on_cancel_speech():
-	Globals.set_toggle.emit("void", true)
+func _on_cancel_speech() -> void:
+	var silent := false
+	if pending_speech:
+		silent = true
+
+	pending_speech = {}
 
 	speech_player.stop()
 	speech_player.stream = null
-	cancel_sound.play()
 
 	prompt.text = ""
 	prompt.label_settings.font_size = prompt_font_size
 
-	subtitles.text = "[TOASTED]"
+	subtitles.text = ""
 	subtitles.label_settings.font_size = subtitles_font_size
-	_tween_text(subtitles, "subtitles", 0.0, 1.0, cancel_sound.stream.get_length())
 
-	await trigger_cleanout()
+	if not silent:
+		Globals.set_toggle.emit("void", true)
+		subtitles.text = "[TOASTED]"
+		_tween_text(subtitles, "subtitles", 0.0, 1.0, cancel_sound.stream.get_length())
+		cancel_sound.play()
+
+	await trigger_cleanout(not silent)
 	Globals.set_toggle.emit("void", false)
 
 func _on_reset_subtitles() -> void:
@@ -285,7 +304,7 @@ func _on_reset_subtitles() -> void:
 
 func trigger_cleanout(timeout := true):
 	if timeout:
-		await get_tree().create_timer(time_before_cleanout).timeout
+		await get_tree().create_timer(Globals.time_before_cleanout).timeout
 	_tween_text(prompt, "prompt", 1.0, 0.0, 1.0)
 	_tween_text(subtitles, "subtitles", 1.0, 0.0, 1.0)
 
@@ -296,7 +315,7 @@ func trigger_cleanout(timeout := true):
 
 func get_ready_for_next_speech():
 	if not Globals.is_paused:
-		await get_tree().create_timer(time_before_ready).timeout
+		await get_tree().create_timer(Globals.time_before_ready).timeout
 		Globals.ready_for_speech.emit()
 
 func _on_connection_closed():
@@ -401,6 +420,3 @@ func _on_change_position(new_position: String) -> void:
 					tweens[p].set_parallel()
 					tweens[p].tween_property(node, "position", positions[p][0], 1)
 					tweens[p].tween_property(node, "scale", positions[p][1], 1)
-
-func get_model_animations() -> PackedStringArray:
-	return model_parent_animation.get_animation_list()

@@ -5,8 +5,6 @@ extends Window
 @export var obs: ObsWebSocketClient
 
 @export_category("UI")
-@export var current_prompt: Label
-@export var current_speech: Label
 @export var debug_button: Button
 @export var cancel_button: Button
 @export var pause_button: Button
@@ -63,6 +61,7 @@ func obs_connection() -> void:
 func connect_signals() -> void:
 	Globals.set_toggle.connect(update_toggle_controls)
 	Globals.new_speech.connect(_on_new_speech)
+	Globals.start_speech.connect(_on_start_speech)
 
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
@@ -261,7 +260,7 @@ func _on_singing_toggle_toggled(button_pressed: bool, emit := true) -> void:
 
 func _on_dancing_toggle_toggled(button_pressed: bool):
 	if button_pressed:
-		Globals.start_dancing_motion.emit(%DancingBpm.value as float)
+		Globals.start_dancing_motion.emit(%DancingBpm.value)
 	else:
 		Globals.end_dancing_motion.emit()
 
@@ -275,10 +274,20 @@ func _on_dancing_toggle_toggled(button_pressed: bool):
 func _on_toggle_pressed(toggle: CheckButton):
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
 
-func _on_new_speech(prompt, text) -> void:
-	current_speech.remove_theme_color_override("font_color")
-	current_prompt.text = prompt
-	current_speech.text = text.response
+func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
+	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
+	%CurrentSpeech/Prompt.text = prompt
+	%CurrentSpeech/Emotions.text = array_to_string(emotions)
+	%CurrentSpeech/Text.text = text
+
+func array_to_string(arr: Array) -> String:
+	var s := ""
+	for i in arr:
+		s += String(i) + " "
+	return s
+
+func _on_start_speech() -> void:
+	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggles%s" % [toggle_name.to_pascal_case()]
@@ -436,7 +445,7 @@ func _on_debug_mode_button_toggled(button_pressed: bool) -> void:
 
 func _on_cancel_speech_pressed():
 	Globals.cancel_speech.emit()
-	current_speech.add_theme_color_override("font_color", Color.RED)
+	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.RED)
 
 func _on_reset_subtitles_pressed() -> void:
 	Globals.reset_subtitles.emit()

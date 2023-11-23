@@ -33,7 +33,7 @@ async def hello(websocket):
                 message = {
                     "type": "NewSpeech",
                     "prompt": prompt,
-                    "text": {"response": response, "emotions": []},
+                    "text": {"response": response, "emotions": ["sad", "happy"]},
                 }
                 await websocket.send(json.dumps(message))
                 print("NewSpeech sent")

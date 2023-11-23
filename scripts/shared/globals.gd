@@ -19,7 +19,8 @@ signal change_position(name: String)
 signal change_scene(scene: String)
 
 signal ready_for_speech()
-signal new_speech(prompt: String, text: String)
+signal new_speech(prompt: String, text: String, emotions: Array)
+signal start_speech()
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
@@ -90,9 +91,9 @@ static var is_speaking := false
 static var is_singing := false
 static var debug_mode := false
 
-static var time_before_cleanout := 3.0
-static var time_before_ready := 2.0
-static var time_before_speech := 1.0
+static var time_before_cleanout := 2.0
+static var time_before_ready := 1.0
+static var time_before_speech := 2.0
 
 # endregion
 
@@ -133,10 +134,12 @@ func _ready() -> void:
 	}))
 
 	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
-	new_speech.connect(func(prompt, text): _debug_event("new_speech", {
+	new_speech.connect(func(prompt, text, emotions): _debug_event("new_speech", {
 		"prompt": prompt,
-		"text": text
+		"text": text,
+		"emotions": emotions,
 	}))
+	start_speech.connect(_debug_event.bind("start_speech"))
 	speech_done.connect(_debug_event.bind("speech_done"))
 	cancel_speech.connect(_debug_event.bind("cancel_speech"))
 
