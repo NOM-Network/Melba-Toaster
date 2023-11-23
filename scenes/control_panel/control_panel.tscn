@@ -444,7 +444,8 @@ text = "Test"
 
 [node name="ReconnectButton" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Reconnect"
+text = "RECONNECT
+(change scene to Tech Diff, restart the process)"
 
 [node name="SceneController" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
@@ -555,6 +556,7 @@ fit_content = true
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
 initial_position = 4
 size = Vector2i(324, 109)
+transient = false
 unresizable = true
 always_on_top = true
 transparent = true

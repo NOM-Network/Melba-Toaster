@@ -87,8 +87,6 @@ func generate_position_controls() -> void:
 		positions.add_child(button)
 
 	var menu := %NextPositionMenu
-	positions.move_child(menu, -1)
-
 	menu.add_item("NO OVERRIDE")
 	for p in Globals.positions:
 		menu.add_item(p)
@@ -308,7 +306,7 @@ func _on_change_scene(scene_name: String) -> void:
 			"Main", "Song":
 				next_position = "default"
 
-			"Debut":
+			"Gaming":
 				next_position = "gaming"
 
 	%NextPositionMenu.selected = 0
@@ -437,8 +435,10 @@ func stop_processing():
 	CpHelpers.change_status_color(%ObsClientStatus, false)
 
 func _on_reconnect_button_pressed():
+	Globals.change_scene.emit("Tech Diff")
+	await get_tree().create_timer(1.0).timeout
 	stop_processing()
-	get_tree().reload_current_scene()
+	main.get_tree().reload_current_scene()
 
 func _on_close_requested():
 	$CloseConfirm.visible = true

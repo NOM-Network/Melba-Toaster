@@ -62,7 +62,7 @@ func _ready():
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
 	# Signals
-	connect_signals()
+	_connect_signals()
 
 	# Waiting for the backend
 	await connect_backend()
@@ -146,7 +146,7 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	else:
 		model_target_point.set_target(Vector2.ZERO)
 
-func connect_signals() -> void:
+func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
@@ -161,6 +161,10 @@ func connect_backend() -> void:
 	control_panel.backend_connected()
 	client.data_received.connect(_on_data_received)
 	client.connection_closed.connect(_on_connection_closed)
+
+func disconnect_backend() -> void:
+	client.break_connection("from control panel")
+	await client.connection_closed
 
 func _on_data_received(data: Variant):
 	if Globals.is_paused:

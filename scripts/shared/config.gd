@@ -26,7 +26,7 @@ func _init() -> void:
 
 		songs.push_back(song)
 
-	print_debug("Songs loaded: ", songs)
+	print_debug("Songs loaded: ", songs.size())
 
 func _load_subtitles_file(path: String) -> Variant:
 	if not FileAccess.file_exists(path + "subtitles.txt"):
