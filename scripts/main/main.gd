@@ -390,13 +390,8 @@ func _on_stop_singing():
 func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	var path: String = song.path % type
 
-	if not FileAccess.file_exists(path):
-		printerr("No audio file %s" % path)
-
-	var file = FileAccess.open(path, FileAccess.READ)
-	var stream = AudioStreamMP3.new()
-	stream.data = file.get_buffer(file.get_length())
-	return stream
+	assert(ResourceLoader.exists(path), "No audio file %s" % path)
+	return ResourceLoader.load(path)
 
 func _on_change_position(new_position: String) -> void:
 	if Globals.positions.has(new_position):

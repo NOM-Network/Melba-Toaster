@@ -7,17 +7,21 @@ var songs: Array[Dictionary]
 var song_path = 'res://assets/songs/%s/'
 
 func _init() -> void:
-	config = _load_config_file("prod")
+	config = _load_config_file("res://config/prod.cfg")
 
-	var list := _load_config_file("songs")
+	var list = _load_config_file("res://assets/songs/songs.cfg")
+	if not list:
+		print("Songs loaded: ", songs.size())
+		return
+
 	for section in list.get_sections():
 		var song := {}
 		for key in list.get_section_keys(section):
 			song[key] = list.get_value(section, key)
 			song["path"] = song_path % list.get_value(section, "id") + '%s.mp3'
 
-		if not FileAccess.file_exists(song.path % "song") \
-			or not FileAccess.file_exists(song.path % "voice"):
+		if not ResourceLoader.exists(song.path % "song") \
+			or not ResourceLoader.exists(song.path % "voice"):
 			printerr("No song files found for %s" % song.id)
 			continue
 
@@ -26,7 +30,7 @@ func _init() -> void:
 
 		songs.push_back(song)
 
-	print_debug("Songs loaded: ", songs.size())
+	print("Songs loaded: ", songs.size())
 
 func _load_subtitles_file(path: String) -> Variant:
 	if not FileAccess.file_exists(path + "subtitles.txt"):
@@ -49,12 +53,13 @@ func _load_subtitles_file(path: String) -> Variant:
 
 	return subtitles
 
-func _load_config_file(filename: String) -> ConfigFile:
+func _load_config_file(filename: String) -> Variant:
 	var file := ConfigFile.new()
-	var err := file.load("res://config/%s.cfg" % [filename])
 
+	var err := file.load(filename)
 	if (err) != OK:
-		printerr(err)
+		printerr("Config file %s is corrupted, error %d" % [filename, err])
+		return null
 
 	return file
 

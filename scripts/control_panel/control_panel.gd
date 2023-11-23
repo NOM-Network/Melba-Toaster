@@ -215,6 +215,9 @@ func _handle_request(data):
 		"SetCurrentProgramScene", "ToggleStream":
 			pass # handled by StreamChateChanged event
 
+		"SetSourceFilterEnabled":
+			pass
+
 		_:
 			print("Unhandled request: ", data.requestType)
 			print(data)
