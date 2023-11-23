@@ -1,12 +1,15 @@
 extends Node2D
 
+@export_category("Cubism Model")
 @export var cubism_model: GDCubismUserModel
 
-# reagion Effects
+@export_category("Tracking")
+@export var x_offset = 0.0
+@export var y_offset = 0.0
 
+#reagion Effects
 @onready var eye_blink = %EyeBlink
-
-# endregion
+#endregion
 
 @onready var anim_timer = $AnimTimer
 
@@ -37,7 +40,13 @@ func intialize_toggles() -> void:
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
-
+		
+	var dict_mesh = cubism_model.get_meshes()
+	var ary_mesh: ArrayMesh = dict_mesh["ArtMesh19"]
+	var ary_surface = ary_mesh.surface_get_arrays(0)
+	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][0]
+	$AnimatedSprite2D.position = Vector2(pos.x - 950 + x_offset, pos.y - 1000 + y_offset)
+	
 func nudge_model() -> void:
 	if tween:
 		tween.kill()

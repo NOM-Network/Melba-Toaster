@@ -7,9 +7,10 @@
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 
 [node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model")]
-position = Vector2(0, -6)
 script = ExtResource("1_gym56")
 cubism_model = NodePath("Sprite2D/GDCubismUserModel")
+metadata/_edit_horizontal_guides_ = [13.0, -942.0]
+metadata/_edit_vertical_guides_ = [21.0]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
@@ -21,15 +22,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -1.92224
-ParamAngleY = 1.85855
-ParamAngleZ = 8.28405
-ParamBodyAngleX = -1.43003
-ParamBodyAngleY = 0.469207
-ParamBodyAngleZ = -6.414e-05
-Param3 = -0.503805
-Param4 = 0.510504
-Param5 = 7.28893
+ParamAngleX = -3.71764
+ParamAngleY = 4.59782
+ParamAngleZ = -1.49602
+ParamBodyAngleX = -0.103489
+ParamBodyAngleY = 0.487394
+ParamBodyAngleZ = -6.99448e-05
+Param3 = 0.0
+Param4 = 0.0
+Param5 = -1.31812
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -38,13 +39,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.118331
-Param7 = -0.049119
-Param8 = 0.015728
-Param10 = 0.571094
-Param11 = 0.00585971
+Param6 = -0.0285567
+Param7 = -0.0301576
+Param8 = 0.014753
+Param10 = -0.0105078
+Param11 = -0.000488135
 Param15 = 0.0
-Param16 = 0.81892
+Param16 = 0.850654
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -53,8 +54,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.000292785
-Param26 = 0.000292785
+Param24 = 0.000318244
+Param26 = 0.000318244
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -66,16 +67,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0439865
+ParamBreath = 0.29282
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -3.57628e-07
-Param2 = 5.96046e-07
-Param12 = 0.000272103
-Param13 = 6.82601e-05
-Param23 = -0.000149891
-Param22 = 0.0155674
+Param = 2.38419e-07
+Param2 = 0.0
+Param12 = 0.000292498
+Param13 = -9.09441e-05
+Param23 = -0.00587138
+Param22 = 0.00587138
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -167,5 +168,7 @@ wait_time = 2.5
 autostart = true
 
 [node name="AnimTimer" type="Timer" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 
 [connection signal="motion_event" from="Sprite2D/GDCubismUserModel" to="." method="_on_gd_cubism_user_model_motion_event"]
