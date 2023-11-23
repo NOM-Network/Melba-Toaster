@@ -4,8 +4,8 @@ extends Node2D
 @export var cubism_model: GDCubismUserModel
 
 @export_category("Tracking")
-@export var x_offset = 0.0
-@export var y_offset = 0.0
+@export_range(0, 1920) var x_offset = 0.0
+@export_range(0, 1080) var y_offset = 170.0
 
 #region EFFECTS
 @onready var eye_blink = %EyeBlink
@@ -13,24 +13,26 @@ extends Node2D
 
 #region OTHER NODES
 @onready var anim_timer = $AnimTimer
-#endregion 
+#endregion
 
 #region STATE VARIABLES
-var item_is_pinned := false 
+var item_is_pinned := false
 #endregion
 
 #region TWEENS
-var tween: Tween
-#endregion 
+@onready var tweens := {}
+#endregion
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
 
+	$AnimatedSprite2D.modulate.a = 0
+
 	set_expression("end")
 	play_random_idle_animation()
-	
+
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
@@ -50,21 +52,30 @@ func intialize_toggles() -> void:
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
-	
-	if item_is_pinned: 
+
+	if item_is_pinned:
 		pin_item()
 
-func _on_pin_item() -> void: 
-	item_is_pinned = true 
-	$AnimatedSprite2D.visible = true 
-	$AnimatedSprite2D.play()
-	
-func _on_stop_pin_item() -> void: 
-	item_is_pinned = false 
-	$AnimatedSprite2D.visible = false
-	$AnimatedSprite2D.stop()
+func _on_pin_item() -> void:
+	_tween_pinned_item(false)
 
-func pin_item() -> void: 
+func _on_stop_pin_item() -> void:
+	_tween_pinned_item(true)
+
+func _tween_pinned_item(opaque := true) -> void:
+	if tweens.has("pin"):
+		tweens.pin.kill()
+
+	if not opaque:
+		item_is_pinned = true
+
+	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
+	tweens.pin.tween_property($AnimatedSprite2D, "modulate:a", 0.0 if opaque else 1.0, 0.5)
+
+	if opaque:
+		tweens.pin.tween_callback(func(): item_is_pinned = false)
+
+func pin_item() -> void:
 	var dict_mesh = cubism_model.get_meshes()
 	var ary_mesh: ArrayMesh = dict_mesh["ArtMesh19"]
 	var ary_surface = ary_mesh.surface_get_arrays(0)
@@ -72,12 +83,12 @@ func pin_item() -> void:
 	$AnimatedSprite2D.position = Vector2(pos.x - 950 + x_offset, pos.y - 1000 + y_offset)
 
 func nudge_model() -> void:
-	if tween:
-		tween.kill()
+	if tweens.has("nudge"):
+		tweens.nudge.kill()
 
-	tween = create_tween()
-	tween.tween_property(cubism_model, "speed_scale", 2, 0.5).set_ease(Tween.EASE_IN)
-	tween.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
+	tweens.nudge = create_tween()
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 2, 0.5).set_ease(Tween.EASE_IN)
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
 
 func play_animation(anim_name: String) -> void:
 	reset_overrides()

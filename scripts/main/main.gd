@@ -107,6 +107,12 @@ func _process(_delta) -> void:
 					"&STOP":
 						Globals.end_dancing_motion.emit()
 
+					"&PIN":
+						Globals.pin_item.emit()
+
+					"&UNPIN":
+						Globals.stop_pin_item.emit()
+
 					_:
 						_print_subtitles(line[1], 0.25)
 
@@ -403,6 +409,7 @@ func _on_stop_singing():
 
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
+	Globals.stop_pin_item.emit()
 
 	trigger_cleanout(false)
 	Globals.change_scene.emit("Main")
