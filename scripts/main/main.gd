@@ -154,8 +154,7 @@ func _reset_model_props():
 	_mouse_to_prop("position", Globals.positions.default.model[0], true)
 
 func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	var new_value = change if absolute else model[prop] + change
-	model[prop] = new_value
+	model[prop] = change if absolute else model[prop] + change
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	if is_pressed:
