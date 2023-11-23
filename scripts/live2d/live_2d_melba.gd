@@ -31,10 +31,6 @@ func _ready() -> void:
 	set_expression("end")
 	play_random_idle_animation()
 	
-	Globals.pin_item.emit()
-	await get_tree().create_timer(5).timeout
-	Globals.stop_pin_item.emit()
-
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
