@@ -79,6 +79,7 @@ func _process(_delta) -> void:
 			if pos > current_subtitles[0][0]:
 				var line: Array = current_subtitles.pop_front()
 				var command: PackedStringArray = line[1].split(" ")
+				# print(command)
 				match command[0]:
 					"&CLEAR":
 						subtitles.text = ""
@@ -90,7 +91,7 @@ func _process(_delta) -> void:
 						Globals.end_dancing_motion.emit()
 
 					_:
-						subtitles.text = line[1]
+						_print_subtitles(line[1], 0.25)
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
@@ -365,7 +366,6 @@ func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
 	var file = FileAccess.open(path, FileAccess.READ)
 	var stream = AudioStreamMP3.new()
 	stream.data = file.get_buffer(file.get_length())
-	stream.bpm = song.bpm
 	return stream
 
 func _on_change_position(new_position: String) -> void:
