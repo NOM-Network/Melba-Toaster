@@ -41,7 +41,7 @@ static var positions := {
 		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
 		"lower_third": [ Vector2(40, 810), Vector2(0.777, 0.777) ],
 	},
-	"full_height": {
+	"full": {
 		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
