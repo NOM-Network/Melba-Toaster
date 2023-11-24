@@ -383,6 +383,16 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 	var voice_track := _load_mp3(song, "voice")
 	speech_player.stream = voice_track
 
+	var command := {
+		"sourceName": "Song",
+		"filterName": "hiyori",
+		"filterEnabled": false
+	}
+	if song.id == "hiyori":
+		command["filterEnabled"] = true
+	# TODO: decouple
+	control_panel.obs.send_command("SetSourceFilterEnabled", command)
+
 	Globals.change_scene.emit("Song")
 
 	wait_time_triggered = false

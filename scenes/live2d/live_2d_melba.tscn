@@ -1,10 +1,54 @@
-[gd_scene load_steps=6 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=13 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
+[ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyevu"]
+atlas = ExtResource("6_1yxl4")
+region = Rect2(0, 0, 498, 153)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rax4"]
+atlas = ExtResource("6_1yxl4")
+region = Rect2(498, 0, 498, 153)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbmtu"]
+atlas = ExtResource("6_1yxl4")
+region = Rect2(996, 0, 498, 153)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnlut"]
+atlas = ExtResource("6_1yxl4")
+region = Rect2(1494, 0, 498, 153)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kliri"]
+atlas = ExtResource("6_1yxl4")
+region = Rect2(1992, 0, 498, 153)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uup0d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kyevu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rax4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cbmtu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnlut")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kliri")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Live2DMelba" type="Node2D" node_paths=PackedStringArray("cubism_model")]
 script = ExtResource("1_gym56")
@@ -170,6 +214,10 @@ autostart = true
 [node name="AnimTimer" type="Timer" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-visible = false
+modulate = Color(1, 1, 1, 0)
+scale = Vector2(0.7, 0.7)
+sprite_frames = SubResource("SpriteFrames_uup0d")
+autoplay = "default"
+frame_progress = 0.928116
 
 [connection signal="motion_event" from="Sprite2D/GDCubismUserModel" to="." method="_on_gd_cubism_user_model_motion_event"]
