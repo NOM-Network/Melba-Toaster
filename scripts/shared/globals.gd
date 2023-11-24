@@ -66,7 +66,7 @@ static var toggles := {
 	"tears": Toggle.new("Param20", 0.5),
 	"toa": Toggle.new("Param21", 1.0),
 	"confused": Toggle.new("Param18", 0.5),
-	"gymbag": Toggle.new("Param28", 0.5)
+	"gymbag": Toggle.new("Param28", 0.5, true)
 }
 
 static var animations := {
