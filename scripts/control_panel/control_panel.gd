@@ -27,6 +27,10 @@ var last_dancing_bpm := 0.1
 # region MAIN
 
 func _ready() -> void:
+	# Remove editor-only nodes
+	for i in get_tree().get_nodes_in_group("_editor_only"):
+		i.queue_free()
+
 	godot_stats_timer.start()
 
 	# Defaults
@@ -39,11 +43,11 @@ func _ready() -> void:
 	%TimeBeforeSpeech.value = Globals.time_before_speech
 	%ShowBeats.button_pressed = Globals.show_beats
 
-	generate_position_controls()
-	generate_model_controls()
-	generate_singing_controls()
+	_generate_position_controls()
+	_generate_model_controls()
+	_generate_singing_controls()
 
-	connect_signals()
+	_connect_signals()
 	_start_obs_processing()
 
 func _process(_delta) -> void:
@@ -78,7 +82,11 @@ func _start_obs_processing() -> void:
 	# OBS Connection
 	obs.establish_connection()
 	await obs.connection_authenticated
-	obs.data_received.connect(_on_data_received)
+
+	if not obs.data_received.is_connected(_on_data_received):
+		obs.data_received.connect(_on_data_received)
+
+	%ObsStreamControl.disabled = false
 	CpHelpers.change_status_color(%ObsClientStatus, true)
 
 	# OBS Data init
@@ -95,8 +103,13 @@ func _stop_obs_processing():
 	obs_stats_timer.stop()
 	obs.break_connection()
 	CpHelpers.change_status_color(%ObsClientStatus, false)
+	%ObsStreamControl.disabled = true
 
-func connect_signals() -> void:
+	CpHelpers.clear_node(%ObsScenes)
+	CpHelpers.clear_node(%ObsInputs)
+	CpHelpers.clear_node(%ObsFilters)
+
+func _connect_signals() -> void:
 	Globals.set_toggle.connect(update_toggle_controls)
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.start_speech.connect(_on_start_speech)
@@ -109,7 +122,7 @@ func connect_signals() -> void:
 
 	print_debug("Control Panel: connected signals")
 
-func generate_position_controls() -> void:
+func _generate_position_controls() -> void:
 	var positions := %Positions
 	for n in positions.get_children():
 		if n.get_class() == "Button":
@@ -136,7 +149,7 @@ func generate_position_controls() -> void:
 func _on_position_button_pressed(button: BaseButton) -> void:
 	Globals.change_position.emit(button.text)
 
-func generate_singing_controls():
+func _generate_singing_controls():
 	var menu := %SingingMenu
 	menu.clear()
 
@@ -144,7 +157,7 @@ func generate_singing_controls():
 	for song in songs:
 		menu.add_item(song.name)
 
-func generate_model_controls():
+func _generate_model_controls():
 	for type in ["animations", "pinnable_assets", "expressions", "toggles"]:
 		var parent_name = type.to_pascal_case()
 		var parent = get_node("%%%s" % parent_name)
@@ -185,35 +198,42 @@ func _on_data_received(data):
 
 func _handle_event(data):
 	match data.eventType:
-		"CurrentProgramSceneChanged", "SceneListChanged":
+		"CurrentProgramSceneChanged":
+			_change_active_scene(data.eventData)
+
+		"SceneListChanged":
 			obs.send_command("GetSceneList")
 
 		"InputMuteStateChanged":
-			change_input_state(data.eventData)
+			_change_input_state(data.eventData)
 
 		"InputNameChanged":
-			change_input_name(data.eventData)
+			_change_input_name(data.eventData)
 
 		"StreamStateChanged":
 			if is_streaming != data.eventData.outputActive:
 				is_streaming = data.eventData.outputActive
-				update_stream_control_button()
+				_update_stream_control_button()
 
-		# "ExitStarted":
-		# 	stop_processing()
+		"ExitStarted":
+			_stop_obs_processing()
+
+		"SourceFilterEnableStateChanged":
+			change_filter_state(data.eventData)
 
 		# Ignored callbacks
 		"SceneNameChanged":
 			pass # handled by SceneListChanged
 
-		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded":
+		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded", \
+		"MediaInputActionTriggered":
 			pass # We don't need it
 
 		_:
-			pass
-			# print_debug("Unhandled event: ", data.eventType)
-			# print_debug(data)
-			# print_debug("-------------")
+			if Globals.debug_mode:
+				print_debug("Unhandled event: ", data.eventType)
+				print_debug(data)
+				print_debug("-------------")
 
 func _handle_request(data):
 	if not data.requestStatus.result:
@@ -231,35 +251,43 @@ func _handle_request(data):
 			# insert_data(status, %StreamStatus, "")
 			if is_streaming != status.outputActive:
 				is_streaming = status.outputActive
-				update_stream_control_button()
+				_update_stream_control_button()
 
 		"GetSceneList":
-			generate_scene_buttons(data.responseData)
+			_generate_scene_buttons(data.responseData)
+
+			var request := []
+			for scene in data.responseData.scenes:
+				request.push_front(["GetSourceFilterList", {"sourceName": scene.sceneName}, scene.sceneName])
+
+			obs.send_command_batch(request)
 
 		"GetInputList":
-			generate_input_request(data.responseData.inputs)
+			_generate_input_request(data.responseData.inputs)
 
 		"GetInputMute":
 			var inputData := {
 				"inputName": data.requestId,
 				"inputMuted": data.responseData.inputMuted
 			}
-			generate_input_button(inputData)
+			_generate_input_button(inputData)
+
+		"GetSourceFilterList":
+			if data.responseData.filters:
+				_generate_filter_buttons(data.requestId, data.responseData.filters)
 
 		# Ignored callbacks
 		"ToggleInputMute":
 			pass # handled by InputMuteStateChanged event
 
-		"SetCurrentProgramScene", "ToggleStream":
+		"SetCurrentProgramScene", "ToggleStream", "SetSourceFilterEnabled":
 			pass # handled by StreamChateChanged event
 
-		"SetSourceFilterEnabled":
-			pass
-
 		_:
-			print("Unhandled request: ", data.requestType)
-			print(data)
-			print("-------------")
+			if Globals.debug_mode:
+				print("Unhandled request: ", data.requestType)
+				print(data)
+				print("-------------")
 
 # endregion
 
@@ -304,14 +332,8 @@ func _on_toggle_pressed(toggle: CheckButton):
 func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 	%CurrentSpeech/Prompt.text = prompt
-	%CurrentSpeech/Emotions.text = array_to_string(emotions)
+	%CurrentSpeech/Emotions.text = Globals.array_to_string(emotions)
 	%CurrentSpeech/Text.text = text
-
-func array_to_string(arr: Array) -> String:
-	var s := ""
-	for i in arr:
-		s += String(i) + " "
-	return s
 
 func _on_start_speech() -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")
@@ -321,7 +343,7 @@ func update_toggle_controls(toggle_name: String, enabled: bool):
 	var toggle: CheckButton = %Toggles.get_node(ui_name)
 	toggle.set_pressed_no_signal(enabled)
 
-func update_stream_control_button():
+func _update_stream_control_button():
 	CpHelpers.change_toggle_state(
 		%ObsStreamControl,
 		is_streaming,
@@ -363,26 +385,54 @@ func _on_change_position(new_position: String) -> void:
 			b.button_pressed = true
 			return
 
-func generate_scene_buttons(data):
+func _generate_scene_buttons(data: Dictionary) -> void:
 	var active_scene = null
 	if data.has("currentProgramSceneName"):
 		active_scene = data.currentProgramSceneName
 	var scenes = data.scenes
 	scenes.reverse()
 
-	for n in %ObsScenes.get_children():
-		n.queue_free()
+	CpHelpers.clear_node(%ObsScenes)
 
 	for scene in scenes:
+		print("Scene%s" % scene.sceneName.to_pascal_case())
 		var button = Button.new()
 		button.text = scene.sceneName
+		button.name = "Scene%s" % scene.sceneName.to_pascal_case()
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
 
-func generate_input_request(inputs):
-	for n in %ObsInputs.get_children():
-		n.queue_free()
+func _change_active_scene(data: Dictionary) -> void:
+	for button in %ObsScenes.get_children():
+		var scene_name = "Scene%s" % data.sceneName.to_pascal_case()
+		CpHelpers.apply_color_override(button, button.name == scene_name, Color.GREEN)
+
+func _generate_filter_buttons(scene_name: String, filters: Array):
+	var scene = "Scene%s" % scene_name.to_pascal_case()
+	assert(%ObsScenes.get_node(scene))
+
+	CpHelpers.clear_node(%ObsFilters)
+
+	for filter in filters:
+		var button = Button.new()
+		button.text = "%s: %s" % [scene_name, filter.filterName]
+		button.name = "Filter_%s_%s" % [scene_name, filter.filterName]
+		button.toggle_mode = true
+		button.button_pressed = filter.filterEnabled
+		button.focus_mode = Control.FOCUS_NONE
+		CpHelpers.apply_color_override(button, filter.filterEnabled, Color.GREEN, Color.RED)
+		button.toggled.connect(_on_filter_button_toggled.bind(button))
+		%ObsFilters.add_child(button)
+
+func change_filter_state(data: Dictionary) -> void:
+	var filter_name := "Filter_%s_%s" % [data.sourceName, data.filterName]
+	var button := %ObsFilters.get_node(filter_name)
+	button.button_pressed = data.filterEnabled
+	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.RED)
+
+func _generate_input_request(inputs):
+	CpHelpers.clear_node(%ObsInputs)
 
 	var request = []
 	for i in inputs:
@@ -390,7 +440,7 @@ func generate_input_request(inputs):
 
 	obs.send_command_batch(request)
 
-func generate_input_button(input):
+func _generate_input_button(input):
 	var button = Button.new()
 	button.visible = false
 	button.name = input.inputName.to_pascal_case()
@@ -398,23 +448,34 @@ func generate_input_button(input):
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(_on_input_button_pressed.bind(button))
 	%ObsInputs.add_child(button)
-	change_input_state(input)
+	_change_input_state(input)
 
-func change_input_name(data):
+func _change_input_name(data):
 	var button = %ObsInputs.get_node(data.oldInputName.to_pascal_case())
 	if button:
 		button.name = data.inputName.to_pascal_case()
 		button.text = data.inputName
 
-func change_input_state(data):
+func _change_input_state(data):
 	var button = %ObsInputs.get_node(data.inputName.to_pascal_case())
 
 	if button:
 		button.visible = true
 		CpHelpers.apply_color_override(button, data.inputMuted, Color.RED, Color.GREEN)
 
-func _on_input_button_pressed(button):
+func _on_input_button_pressed(button: Button) -> void:
 	obs.send_command("ToggleInputMute", { "inputName": button.text }, button.text)
+
+func _on_filter_button_toggled(button_pressed: bool, button: Button) -> void:
+	var data = button.name.split("_")
+
+	obs.send_command("SetSourceFilterEnabled", {
+		"sourceName": data[1],
+		"filterName": data[2],
+		"filterEnabled": button_pressed
+	}, button.name)
+
+	CpHelpers.apply_color_override(button, button_pressed, Color.RED, Color.GREEN)
 
 func _on_time_before_cleanout_value_changed(value: float) -> void:
 	Globals.time_before_cleanout = value

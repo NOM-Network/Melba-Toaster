@@ -22,7 +22,7 @@ signal connection_closed()
 signal data_received(data: Variant)
 
 func _ready() -> void:
-	pass
+	set_process(false)
 
 func _process(delta: float) -> void:
 	_poll_counter += delta
@@ -47,6 +47,7 @@ func _process(delta: float) -> void:
 func connect_client() -> void:
 	print_debug("Toaster client: Establishing connection!")
 
+	set_process(true)
 	if not socket:
 		socket = WebSocketPeer.new()
 
@@ -82,6 +83,7 @@ func send_message(json: Dictionary) -> void:
 		printerr("Toaster client: Message sending error ", err)
 
 func break_connection(reason: String = "") -> void:
+	set_process(true)
 	socket.close(1000, reason)
 	last_state = socket.get_ready_state()
 

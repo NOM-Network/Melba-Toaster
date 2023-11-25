@@ -53,7 +53,6 @@ static func change_toggle_state(
 	if apply_color:
 		apply_color_override(toggle, button_pressed, Color.RED)
 
-
 static func apply_color_override(
 	node: Node,
 	state: bool,
@@ -68,3 +67,13 @@ static func apply_color_override(
 
 static func change_status_color(node: Button, active: bool) -> void:
 	node.self_modulate = Color.GREEN if active else Color.RED
+
+static func array_to_string(arr: Array) -> String:
+	var s := ""
+	for i in arr:
+		s += String(i) + " "
+	return s
+
+static func clear_node(node: Node):
+	for i in node.get_children():
+		i.queue_free()

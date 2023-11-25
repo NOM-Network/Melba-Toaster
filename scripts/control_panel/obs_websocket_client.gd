@@ -7,6 +7,8 @@ class_name ObsWebSocketClient
 signal obs_authenticated()
 signal obs_data_received(data)
 
+#region INTERNAL DATA
+
 enum ObsError {
 	NONE = 0,
 
@@ -785,13 +787,15 @@ const OpCodeEnums := {
 
 #endregion
 
+# endregion
+
 signal connection_established()
 signal connection_authenticated()
 signal connection_closed()
 signal data_received(data: ObsMessage)
 
 const URL_PATH: String = "%s://%s:%s"
-var obs_client := WebSocketPeer.new()
+var socket: WebSocketPeer
 var _poll_handler := _handle_hello
 
 var secure: String = "wss" if Globals.config.get_obs("secure") else "ws"
@@ -807,11 +811,11 @@ func _ready() -> void:
 	set_process(false)
 
 func _process(_delta: float) -> void:
-	match obs_client.get_ready_state():
+	match socket.get_ready_state():
 		WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CONNECTING, WebSocketPeer.STATE_CLOSING:
-			obs_client.poll()
+			socket.poll()
 
-			while obs_client.get_available_packet_count():
+			while socket.get_available_packet_count():
 				var err: Error = _poll_handler.call()
 				if err != OK:
 					printerr(err)
@@ -918,7 +922,7 @@ func _handle_data_received() -> int:
 	return OK
 
 func _get_message() -> Dictionary:
-	var json: Variant = JSON.parse_string(obs_client.get_packet().get_string_from_utf8())
+	var json: Variant = JSON.parse_string(socket.get_packet().get_string_from_utf8())
 	if not json is Dictionary:
 		printerr("Unexpected data from obs-websocket: %s\nAborting connection" % str(json))
 		return {}
@@ -926,8 +930,8 @@ func _get_message() -> Dictionary:
 	return json as Dictionary
 
 func _send_message(data: PackedByteArray) -> void:
-	if obs_client.get_ready_state() == WebSocketPeer.STATE_OPEN:
-		obs_client.send(data, WebSocketPeer.WRITE_MODE_TEXT)
+	if socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		socket.send(data, WebSocketPeer.WRITE_MODE_TEXT)
 
 static func _generate_auth(passw: String, challenge: String, salt: String) -> String:
 	var combined_secret := "%s%s" % [passw, salt]
@@ -943,11 +947,17 @@ func establish_connection() -> int:
 	print_debug("OBS WebSocket: Establishing connection")
 
 	set_process(true)
-	return obs_client.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
+	if not socket:
+		socket = WebSocketPeer.new()
+
+	return socket.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
 
 func break_connection(reason: String = "") -> void:
 	set_process(false)
-	obs_client.close(1000, reason)
+	socket.close(1000, reason)
+
+	_poll_handler = _handle_hello
+	socket = WebSocketPeer.new()
 
 func send_command(command: String, data: Dictionary = {}, request_id: String = "1") -> void:
 	var req := Request.new(command, str(request_id), data)
@@ -965,14 +975,14 @@ func send_command_batch(commands: Array) -> void:
 		var command = i
 		var data = {}
 
-		var s_id = str(id)
+		var s_id = id
 		if typeof(i) == TYPE_ARRAY:
 			command = i[0]
 			data = i[1]
 			if i.size() == 3:
 				s_id = i[2]
 
-		var req = Request.new(command, s_id, data)
+		var req = Request.new(command, str(s_id), data)
 		req = req.get_as_dict()
 		requests.push_back(req.d)
 

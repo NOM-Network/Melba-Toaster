@@ -218,23 +218,23 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -245,23 +245,23 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -271,23 +271,23 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -296,11 +296,11 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
+[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test 1"
 
-[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles"]
+[node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test  2"
 
@@ -440,7 +440,9 @@ layout_mode = 2
 [node name="ObsStreamControl" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_type_variation = &"1"
+disabled = true
 toggle_mode = true
 keep_pressed_outside = true
 text = "Start Stream"
@@ -453,25 +455,26 @@ horizontal_alignment = 1
 [node name="ObsScenes" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -486,23 +489,54 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs"]
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test"
+
+[node name="FiltersLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Filters"
+horizontal_alignment = 1
+
+[node name="ObsFilters" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test"
+
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test"
+
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test"
+
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test"
+
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -525,24 +559,24 @@ alignment = 1
 layout_mode = 2
 text = "Positions"
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
+[node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions" groups=["_editor_only"]]
 layout_mode = 2
 toggle_mode = true
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_1ht7x")
-text = "Test"
-
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions" groups=["_editor_only"]]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_1ht7x")
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions"]
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions" groups=["_editor_only"]]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_1ht7x")
+text = "Test"
+
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/RightPanel/SceneController/MarginContainer/VBoxContainer/Positions" groups=["_editor_only"]]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_1ht7x")
@@ -581,14 +615,14 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
-text = "cpuUsage: 420
-memoryUsage: 420
-availableDiskSpace: 420
-activeFps: 420
-averageFrameRenderTime: 420
-totalFrames / skippedFrames: 69/420
-totalFrames / skippedFrames: 420
-incoming / outgoingMessages: 69/420"
+text = "Active FPS: [b]???[/b]
+CPU Usage: [b]???[/b]
+Memory Usage: [b]???[/b]
+Disk Space: [b]???[/b]
+Frame Render Time: [b]???[/b]
+Frames Rendered/Skipped: [b]???[/b]
+Total Rendered/Skipped: [b]???[/b]
+WS Incoming/Outgoing: [b]???[/b]"
 fit_content = true
 
 [node name="ObsStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
@@ -609,8 +643,10 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 bbcode_enabled = true
-text = "Active FPS: 69
-Frame time: "
+text = "Active FPS: [b]???[/b]
+Frame Time: [b]???[/b]
+Video Memory Used: [b]???[/b]
+Audio Latency: [b]???[/b]"
 fit_content = true
 
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
