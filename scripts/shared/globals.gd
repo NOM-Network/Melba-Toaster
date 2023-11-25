@@ -105,56 +105,20 @@ static var time_before_speech := 2.0
 # region EVENT BUS DEBUG
 
 func _ready() -> void:
-	play_animation.connect(func(anim_name): _debug_event("play_animation", {
-		"name": anim_name,
-	}))
-	set_expression.connect(func(expression_name): _debug_event("set_expression", {
-		"name": expression_name,
-	}))
-	set_toggle.connect(func(toggle_name, enabled): _debug_event("set_toggle", {
-		"name": toggle_name,
-		"enabled": enabled
-	}))
+	for s in get_signal_list():
+		self.connect(s.name, _debug_event.bind(s.name))
 
-	start_singing.connect(func(song, seek_time): _debug_event("start_singing", {
-		"song": song,
-		"seek_time": seek_time,
-	}))
-	stop_singing.connect(_debug_event.bind("stop_singing"))
-
-	start_dancing_motion.connect(func(bpm): _debug_event("start_dancing_motion", {
-		"bpm": bpm
-	}))
-	end_dancing_motion.connect(_debug_event.bind("end_dancing_motion"))
-
-	start_singing_mouth_movement.connect(_debug_event.bind("start_singing_mouth_movement"))
-	end_singing_mouth_movement.connect(_debug_event.bind("end_singing_mouth_movement"))
-	nudge_model.connect(_debug_event.bind("nudge_model"))
-
-	change_position.connect(func(position): _debug_event("change_position", {
-		"position": position
-	}))
-	change_scene.connect(func(scene): _debug_event("change_scene", {
-		"scene": scene
-	}))
-
-	ready_for_speech.connect(_debug_event.bind("ready_for_speech"))
-	new_speech.connect(func(prompt, text, emotions): _debug_event("new_speech", {
-		"prompt": prompt,
-		"text": text,
-		"emotions": emotions,
-	}))
-	start_speech.connect(_debug_event.bind("start_speech"))
-	speech_done.connect(_debug_event.bind("speech_done"))
-	cancel_speech.connect(_debug_event.bind("cancel_speech"))
-
-func _debug_event(eventName: String, data: Dictionary = {}) -> void:
+func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> void:
 	if not debug_mode:
 		return
 
-	if data:
-		print_debug("EVENT BUS: '%s' called - " % [eventName], data)
-	else:
-		print_debug("EVENT BUS: '%s' called" % [eventName])
+	var args := [arg1, arg2, arg3, arg4, arg5].filter(func (d): return d != null)
+	args.reverse()
+
+	var eventName = args.pop_front()
+
+	print_debug(
+		"EVENT BUS: `%s` - %s" % [eventName, args]
+	)
 
 # endregion
