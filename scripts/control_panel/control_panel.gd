@@ -47,6 +47,9 @@ func _ready() -> void:
 	_start_obs_processing()
 
 func _process(_delta) -> void:
+	_update_control_status()
+
+func _update_control_status() -> void:
 	if last_pause_status != Globals.is_paused:
 		last_pause_status = Globals.is_paused
 		CpHelpers.change_toggle_state(
@@ -60,9 +63,7 @@ func _process(_delta) -> void:
 		last_singing_status = Globals.is_singing
 		CpHelpers.change_toggle_state(
 			%SingingToggle,
-			Globals.is_singing,
-			">>> STOP <<<",
-			"Start"
+			Globals.is_singing
 		)
 
 	if last_dancing_bpm != Globals.dancing_bpm:
@@ -70,9 +71,7 @@ func _process(_delta) -> void:
 		%CurrentDancingBpm.text = str(Globals.dancing_bpm)
 		CpHelpers.change_toggle_state(
 			%DancingToggle,
-			Globals.dancing_bpm,
-			">> Stop <<",
-			"Start"
+			Globals.dancing_bpm
 		)
 
 func _start_obs_processing() -> void:

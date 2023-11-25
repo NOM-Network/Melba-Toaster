@@ -44,9 +44,9 @@ static func construct_model_control_buttons(
 static func change_toggle_state(
 	toggle: Button,
 	button_pressed: bool,
-	enabled_text: String,
-	disabled_text: String,
-	apply_color = true
+	enabled_text := ">>> STOP <<<",
+	disabled_text := "Start",
+	apply_color = true,
 ):
 	toggle.set_pressed_no_signal(button_pressed)
 	toggle.text = enabled_text if button_pressed else disabled_text
