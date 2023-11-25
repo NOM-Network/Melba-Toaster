@@ -5,6 +5,7 @@ extends Node
 signal play_animation(anim_name: String)
 signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
+signal pin_asset(asset_name: String)
 
 signal start_singing(song: Dictionary, seek_time: float)
 signal stop_singing()
@@ -24,7 +25,6 @@ signal start_speech()
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
-signal pin_asset(asset_name: String)
 
 # endregion
 

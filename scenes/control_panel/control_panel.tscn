@@ -52,7 +52,7 @@ MarginContainer/constants/margin_top = 10
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
-size = Vector2i(1024, 768)
+size = Vector2i(1366, 768)
 min_size = Vector2i(800, 600)
 auto_translate = false
 script = ExtResource("1_rhl0v")
@@ -218,10 +218,6 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
-layout_mode = 2
-text = "Animations"
-
 [node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Animations"]
 layout_mode = 2
 text = "Test"
@@ -244,13 +240,10 @@ text = "Test"
 
 [node name="Expressions" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
-
-[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
-layout_mode = 2
-text = "Expressions"
 
 [node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
 layout_mode = 2
@@ -269,6 +262,32 @@ layout_mode = 2
 text = "Test"
 
 [node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Expressions"]
+layout_mode = 2
+text = "Test"
+
+[node name="PinnableAssets" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+layout_mode = 2
+text = "Test"
+
+[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+layout_mode = 2
+text = "Test"
+
+[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+layout_mode = 2
+text = "Test"
+
+[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
+layout_mode = 2
+text = "Test"
+
+[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets"]
 layout_mode = 2
 text = "Test"
 
@@ -330,6 +349,7 @@ text = "Singing"
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
+alignment = 1
 item_count = 1
 selected = 0
 popup/item_0/text = "money machine"

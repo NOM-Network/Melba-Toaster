@@ -145,8 +145,9 @@ func generate_singing_controls():
 		menu.add_item(song.name)
 
 func generate_model_controls():
-	for type in ["animations", "expressions", "toggles"]:
-		var parent = get_node("%%%s" % type.capitalize())
+	for type in ["animations", "pinnable_assets", "expressions", "toggles"]:
+		var parent_name = type.to_pascal_case()
+		var parent = get_node("%%%s" % parent_name)
 		for n in parent.get_children():
 			n.queue_free()
 
@@ -318,8 +319,7 @@ func _on_start_speech() -> void:
 func update_toggle_controls(toggle_name: String, enabled: bool):
 	var ui_name := "Toggles%s" % [toggle_name.to_pascal_case()]
 	var toggle: CheckButton = %Toggles.get_node(ui_name)
-	if toggle:
-		toggle.button_pressed = enabled
+	toggle.set_pressed_no_signal(enabled)
 
 func update_stream_control_button():
 	CpHelpers.change_toggle_state(

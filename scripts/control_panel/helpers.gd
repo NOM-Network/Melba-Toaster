@@ -10,15 +10,14 @@ static func construct_model_control_buttons(
 	controls: Dictionary,
 	target_call = null
 ) -> void:
-	var label = Label.new()
-	label.text = type.capitalize()
-	parent.add_child(label)
-
 	var callback: Signal
 	var button_type := Button
 	match type:
 		"animations":
 			callback = Globals.play_animation
+
+		"pinnable_assets":
+			callback = Globals.pin_asset
 
 		"expressions":
 			callback = Globals.set_expression
