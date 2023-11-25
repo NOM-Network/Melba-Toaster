@@ -116,6 +116,15 @@ func _process(_delta) -> void:
 					"&UNPIN":
 						Globals.stop_pin_item.emit()
 
+					"&POSITION":
+						Globals.change_position.emit(command[1])
+
+					"&TOGGLE":
+						Globals.set_toggle.emit(command[1])
+
+					"&ANIM":
+						Globals.play_animation.emit(command[1])
+
 					_:
 						subtitles.text = line[1]
 
