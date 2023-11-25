@@ -85,7 +85,7 @@ func generate_position_controls() -> void:
 		var button = Button.new()
 		button.text = p
 		button.toggle_mode = true
-		button.button_pressed = p == "intro_start"
+		button.button_pressed = p == Globals.default_position
 		button.name = "Position" + p.to_pascal_case()
 		button.button_group = button_group
 		positions.add_child(button)
@@ -94,8 +94,6 @@ func generate_position_controls() -> void:
 	menu.add_item("NO OVERRIDE")
 	for p in Globals.positions:
 		menu.add_item(p)
-
-	Globals.change_position.emit("intro_start")
 
 func _on_position_button_pressed(button: BaseButton) -> void:
 	Globals.change_position.emit(button.text)

@@ -1,12 +1,11 @@
 extends Node2D
 
 @export_category("Model")
-@export var model: Node2D
-@onready var model_sprite := model.get_node("%Sprite2D")
-@onready var user_model := model.get_node("%GDCubismUserModel")
-@onready var model_target_point := model.get_node("%TargetPoint")
 @export var model_parent_animation: AnimationPlayer
-var pressed: bool
+var model: Node2D
+var model_sprite: Sprite2D
+var user_model: GDCubismUserModel
+var model_target_point: GDCubismEffectTargetPoint
 
 @export_category("Nodes")
 @export var client: WebSocketClient
@@ -37,7 +36,6 @@ var stop_time_triggered := false
 # Defaults
 @onready var prompt: Label = lower_third.get_node("Prompt")
 @onready var subtitles: Label = lower_third.get_node("Subtitles")
-
 var prompt_font_size: int
 var subtitles_font_size: int
 
@@ -47,8 +45,13 @@ var subtitles_font_size: int
 
 var pending_speech: Dictionary
 var current_bpm := 0
+var pressed: bool
 
 func _ready():
+	# Makes bg transparent
+	get_tree().get_root().set_transparent_background(true)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
+
 	# Defaults
 	prompt_font_size = prompt.label_settings.font_size
 	subtitles_font_size = subtitles.label_settings.font_size
@@ -56,12 +59,12 @@ func _ready():
 	prompt.text = ""
 	subtitles.text = ""
 
-	# Makes bg transparent
-	get_tree().get_root().set_transparent_background(true)
-	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
-
 	# Signals
 	_connect_signals()
+
+	# Add model
+	_add_model()
+	Globals.change_position.emit(Globals.default_position)
 
 	# Waiting for the backend
 	await connect_backend()
@@ -118,6 +121,15 @@ func _process(_delta) -> void:
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
+
+func _add_model():
+	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
+	add_child(model, true)
+	move_child(model, 0)
+
+	model_sprite = model.get_node("%Sprite2D")
+	user_model = model.get_node("%GDCubismUserModel")
+	model_target_point = model.get_node("%TargetPoint")
 
 func strsec(secs):
 	var s = str(secs)

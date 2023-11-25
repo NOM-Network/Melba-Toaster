@@ -1,9 +1,8 @@
-[gd_scene load_steps=95 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=94 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
-[ext_resource type="PackedScene" uid="uid://h1kmx2dkntdj" path="res://scenes/live2d/live_2d_melba.tscn" id="4_el578"]
 [ext_resource type="Texture2D" uid="uid://b2djxq2ao04v7" path="res://assets/main/mic/in/Microphone0008.png" id="5_ggmad"]
 [ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
 [ext_resource type="Texture2D" uid="uid://3t8wuwajau7w" path="res://assets/main/mic/in/Microphone0009.png" id="6_fjbx2"]
@@ -419,9 +418,8 @@ _data = {
 "intro": SubResource("Animation_focdv")
 }
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("model", "model_parent_animation", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
-model = NodePath("Live2DMelba")
 model_parent_animation = NodePath("ModelParentAnimation")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
@@ -430,7 +428,6 @@ mic = NodePath("Microphone")
 cancel_sound = NodePath("CancelSound")
 speech_player = NodePath("SpeechPlayer")
 song_player = NodePath("SongPlayer")
-target_position = null
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -438,9 +435,6 @@ script = ExtResource("4_bxfqh")
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
 current_screen = 0
-
-[node name="Live2DMelba" parent="." instance=ExtResource("4_el578")]
-position = Vector2(737, 2036)
 
 [node name="Microphone" type="AnimatedSprite2D" parent="."]
 position = Vector2(100, 408)
@@ -499,10 +493,10 @@ stream = ExtResource("6_vd5ab")
 bus = &"Voice"
 
 [node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
+reset_on_save = false
 libraries = {
 "": SubResource("AnimationLibrary_hww7n")
 }
-blend_times = [&"RESET", &"RESET", 2.0, &"RESET", &"intro", 2.0, &"intro", &"RESET", 2.0, &"intro", &"intro", 2.0]
 
 [node name="BeatsCounter" type="Label" parent="."]
 visible = false

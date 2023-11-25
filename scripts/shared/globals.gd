@@ -32,6 +32,7 @@ signal stop_pin_item()
 
 # region SCENE DATA
 
+static var default_position := "default"
 static var positions := {
 	# use Tulpes - [ position, scale ]
 	"intro_start": {
