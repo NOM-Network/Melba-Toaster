@@ -117,9 +117,8 @@ func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> v
 		return
 
 	var args := [arg1, arg2, arg3, arg4, arg5].filter(func (d): return d != null)
-	args.reverse()
 
-	var eventName = args.pop_front()
+	var eventName = args.pop_back()
 
 	print_debug(
 		"EVENT BUS: `%s` - %s" % [eventName, args]
