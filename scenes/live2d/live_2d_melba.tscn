@@ -1,49 +1,42 @@
-[gd_scene load_steps=13 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=12 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kyevu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_f53nl"]
 atlas = ExtResource("6_1yxl4")
-region = Rect2(0, 0, 498, 153)
+region = Rect2(0, 0, 814, 242)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_1rax4"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4icgb"]
 atlas = ExtResource("6_1yxl4")
-region = Rect2(498, 0, 498, 153)
+region = Rect2(814, 0, 814, 242)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_cbmtu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0jsom"]
 atlas = ExtResource("6_1yxl4")
-region = Rect2(996, 0, 498, 153)
+region = Rect2(1628, 0, 814, 242)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gnlut"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_hove7"]
 atlas = ExtResource("6_1yxl4")
-region = Rect2(1494, 0, 498, 153)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kliri"]
-atlas = ExtResource("6_1yxl4")
-region = Rect2(1992, 0, 498, 153)
+region = Rect2(2442, 0, 814, 242)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uup0d"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_kyevu")
+"texture": SubResource("AtlasTexture_f53nl")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_1rax4")
+"texture": SubResource("AtlasTexture_4icgb")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_cbmtu")
+"texture": SubResource("AtlasTexture_0jsom")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_gnlut")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_kliri")
+"texture": SubResource("AtlasTexture_hove7")
 }],
 "loop": true,
 "name": &"default",
@@ -66,15 +59,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -2.9539
-ParamAngleY = 6.40173
-ParamAngleZ = 1.34222
-ParamBodyAngleX = 1.8673
-ParamBodyAngleY = 0.515405
-ParamBodyAngleZ = -0.000167087
-Param3 = -0.753461
+ParamAngleX = 2.29647
+ParamAngleY = -0.764956
+ParamAngleZ = -0.421661
+ParamBodyAngleX = -1.65613
+ParamBodyAngleY = 0.335936
+ParamBodyAngleZ = -3.68095e-07
+Param3 = 0.551656
 Param4 = 0.0
-Param5 = 0.0
+Param5 = -0.471347
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -83,13 +76,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.0197745
-Param7 = -0.0461733
-Param8 = 0.0061705
-Param10 = 0.156707
-Param11 = 0.00121162
-Param15 = 4.91975
-Param16 = 0.899553
+Param6 = -0.000871465
+Param7 = -0.0735178
+Param8 = 0.0247876
+Param10 = 0.0400801
+Param11 = -0.0163664
+Param15 = 0.0
+Param16 = 0.0
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -98,8 +91,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.000759543
-Param26 = 0.000759543
+Param24 = 0.0
+Param26 = 0.0
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -111,16 +104,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.194402
+ParamBreath = 0.451811
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -3.57628e-07
+Param = 2.38419e-07
 Param2 = 0.0
-Param12 = -0.000581232
-Param13 = -8.33088e-05
-Param23 = 0.000294195
-Param22 = -7.98702e-06
+Param12 = -0.000152756
+Param13 = 0.000134699
+Param23 = -7.38604e-06
+Param22 = -4.8066e-05
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -217,7 +210,7 @@ autostart = true
 
 [node name="CensorAnimation" type="AnimatedSprite2D" parent="PinnableAssets"]
 modulate = Color(1, 1, 1, 0)
-scale = Vector2(0.7, 0.7)
+scale = Vector2(0.45, 0.45)
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
