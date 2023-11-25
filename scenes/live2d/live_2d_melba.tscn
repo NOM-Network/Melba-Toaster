@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
@@ -66,15 +66,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = 9.2742
-ParamAngleY = 2.6045
-ParamAngleZ = 7.77821
-ParamBodyAngleX = -1.18959
-ParamBodyAngleY = 0.487394
-ParamBodyAngleZ = -6.99448e-05
-Param3 = 2.29129
+ParamAngleX = -2.9539
+ParamAngleY = 6.40173
+ParamAngleZ = 1.34222
+ParamBodyAngleX = 1.8673
+ParamBodyAngleY = 0.515405
+ParamBodyAngleZ = -0.000167087
+Param3 = -0.753461
 Param4 = 0.0
-Param5 = 6.87029
+Param5 = 0.0
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -83,13 +83,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.117504
-Param7 = 0.0364199
-Param8 = -0.00771054
-Param10 = 0.529776
-Param11 = 0.0150231
-Param15 = 0.0
-Param16 = 0.850654
+Param6 = 0.0197745
+Param7 = -0.0461733
+Param8 = 0.0061705
+Param10 = 0.156707
+Param11 = 0.00121162
+Param15 = 4.91975
+Param16 = 0.899553
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -98,8 +98,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.000318244
-Param26 = 0.000318244
+Param24 = 0.000759543
+Param26 = 0.000759543
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -111,16 +111,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0301264
+ParamBreath = 0.194402
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
+Param = -3.57628e-07
 Param2 = 0.0
-Param12 = 0.0015839
-Param13 = -0.00025545
-Param23 = 0.0112242
-Param22 = -0.0112242
+Param12 = -0.000581232
+Param13 = -8.33088e-05
+Param23 = 0.000294195
+Param22 = -7.98702e-06
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -213,7 +213,9 @@ autostart = true
 
 [node name="AnimTimer" type="Timer" parent="."]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="PinnableAssets" type="Node2D" parent="."]
+
+[node name="CensorAnimation" type="AnimatedSprite2D" parent="PinnableAssets"]
 modulate = Color(1, 1, 1, 0)
 scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_uup0d")

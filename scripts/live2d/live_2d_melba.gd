@@ -3,10 +3,6 @@ extends Node2D
 @export_category("Cubism Model")
 @export var cubism_model: GDCubismUserModel
 
-@export_category("Tracking")
-@export_range(0, 1920) var x_offset = 0.0
-@export_range(0, 1080) var y_offset = 170.0
-
 #region EFFECTS
 @onready var eye_blink = %EyeBlink
 #endregion
@@ -15,8 +11,8 @@ extends Node2D
 @onready var anim_timer = $AnimTimer
 #endregion
 
-#region STATE VARIABLES
-var item_is_pinned := false
+#region ASSETS
+var assets_to_pin := {} 
 #endregion
 
 #region TWEENS
@@ -27,8 +23,9 @@ var item_is_pinned := false
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
-
-	$AnimatedSprite2D.modulate.a = 0
+	
+	for child in $PinnableAssets.get_children():
+		child.modulate.a = 0
 
 	set_expression("end")
 	play_random_idle_animation()
@@ -39,8 +36,7 @@ func connect_signals() -> void:
 	Globals.set_toggle.connect(set_toggle)
 	Globals.nudge_model.connect(nudge_model)
 	anim_timer.timeout.connect(_on_animation_finished)
-	Globals.pin_item.connect(_on_pin_item)
-	Globals.stop_pin_item.connect(_on_stop_pin_item)
+	Globals.pin_asset.connect(pin_asset)
 
 func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
@@ -52,35 +48,9 @@ func intialize_toggles() -> void:
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
-
-	if item_is_pinned:
-		pin_item()
-
-func _on_pin_item() -> void:
-	_tween_pinned_item(false)
-
-func _on_stop_pin_item() -> void:
-	_tween_pinned_item(true)
-
-func _tween_pinned_item(opaque := true) -> void:
-	if tweens.has("pin"):
-		tweens.pin.kill()
-
-	if not opaque:
-		item_is_pinned = true
-
-	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens.pin.tween_property($AnimatedSprite2D, "modulate:a", 0.0 if opaque else 1.0, 0.5)
-
-	if opaque:
-		tweens.pin.tween_callback(func(): item_is_pinned = false)
-
-func pin_item() -> void:
-	var dict_mesh = cubism_model.get_meshes()
-	var ary_mesh: ArrayMesh = dict_mesh["ArtMesh19"]
-	var ary_surface = ary_mesh.surface_get_arrays(0)
-	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][0]
-	$AnimatedSprite2D.position = Vector2(pos.x - 950 + x_offset, pos.y - 1000 + y_offset)
+	
+	for asset in assets_to_pin.values(): 
+		pin(asset.node, asset.mesh, asset.offset)
 
 func nudge_model() -> void:
 	if tweens.has("nudge"):
@@ -89,6 +59,37 @@ func nudge_model() -> void:
 	tweens.nudge = create_tween()
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 2, 0.5).set_ease(Tween.EASE_IN)
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
+
+func pin_asset(asset_name: String) -> void:
+	var asset = Globals.pinnable_assets[asset_name]
+	var node = $PinnableAssets.find_child(asset.node)
+
+	if assets_to_pin.has(asset_name): 
+		assets_to_pin.erase(asset_name)
+		tween_pinned_asset(node, true)
+	else: 
+		assets_to_pin[asset_name] = asset.duplicate()
+		assets_to_pin[asset_name].node = node 
+		tween_pinned_asset(node, false)
+
+func tween_pinned_asset(node, opaque: bool) -> void:
+	if tweens.has("pin"):
+		tweens.pin.kill()
+
+	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
+	tweens.pin.tween_property(node, "modulate:a", 0.0 if opaque else 1.0, 0.5)
+
+func pin(node, mesh, offset) -> void: 
+	var base_offset = cubism_model.size * -0.5
+	
+	var dict_mesh = cubism_model.get_meshes()
+	var ary_mesh: ArrayMesh = dict_mesh[mesh]
+	var ary_surface = ary_mesh.surface_get_arrays(0)
+	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][0]
+	node.position = pos + base_offset + offset 
+
+func reset_overrides():
+	eye_blink.active = true
 
 func play_animation(anim_name: String) -> void:
 	reset_overrides()
@@ -123,9 +124,6 @@ func set_toggle(toggle_name: String, enabled: bool) -> void:
 		else:
 			toggle.enabled = false
 			value_tween.tween_property(toggle, "value", 0.0, toggle.duration)
-
-func reset_overrides():
-	eye_blink.active = true
 
 func _on_animation_finished() -> void:
 	if Globals.last_animation != "end":

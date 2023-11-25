@@ -24,9 +24,7 @@ signal start_speech()
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
-
-signal pin_item()
-signal stop_pin_item()
+signal pin_asset(asset_name: String) 
 
 # endregion
 
@@ -60,6 +58,10 @@ static var positions := {
 static var scale_change := Vector2(0.05, 0.05)
 
 # region LIVE2D DATA
+
+static var pinnable_assets := {
+	"censor": {"node": "CensorAnimation", "mesh": "Nose", "offset": Vector2(0, -40)}
+}
 
 static var toggles := {
 	"toast": Toggle.new("Param9", 0.5),
