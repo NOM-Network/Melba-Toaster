@@ -142,7 +142,7 @@ func generate_singing_controls():
 
 	var songs = Globals.config.songs
 	for song in songs:
-		menu.add_item(song.id)
+		menu.add_item(song.name)
 
 func generate_model_controls():
 	for type in ["animations", "expressions", "toggles"]:
@@ -395,6 +395,7 @@ func generate_input_button(input):
 	button.visible = false
 	button.name = input.inputName.to_pascal_case()
 	button.text = input.inputName
+	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(_on_input_button_pressed.bind(button))
 	%ObsInputs.add_child(button)
 	change_input_state(input)
