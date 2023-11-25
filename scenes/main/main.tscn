@@ -425,9 +425,9 @@ client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 lower_third = NodePath("LowerThird")
 mic = NodePath("Microphone")
-cancel_sound = NodePath("CancelSound")
-speech_player = NodePath("SpeechPlayer")
-song_player = NodePath("SongPlayer")
+cancel_sound = NodePath("AudioNodes/CancelSound")
+speech_player = NodePath("AudioNodes/SpeechPlayer")
+song_player = NodePath("AudioNodes/SongPlayer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -482,16 +482,6 @@ autowrap_mode = 3
 text_overrun_behavior = 4
 visible_characters_behavior = 1
 
-[node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]
-bus = &"Voice"
-
-[node name="SongPlayer" type="AudioStreamPlayer" parent="."]
-bus = &"Song"
-
-[node name="CancelSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_vd5ab")
-bus = &"Voice"
-
 [node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
 reset_on_save = false
 libraries = {
@@ -516,4 +506,16 @@ theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 40
 text = "420"
 
-[connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]
+[node name="AudioNodes" type="Node" parent="."]
+
+[node name="SpeechPlayer" type="AudioStreamPlayer" parent="AudioNodes"]
+bus = &"Voice"
+
+[node name="SongPlayer" type="AudioStreamPlayer" parent="AudioNodes"]
+bus = &"Song"
+
+[node name="CancelSound" type="AudioStreamPlayer" parent="AudioNodes"]
+stream = ExtResource("6_vd5ab")
+bus = &"Voice"
+
+[connection signal="finished" from="AudioNodes/SpeechPlayer" to="." method="_on_speech_player_finished"]
