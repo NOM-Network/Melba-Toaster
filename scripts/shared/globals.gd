@@ -93,7 +93,7 @@ static var config := ToasterConfig.new()
 static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
-static var debug_mode := false
+static var debug_mode := OS.is_debug_build()
 static var show_beats := false
 
 static var time_before_cleanout := 2.0
