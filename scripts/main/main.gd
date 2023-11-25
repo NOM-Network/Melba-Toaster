@@ -117,7 +117,7 @@ func _process(_delta) -> void:
 						Globals.stop_pin_item.emit()
 
 					_:
-						_print_subtitles(line[1], 0.25)
+						subtitles.text = line[1]
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
@@ -341,8 +341,6 @@ func _on_reset_subtitles() -> void:
 func trigger_cleanout(timeout := true):
 	if timeout:
 		await get_tree().create_timer(Globals.time_before_cleanout).timeout
-	_tween_text(prompt, "prompt", 1.0, 0.0, 1.0)
-	_tween_text(subtitles, "subtitles", 1.0, 0.0, 1.0)
 
 	await get_ready_for_next_speech()
 	prompt.text = ""
@@ -379,11 +377,12 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 
 	if song.subtitles:
 		current_subtitles = song.subtitles.duplicate()
-		_print_prompt("{artist} - \"{name}\"".format(song), song.wait_time)
-		_print_subtitles(" ")
+		_print_prompt("{artist} - \"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
+		subtitles.text = " "
+		subtitles.visible_ratio = 1.0
 	else:
 		_print_prompt(" ")
-		_print_subtitles("{artist}\n\"{name}\"".format(song), song.wait_time)
+		_print_subtitles("{artist}\n\"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
 
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
