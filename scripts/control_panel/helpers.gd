@@ -2,6 +2,7 @@ extends Node
 class_name CpHelpers
 
 static var overrides := ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]
+static var status_overrides := []
 
 static func construct_model_control_buttons(
 	type: String,
@@ -30,6 +31,7 @@ static func construct_model_control_buttons(
 		var button = button_type.new()
 		button.text = control
 		button.name = type.capitalize() + control.to_pascal_case()
+		button.focus_mode = Control.FOCUS_NONE
 
 		if type == "toggles":
 			button.button_pressed = controls[control].enabled
@@ -46,10 +48,12 @@ static func change_toggle_state(
 	disabled_text: String,
 	apply_color = true
 ):
+	toggle.set_pressed_no_signal(button_pressed)
 	toggle.text = enabled_text if button_pressed else disabled_text
 
 	if apply_color:
 		apply_color_override(toggle, button_pressed, Color.RED)
+
 
 static func apply_color_override(
 	node: Node,
@@ -63,5 +67,5 @@ static func apply_color_override(
 		else:
 			node.add_theme_color_override(i, active_color if state else inactive_color)
 
-static func change_status_color(node: Node, active: bool) -> void:
-	node.get_theme_stylebox("panel").bg_color = Color.GREEN if active else Color.RED
+static func change_status_color(node: Button, active: bool) -> void:
+	node.self_modulate = Color.GREEN if active else Color.RED

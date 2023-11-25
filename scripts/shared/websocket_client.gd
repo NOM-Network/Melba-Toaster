@@ -2,7 +2,7 @@ extends Node
 class_name WebSocketClient
 
 const URL_PATH: String = "%s://%s:%s"
-var socket := WebSocketPeer.new()
+var socket: WebSocketPeer
 var last_state = WebSocketPeer.STATE_CLOSED
 
 @export var poll_time: float = 0.5
@@ -22,18 +22,7 @@ signal connection_closed()
 signal data_received(data: Variant)
 
 func _ready() -> void:
-	print_debug("Toaster client: Establishing connection!")
-
-	socket.handshake_headers = handshake_headers
-	socket.supported_protocols = supported_protocols
-	socket.inbound_buffer_size = 200000000
-
-	var err := socket.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
-	if err != OK:
-		printerr("Toaster client: Connection error ", err)
-		connection_closed.emit()
-
-	last_state = socket.get_ready_state()
+	pass
 
 func _process(delta: float) -> void:
 	_poll_counter += delta
@@ -54,6 +43,23 @@ func _process(delta: float) -> void:
 
 		while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
 			data_received.emit(message_handler())
+
+func connect_client() -> void:
+	print_debug("Toaster client: Establishing connection!")
+
+	if not socket:
+		socket = WebSocketPeer.new()
+
+	socket.handshake_headers = handshake_headers
+	socket.supported_protocols = supported_protocols
+	socket.inbound_buffer_size = 200000000
+
+	var err := socket.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
+	if err != OK:
+		printerr("Toaster client: Connection error ", err)
+		connection_closed.emit()
+
+	last_state = socket.get_ready_state()
 
 func message_handler() -> Variant:
 	var packet = socket.get_packet()
@@ -78,3 +84,5 @@ func send_message(json: Dictionary) -> void:
 func break_connection(reason: String = "") -> void:
 	socket.close(1000, reason)
 	last_state = socket.get_ready_state()
+
+	socket = WebSocketPeer.new()

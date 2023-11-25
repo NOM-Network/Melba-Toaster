@@ -12,11 +12,10 @@ class_name SingingMovement
 # Parameters
 var param_angle_y
 var param_body_angle_y
+
 # Tweens
 var angle_y_tween: Tween
 var body_angle_y_tween: Tween
-# States
-var singing := false
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
@@ -34,12 +33,12 @@ func _on_cubism_init(model: GDCubismUserModel):
 			param_body_angle_y = param
 
 func _start_motion(bpm: float) -> void:
-	singing = true
+	Globals.dancing_bpm = bpm
 	bob_interval = 60.0 / bpm
 	start_tween()
 
 func _end_motion() -> void:
-	singing = false
+	Globals.dancing_bpm = 0
 
 func start_tween() -> void:
 	if angle_y_tween: angle_y_tween.kill()
@@ -60,5 +59,5 @@ func _on_tween_finished() -> void:
 	body_angle_y_tween.tween_property(param_body_angle_y, "value", -30.0, bob_interval / 2.0)
 	await angle_y_tween.tween_property(param_angle_y, "value", -30.0, bob_interval / 2.0).finished
 
-	if singing:
+	if Globals.dancing_bpm:
 		start_tween()

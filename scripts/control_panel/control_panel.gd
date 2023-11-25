@@ -20,6 +20,10 @@ var expr_menu: Array
 
 var is_streaming := false
 
+var last_pause_status := not Globals.is_paused
+var last_singing_status := not Globals.is_singing
+var last_dancing_bpm := 0.1
+
 # region MAIN
 
 func _ready() -> void:
@@ -29,7 +33,7 @@ func _ready() -> void:
 	debug_button.button_pressed = Globals.debug_mode
 	pause_button.button_pressed = Globals.is_paused
 
-	%BackendStatus/Label.text = "Backend %s" % Globals.config.get_backend("host")
+	%BackendStatus.text = "Backend %s" % Globals.config.get_backend("host")
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
 	%TimeBeforeReady.value = Globals.time_before_ready
 	%TimeBeforeSpeech.value = Globals.time_before_speech
@@ -40,9 +44,38 @@ func _ready() -> void:
 	generate_singing_controls()
 
 	connect_signals()
-	obs_connection()
+	_start_obs_processing()
 
-func obs_connection() -> void:
+func _process(_delta) -> void:
+	if last_pause_status != Globals.is_paused:
+		last_pause_status = Globals.is_paused
+		CpHelpers.change_toggle_state(
+			pause_button,
+			Globals.is_paused,
+			">>> RESUME (F9) <<<",
+			"Pause (F9)"
+		)
+
+	if last_singing_status != Globals.is_singing:
+		last_singing_status = Globals.is_singing
+		CpHelpers.change_toggle_state(
+			%SingingToggle,
+			Globals.is_singing,
+			">>> STOP <<<",
+			"Start"
+		)
+
+	if last_dancing_bpm != Globals.dancing_bpm:
+		last_dancing_bpm = Globals.dancing_bpm
+		%CurrentDancingBpm.text = str(Globals.dancing_bpm)
+		CpHelpers.change_toggle_state(
+			%DancingToggle,
+			Globals.dancing_bpm,
+			">> Stop <<",
+			"Start"
+		)
+
+func _start_obs_processing() -> void:
 	# OBS Connection
 	obs.establish_connection()
 	await obs.connection_authenticated
@@ -58,6 +91,11 @@ func obs_connection() -> void:
 
 	# OBS Stats timers
 	obs_stats_timer.start()
+
+func _stop_obs_processing():
+	obs_stats_timer.stop()
+	obs.break_connection()
+	CpHelpers.change_status_color(%ObsClientStatus, false)
 
 func connect_signals() -> void:
 	Globals.set_toggle.connect(update_toggle_controls)
@@ -88,6 +126,7 @@ func generate_position_controls() -> void:
 		button.button_pressed = p == Globals.default_position
 		button.name = "Position" + p.to_pascal_case()
 		button.button_group = button_group
+		button.focus_mode = Control.FOCUS_NONE
 		positions.add_child(button)
 
 	var menu := %NextPositionMenu
@@ -160,8 +199,8 @@ func _handle_event(data):
 				is_streaming = data.eventData.outputActive
 				update_stream_control_button()
 
-		"ExitStarted":
-			stop_processing()
+		# "ExitStarted":
+		# 	stop_processing()
 
 		# Ignored callbacks
 		"SceneNameChanged":
@@ -253,25 +292,11 @@ func _on_singing_toggle_toggled(button_pressed: bool, emit := true) -> void:
 		else:
 			Globals.stop_singing.emit()
 
-	CpHelpers.change_toggle_state(
-		%SingingToggle,
-		button_pressed,
-		">>> STOP <<<",
-		"Start"
-	)
-
 func _on_dancing_toggle_toggled(button_pressed: bool):
 	if button_pressed:
 		Globals.start_dancing_motion.emit(%DancingBpm.value)
 	else:
 		Globals.end_dancing_motion.emit()
-
-	CpHelpers.change_toggle_state(
-		%DancingToggle,
-		button_pressed,
-		">> Stop <<",
-		"Start"
-	)
 
 func _on_toggle_pressed(toggle: CheckButton):
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
@@ -425,13 +450,6 @@ func backend_disconnected():
 func _on_pause_speech_toggled(button_pressed: bool, emit := true) -> void:
 	Globals.is_paused = button_pressed
 
-	CpHelpers.change_toggle_state(
-		pause_button,
-		button_pressed,
-		">>> RESUME (F9) <<<",
-		"Pause (F9)"
-	)
-
 	if emit and not button_pressed:
 		Globals.ready_for_speech.emit()
 
@@ -455,23 +473,23 @@ func _on_reset_subtitles_pressed() -> void:
 func _on_show_beats_toggled(toggled_on: bool) -> void:
 	Globals.show_beats = toggled_on
 
-func stop_processing():
-	obs_stats_timer.stop()
-	obs.break_connection()
-	main.client.break_connection("from control panel")
-	CpHelpers.change_status_color(%ObsClientStatus, false)
-
-func _on_reconnect_button_pressed():
-	Globals.change_scene.emit("Tech Diff")
+func _on_obs_client_status_pressed() -> void:
+	_stop_obs_processing()
 	await get_tree().create_timer(1.0).timeout
-	stop_processing()
-	main.get_tree().reload_current_scene()
+	_start_obs_processing()
+
+func _on_backend_status_pressed() -> void:
+	Globals.is_paused = true
+	main.disconnect_backend()
+	await get_tree().create_timer(1.0).timeout
+	main.connect_backend()
 
 func _on_close_requested():
 	$CloseConfirm.visible = true
 
 func _on_close_confirm_confirmed():
-	stop_processing()
+	_stop_obs_processing()
+	main.disconnect_backend()
 	get_tree().quit()
 
 # endregion

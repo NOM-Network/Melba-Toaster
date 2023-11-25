@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bjp2bck62tl2m"]
+[gd_scene load_steps=12 format=3 uid="uid://bjp2bck62tl2m"]
 
 [ext_resource type="Script" path="res://scripts/control_panel/control_panel.gd" id="1_rhl0v"]
 [ext_resource type="Script" path="res://scripts/control_panel/obs_websocket_client.gd" id="2_1sf50"]
@@ -15,18 +15,6 @@ MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crp4d"]
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fief3"]
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
 
 [sub_resource type="Theme" id="Theme_4c3ua"]
 MarginContainer/constants/margin_bottom = 10
@@ -134,15 +122,18 @@ size_flags_horizontal = 4
 
 [node name="DebugMode" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 text = "Debug Mode"
 
 [node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
+focus_mode = 0
 text = "Cancel (F12)"
 
 [node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 text = "Pause (F9)"
 
@@ -183,31 +174,23 @@ autowrap_mode = 3
 [node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
+alignment = 1
 
-[node name="ObsClientStatus" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="ObsClientStatus" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
+self_modulate = Color(0.270588, 0.270588, 0.270588, 1)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_crp4d")
-
-[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/ObsClientStatus"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+focus_mode = 0
 text = "OBS Client"
-horizontal_alignment = 1
 
-[node name="BackendStatus" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="BackendStatus" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
+self_modulate = Color(0.270588, 0.270588, 0.270588, 1)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_fief3")
-
-[node name="Label" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/BackendStatus"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+focus_mode = 0
 text = "Backend"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="ModelControlsPanel" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel"]
 layout_mode = 2
@@ -325,8 +308,15 @@ alignment = 1
 [node name="DancingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 text = "Start"
+
+[node name="CurrentDancingBpm" type="Label" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.270588)
+text = "0"
 
 [node name="Singing" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
@@ -339,6 +329,7 @@ text = "Singing"
 [node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 item_count = 1
 selected = 0
 popup/item_0/text = "money machine"
@@ -355,6 +346,7 @@ suffix = "s"
 [node name="SingingToggle" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 text = "Start"
 
@@ -362,6 +354,7 @@ text = "Start"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Show Beats (debug)"
+focus_mode = 0
 
 [node name="Misc" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2
@@ -406,6 +399,7 @@ suffix = "s"
 
 [node name="ResetSubtitles" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc"]
 layout_mode = 2
+focus_mode = 0
 text = "Reset Subtitles"
 
 [node name="RightPanel" type="VBoxContainer" parent="Margins/HSplitContainer"]
@@ -492,11 +486,6 @@ text = "Test"
 layout_mode = 2
 text = "Test"
 
-[node name="ReconnectButton" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "RECONNECT
-(change scene to Tech Diff, restart the process)"
-
 [node name="SceneController" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
 
@@ -551,6 +540,7 @@ text = "Overrides"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Override next position"
+focus_mode = 0
 
 [node name="StreamStatsPanel" type="PanelContainer" parent="Margins/HSplitContainer/RightPanel"]
 layout_mode = 2
@@ -635,6 +625,8 @@ autostart = true
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode" to="." method="_on_debug_mode_button_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
+[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/ObsClientStatus" to="." method="_on_obs_client_status_pressed"]
+[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/HBoxContainer/BackendStatus" to="." method="_on_backend_status_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/SingingToggle" to="." method="_on_singing_toggle_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Singing/ShowBeats" to="." method="_on_show_beats_toggled"]
@@ -643,7 +635,6 @@ autostart = true
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/TimeBeforeSpeech" to="." method="_on_time_before_speech_value_changed"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Misc/ResetSubtitles" to="." method="_on_reset_subtitles_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsStreamControl" to="." method="_on_obs_stream_control_pressed"]
-[connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ReconnectButton" to="." method="_on_reconnect_button_pressed"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="Timers/GodotStatsTimer" to="." method="_on_godot_stats_timer_timeout"]
 [connection signal="timeout" from="Timers/ObsStatsTimer" to="." method="_on_obs_stats_timer_timeout"]

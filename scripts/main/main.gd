@@ -191,10 +191,15 @@ func _connect_signals() -> void:
 	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
 
 func connect_backend() -> void:
+	client.connect_client()
 	await client.connection_established
 	control_panel.backend_connected()
-	client.data_received.connect(_on_data_received)
-	client.connection_closed.connect(_on_connection_closed)
+
+	if not client.data_received.is_connected(_on_data_received):
+		client.data_received.connect(_on_data_received)
+
+	if not client.connection_closed.is_connected(_on_connection_closed):
+		client.connection_closed.connect(_on_connection_closed)
 
 func disconnect_backend() -> void:
 	client.break_connection("from control panel")
@@ -431,7 +436,6 @@ func _on_stop_singing():
 
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
-	Globals.stop_pin_item.emit()
 
 	trigger_cleanout(false)
 	Globals.change_scene.emit("Main")

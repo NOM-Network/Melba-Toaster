@@ -24,7 +24,7 @@ signal start_speech()
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
-signal pin_asset(asset_name: String) 
+signal pin_asset(asset_name: String)
 
 # endregion
 
@@ -95,6 +95,8 @@ static var config := ToasterConfig.new()
 static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
+static var dancing_bpm := 0.0
+
 static var debug_mode := OS.is_debug_build()
 static var show_beats := false
 
