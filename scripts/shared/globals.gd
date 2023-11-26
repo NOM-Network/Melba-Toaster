@@ -34,22 +34,22 @@ static var default_position := "default"
 static var positions := {
 	# use Tulpes - [ position, scale ]
 	"intro_start": {
-		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
+		"model_area": [ Vector2(737, 2036), Vector2(1, 1) ],
 	},
 	"default": {
-		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
+		"model_area": [ Vector2(737, 1124), Vector2(1, 1) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
 	"gaming": {
-		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
+		"model_area": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
 		"lower_third": [ Vector2(40, 810), Vector2(0.777, 0.777) ],
 	},
 	"full": {
-		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
+		"model_area": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
 	"close": {
-		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
+		"model_area": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
 	"intro": {}, # placeholder for intro animation

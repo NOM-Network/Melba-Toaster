@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
@@ -52,6 +52,7 @@ metadata/_edit_vertical_guides_ = [21.0]
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = ExtResource("2_fnydb")
+region_rect = Rect2(504, 0, 904, 2000)
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
@@ -177,8 +178,11 @@ Part27 = 1.0
 unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
+msaa_2d = 3
+msaa_3d = 3
+screen_space_aa = 1
 gui_disable_input = true
-size = Vector2i(1920, 1920)
+size = Vector2i(1920, 2000)
 render_target_update_mode = 4
 
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]

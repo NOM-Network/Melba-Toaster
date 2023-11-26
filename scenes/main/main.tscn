@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=98 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
 [ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
 [ext_resource type="AudioStream" uid="uid://d3sjs2q0qb6yh" path="res://assets/main/TOASTED.mp3" id="6_vd5ab"]
+[ext_resource type="Texture2D" uid="uid://cobm5phwndmwn" path="res://assets/control_panel/toast.png" id="8_nqcho"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
 atlas = ExtResource("4_ajw6o")
@@ -666,6 +667,9 @@ _data = {
 "intro": SubResource("Animation_focdv")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ivmvr"]
+size = Vector2(135, 173)
+
 [node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_bldvu")
 model_parent_animation = NodePath("ModelParentAnimation")
@@ -697,6 +701,7 @@ offset_left = 34.0
 offset_top = 722.0
 offset_right = 1884.0
 offset_bottom = 1060.0
+mouse_filter = 1
 
 [node name="Prompt" type="Label" parent="LowerThird"]
 clip_contents = true
@@ -765,5 +770,14 @@ bus = &"Song"
 [node name="CancelSound" type="AudioStreamPlayer" parent="AudioNodes"]
 stream = ExtResource("6_vd5ab")
 bus = &"Voice"
+
+[node name="DroppableAsset" type="Area2D" parent="." groups=["_editor_only"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DroppableAsset"]
+position = Vector2(57.5, 76.5)
+shape = SubResource("RectangleShape2D_ivmvr")
+
+[node name="Sprite2D" type="Sprite2D" parent="DroppableAsset/CollisionShape2D"]
+texture = ExtResource("8_nqcho")
 
 [connection signal="finished" from="AudioNodes/SpeechPlayer" to="." method="_on_speech_player_finished"]

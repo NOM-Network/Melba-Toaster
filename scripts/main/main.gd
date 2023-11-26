@@ -3,6 +3,7 @@ extends Node2D
 @export_category("Model")
 @export var model_parent_animation: AnimationPlayer
 var model: Node2D
+var model_area: Area2D
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
@@ -134,61 +135,33 @@ func _match_command(line: String):
 
 func _add_model():
 	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
-	add_child(model, true)
-	move_child(model, 0)
-
 	model_sprite = model.get_node("%Sprite2D")
 	user_model = model.get_node("%GDCubismUserModel")
 	model_target_point = model.get_node("%TargetPoint")
+
+	var shape := RectangleShape2D.new()
+	shape.size = user_model.size + Vector2i(-1000, 0)
+
+	var collision_shape := CollisionShape2D.new()
+	collision_shape.shape = shape
+
+	model_area = Area2D.new()
+	model_area.name = "L2DModelArea"
+
+	collision_shape.add_child(model)
+	model_area.add_child(collision_shape)
+	add_child(model_area, true)
+	model_area.input_event.connect(_on_input_event.bind(model_area))
+	model_area.mouse_entered.connect(_on_mouse_entered_area.bind(model_area))
+	model_area.mouse_exited.connect(_on_mouse_exited_area.bind(model_area))
+
+	move_child(model_area, 0)
 
 func strsec(secs):
 	var s = str(secs)
 	if (secs < 10):
 		s = "0" + s
 	return s
-
-func _input(event: InputEvent):
-	if event as InputEventMouseMotion:
-		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
-			_mouse_to_prop("position", event.relative)
-
-		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
-			_move_eyes(event, true)
-
-	if event as InputEventMouseButton:
-		if event.is_pressed():
-			match event.button_index:
-				MOUSE_BUTTON_WHEEL_UP:
-					_mouse_to_prop("scale", Globals.scale_change)
-
-				MOUSE_BUTTON_WHEEL_DOWN:
-					_mouse_to_prop("scale", -Globals.scale_change)
-
-				MOUSE_BUTTON_MIDDLE:
-					_reset_model_props()
-		else:
-			match event.button_index:
-				MOUSE_BUTTON_RIGHT:
-					_move_eyes(event, false)
-
-func _reset_model_props():
-	_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-	_mouse_to_prop("position", Globals.positions.default.model[0], true)
-
-func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	model[prop] = change if absolute else model[prop] + change
-
-func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
-	if is_pressed:
-		var local_pos: Vector2 = model.to_local(event.position)
-		var render_size: Vector2 = Vector2(
-			float(user_model.size.x) * model.scale.x,
-			float(user_model.size.y) * model.scale.y * -1.0
-		) * 0.5
-		local_pos /= render_size
-		model_target_point.set_target(local_pos)
-	else:
-		model_target_point.set_target(Vector2.ZERO)
 
 func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
@@ -199,6 +172,8 @@ func _connect_signals() -> void:
 	Globals.change_position.connect(_on_change_position)
 
 	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
+
+	get_viewport().files_dropped.connect(_on_files_dropped)
 
 func connect_backend() -> void:
 	client.connect_client()
@@ -477,3 +452,91 @@ func _on_change_position(new_position: String) -> void:
 					tweens[p].set_parallel()
 					tweens[p].tween_property(node, "position", positions[p][0], 1)
 					tweens[p].tween_property(node, "scale", positions[p][1], 1)
+
+func _on_files_dropped(files: Array) -> void:
+	for i in files:
+		var ext: String = i.get_extension()
+		if not ext in ["bmp", "jpg", "jpeg", "png", "svg", "webp"]:
+			printerr("Asset is not supported: `%s`" % i.get_file())
+			return
+
+		var image := Image.new()
+		var err := image.load(i)
+		if err != OK:
+			printerr("Failed to load image: `%s`" % i.get_file())
+			return
+
+		var texture := ImageTexture.create_from_image(image)
+		if texture == null:
+			printerr("Failed to create image: `%s`" % i.get_file())
+			return
+
+		var sprite := Sprite2D.new()
+		sprite.texture = texture
+
+		var shape := RectangleShape2D.new()
+		shape.size = sprite.get_rect().size
+
+		var collision_shape := CollisionShape2D.new()
+		collision_shape.shape = shape
+
+		var area := Area2D.new()
+		var area_name: String = i.get_file() + str(randi() * 10)
+
+		area.name = area_name
+		area.scale = Vector2(0, 0)
+		area.position = get_viewport().get_mouse_position()
+
+		collision_shape.add_child(sprite)
+		area.add_child(collision_shape)
+		area.input_event.connect(_on_input_event.bind(area))
+		area.mouse_entered.connect(_on_mouse_entered_area.bind(area))
+		area.mouse_exited.connect(_on_mouse_exited_area.bind(area))
+
+		# %LoadedSprites.add_child(area)
+		add_child(area)
+
+		if tweens.has(area_name):
+			tweens[area_name].kill()
+
+		tweens[area_name] = create_tween().set_trans(Tween.TRANS_SPRING)
+		tweens[area_name].tween_property(area, "scale", Vector2(1, 1), 0.5)
+
+func _on_mouse_entered_area(area: Area2D) -> void:
+	pass
+
+func _on_mouse_exited_area(area: Area2D) -> void:
+	pass
+
+func _on_input_event(_viewport: Node, event: InputEvent, shape_idx: int, area: Area2D) -> void:
+	if event as InputEventMouseMotion:
+		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
+			area.position += event.relative
+
+	if event as InputEventMouseButton:
+		if event.is_pressed():
+			match event.button_index:
+				MOUSE_BUTTON_WHEEL_UP:
+					area.scale += Globals.scale_change
+
+				MOUSE_BUTTON_WHEEL_DOWN:
+					area.scale -= Globals.scale_change
+
+				MOUSE_BUTTON_MIDDLE:
+					if area == model_area:
+						area.position = Globals.positions.default.model_area[0]
+						area.scale = Globals.positions.default.model_area[1]
+					else:
+						area.position = get_viewport_rect().size / 2
+						area.scale = Vector2(1, 1)
+
+				MOUSE_BUTTON_RIGHT:
+					if area == model_area:
+						return
+
+					if tweens.has(shape_idx):
+						tweens[shape_idx].kill()
+
+					tweens[shape_idx] = create_tween().set_trans(Tween.TRANS_SPRING)
+					tweens[shape_idx].tween_property(area, "scale", Vector2(0, 0), 0.5)
+					tweens[shape_idx].tween_callback(func(): area.queue_free())
