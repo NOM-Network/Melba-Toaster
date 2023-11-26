@@ -23,6 +23,7 @@ var assets_to_pin := {}
 func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
+	initialize_pinnable_assets()
 	
 	for child in $PinnableAssets.get_children():
 		child.modulate.a = 0
@@ -45,6 +46,10 @@ func intialize_toggles() -> void:
 			if param.get_id() == toggle["id"]:
 				toggle.param = param
 
+func initialize_pinnable_assets() -> void:
+	for asset in Globals.pinnable_assets.values():
+		asset.node = $PinnableAssets.find_child(asset.node)
+
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
@@ -60,18 +65,16 @@ func nudge_model() -> void:
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 2, 0.5).set_ease(Tween.EASE_IN)
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
 
-func pin_asset(asset_name: String) -> void:
+func pin_asset(asset_name: String, enabled: bool) -> void:
 	var asset = Globals.pinnable_assets[asset_name]
-	var node = $PinnableAssets.find_child(asset.node)
-
-	if assets_to_pin.has(asset_name): 
-		assets_to_pin.erase(asset_name)
-		tween_pinned_asset(node, true)
+	
+	if enabled: 
+		assets_to_pin[asset_name] = asset
+		tween_pinned_asset(asset.node, false)
 	else: 
-		assets_to_pin[asset_name] = asset.duplicate()
-		assets_to_pin[asset_name].node = node 
-		tween_pinned_asset(node, false)
-
+		assets_to_pin.erase(asset_name)
+		tween_pinned_asset(asset.node, true)
+		
 func tween_pinned_asset(node, opaque: bool) -> void:
 	if tweens.has("pin"):
 		tweens.pin.kill()
