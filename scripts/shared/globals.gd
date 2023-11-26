@@ -60,12 +60,7 @@ static var scale_change := Vector2(0.05, 0.05)
 # region LIVE2D DATA
 
 static var pinnable_assets := {
-	"censor": {
-		"node": "CensorAnimation", 
-		"mesh": "Nose", 
-		"offset": Vector2(0, -40),
-		"custom_point": 0
-	}
+	"censor": PinnableAsset.new("CensorAnimation", "Nose", Vector2(0, -40))
 }
 
 static var toggles := {

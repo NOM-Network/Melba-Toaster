@@ -48,7 +48,7 @@ func intialize_toggles() -> void:
 
 func initialize_pinnable_assets() -> void:
 	for asset in Globals.pinnable_assets.values():
-		asset.node = $PinnableAssets.find_child(asset.node)
+		asset.node = $PinnableAssets.find_child(asset.node_name)
 
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
@@ -67,6 +67,7 @@ func nudge_model() -> void:
 
 func pin_asset(asset_name: String, enabled: bool) -> void:
 	var asset = Globals.pinnable_assets[asset_name]
+	asset.enabled = enabled
 	
 	if enabled: 
 		assets_to_pin[asset_name] = asset
@@ -82,7 +83,7 @@ func tween_pinned_asset(node, opaque: bool) -> void:
 	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
 	tweens.pin.tween_property(node, "modulate:a", 0.0 if opaque else 1.0, 0.5)
 
-func pin(asset: Dictionary) -> void: 
+func pin(asset: PinnableAsset) -> void: 
 	var base_offset = cubism_model.size * -0.5
 	
 	var dict_mesh = cubism_model.get_meshes()
