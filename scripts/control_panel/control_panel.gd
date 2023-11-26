@@ -164,8 +164,12 @@ func _generate_model_controls():
 			n.queue_free()
 
 		var callable
-		if type == "toggles":
-			callable = _on_toggle_pressed
+		match type:
+			"toggles":
+				callable = _on_moddle_toggle_pressed
+
+			"pinnable_assets":
+				callable = _on_asset_toggle_pressed
 
 		CpHelpers.construct_model_control_buttons(
 			type,
@@ -321,8 +325,11 @@ func _on_dancing_toggle_toggled(button_pressed: bool):
 	else:
 		Globals.end_dancing_motion.emit()
 
-func _on_toggle_pressed(toggle: CheckButton):
+func _on_moddle_toggle_pressed(toggle: CheckButton):
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
+
+func _on_asset_toggle_pressed(toggle: CheckButton):
+	Globals.pin_asset.emit(toggle.text, toggle.button_pressed)
 
 func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)

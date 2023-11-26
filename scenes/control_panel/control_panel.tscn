@@ -271,23 +271,23 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Button" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
+[node name="Button" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button2" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
+[node name="Button2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button3" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
+[node name="Button3" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button4" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
+[node name="Button4" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
-[node name="Button5" type="Button" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
+[node name="Button5" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/PinnableAssets" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test"
 
@@ -296,13 +296,13 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles" groups=["_editor_only"]]
-layout_mode = 2
-text = "Test 1"
-
 [node name="CheckButton" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles" groups=["_editor_only"]]
 layout_mode = 2
 text = "Test  2"
+
+[node name="CheckButton2" type="CheckButton" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer/Toggles" groups=["_editor_only"]]
+layout_mode = 2
+text = "Test 1"
 
 [node name="Dancing" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls/VBoxContainer"]
 layout_mode = 2

@@ -18,6 +18,7 @@ static func construct_model_control_buttons(
 
 		"pinnable_assets":
 			callback = Globals.pin_asset
+			button_type = CheckButton
 
 		"expressions":
 			callback = Globals.set_expression
@@ -32,7 +33,7 @@ static func construct_model_control_buttons(
 		button.name = type.capitalize() + control.to_pascal_case()
 		button.focus_mode = Control.FOCUS_NONE
 
-		if type == "toggles":
+		if type in ["toggles", "pinnable_assets"]:
 			button.button_pressed = controls[control].enabled
 			button.pressed.connect(target_call.bind(button))
 		else:

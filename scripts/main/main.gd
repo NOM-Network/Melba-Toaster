@@ -111,16 +111,13 @@ func _process(_delta) -> void:
 						Globals.end_dancing_motion.emit()
 
 					"&PIN":
-						Globals.pin_item.emit()
-
-					"&UNPIN":
-						Globals.stop_pin_item.emit()
+						Globals.pin_asset.emit(command[1], command[2])
 
 					"&POSITION":
 						Globals.change_position.emit(command[1])
 
 					"&TOGGLE":
-						Globals.set_toggle.emit(command[1])
+						Globals.set_toggle.emit(command[1], command[2])
 
 					"&ANIM":
 						Globals.play_animation.emit(command[1])
@@ -340,7 +337,7 @@ func _on_cancel_speech() -> void:
 	if not silent:
 		Globals.set_toggle.emit("void", true)
 		subtitles.text = "[TOASTED]"
-		_tween_text(subtitles, "subtitles", 0.0, 1.0, cancel_sound.stream.get_length())
+		_tween_text(subtitles, "subtitles", 0.0, 1.0, 0.2)
 		cancel_sound.play()
 
 	await trigger_cleanout(not silent)
