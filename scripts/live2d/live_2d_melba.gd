@@ -55,7 +55,7 @@ func _process(_delta: float) -> void:
 		toggle.param.set_value(toggle.value)
 	
 	for asset in assets_to_pin.values(): 
-		pin(asset.node, asset.mesh, asset.offset)
+		pin(asset)
 
 func nudge_model() -> void:
 	if tweens.has("nudge"):
@@ -82,14 +82,14 @@ func tween_pinned_asset(node, opaque: bool) -> void:
 	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
 	tweens.pin.tween_property(node, "modulate:a", 0.0 if opaque else 1.0, 0.5)
 
-func pin(node, mesh, offset) -> void: 
+func pin(asset: Dictionary) -> void: 
 	var base_offset = cubism_model.size * -0.5
 	
 	var dict_mesh = cubism_model.get_meshes()
-	var ary_mesh: ArrayMesh = dict_mesh[mesh]
+	var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 	var ary_surface = ary_mesh.surface_get_arrays(0)
-	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][0]
-	node.position = pos + base_offset + offset 
+	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
+	asset.node.position = pos + base_offset + asset.offset 
 
 func reset_overrides():
 	eye_blink.active = true
