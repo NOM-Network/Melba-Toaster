@@ -115,7 +115,6 @@ func _connect_signals() -> void:
 	Globals.start_speech.connect(_on_start_speech)
 
 	Globals.start_singing.connect(_on_start_singing)
-	Globals.stop_singing.connect(_on_stop_singing)
 
 	Globals.change_position.connect(_on_change_position)
 	Globals.change_scene.connect(_on_change_scene)
@@ -304,11 +303,7 @@ func _on_godot_stats_timer_timeout():
 # region UI FUNCTIONS
 
 func _on_start_singing(_song, _seek_time):
-	_on_pause_speech_toggled(true, false) # TODO: Use emit events
-
-func _on_stop_singing():
-	%SingingToggle.button_pressed = false
-	_on_singing_toggle_toggled(false, false)
+	Globals.is_paused = true
 
 func _on_singing_toggle_toggled(button_pressed: bool, emit := true) -> void:
 	if emit:
@@ -395,7 +390,6 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 	CpHelpers.clear_node(%ObsScenes)
 
 	for scene in scenes:
-		print("Scene%s" % scene.sceneName.to_pascal_case())
 		var button = Button.new()
 		button.text = scene.sceneName
 		button.name = "Scene%s" % scene.sceneName.to_pascal_case()
@@ -496,11 +490,10 @@ func insert_data(node: Node, text: String) -> void:
 
 func _input(event):
 	if event.is_action_pressed("cancel_speech"):
-		cancel_button.emit_signal("pressed")
+		cancel_button.pressed.emit()
 
 	if event.is_action_pressed("pause_resume"):
 		pause_button.button_pressed = not pause_button.button_pressed
-		pause_button.emit_signal("toggled", pause_button.button_pressed)
 
 	if event.is_action_pressed("toggle_mute"):
 		var input = "Melba Speaking"
