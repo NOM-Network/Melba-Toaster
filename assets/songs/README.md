@@ -42,6 +42,8 @@ subtitles=1 ; is subtitles available
 - Open the song (or voice)
 - Hit <kbd>Ctrl</kbd> + <kbd>B</kbd> to create a Label
 
+> Note: Toaster does not support ranged labels. They will be treated as point labels.
+
 #### Exporting the labels
 
 - Hit "Select" on the Label track

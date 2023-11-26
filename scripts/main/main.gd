@@ -44,7 +44,6 @@ var subtitles_font_size: int
 @export var target_position: Vector2
 
 var pending_speech: Dictionary
-var current_bpm := 0
 var pressed: bool
 
 func _ready():
@@ -77,11 +76,11 @@ func _process(_delta) -> void:
 		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() + (1 / Engine.get_frames_per_second()) * 2
 
 		if Globals.show_beats:
-			var beat := int(pos * current_bpm / 60.0)
+			var beat := int(pos * Globals.dancing_bpm / 60.0)
 			var seconds := int(pos)
 			var duration := int(current_song.duration)
 			$BeatsCounter.text = "BPM: %d, TIME: %d:%s (%f) / %d:%s (%d), BEAT: %d / 4" % [
-				current_bpm,
+				Globals.dancing_bpm,
 				seconds / 60.0,
 				strsec(seconds % 60),
 				pos,
@@ -96,37 +95,42 @@ func _process(_delta) -> void:
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
 				var line: Array = current_subtitles.pop_front()
-				var command: PackedStringArray = line[1].split(" ")
 
-				match command[0]:
-					"&CLEAR":
-						subtitles.text = ""
-
-					"&START":
-						current_bpm = command[1].to_int()
-						Globals.start_dancing_motion.emit(current_bpm)
-
-					"&STOP":
-						current_bpm = 0
-						Globals.end_dancing_motion.emit()
-
-					"&PIN":
-						Globals.pin_asset.emit(command[1], command[2])
-
-					"&POSITION":
-						Globals.change_position.emit(command[1])
-
-					"&TOGGLE":
-						Globals.set_toggle.emit(command[1], command[2])
-
-					"&ANIM":
-						Globals.play_animation.emit(command[1])
-
-					_:
-						subtitles.text = line[1]
+				if line[1].begins_with("&"):
+					_match_command(line[1])
+				else:
+					subtitles.text = line[1]
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
+
+func _match_command(line: String):
+	var command: Array = line.split(" ")
+
+	match command:
+		["&CLEAR"]:
+			subtitles.text = ""
+
+		["&START", var bpm]:
+			Globals.start_dancing_motion.emit(bpm.to_int())
+
+		["&STOP"]:
+			Globals.end_dancing_motion.emit()
+
+		["&PIN", var asset_name, var enabled]:
+			Globals.pin_asset.emit(asset_name, enabled == "1")
+
+		["&POSITION", var model_position]:
+			Globals.change_position.emit(model_position)
+
+		["&TOGGLE", var toggle_name, var enabled]:
+			Globals.set_toggle.emit(toggle_name, enabled == "1")
+
+		["&ANIM", var anim_name]:
+			Globals.play_animation.emit(anim_name)
+
+		_:
+			printerr("SONG: `%s` is not a valid command" % line)
 
 func _add_model():
 	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
@@ -434,7 +438,6 @@ func _on_stop_singing():
 
 	current_song = {}
 	current_subtitles = []
-	current_bpm = 0
 	$BeatsCounter.visible = false
 
 	AudioServer.set_bus_mute(voice_bus, false)
