@@ -26,6 +26,10 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 > The project can run without OBS and/or the backend, but nothing will actually happen. You can find a [mock backend server](backend/README.md) in the `backend` folder.
 
+### Song support
+
+Melba can sing! Song support is outlined in a [separate document](assets/songs/README.md).
+
 ### Note for Mac/Linux users
 
 This project uses already built DLLs for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the libraries](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put them in `addons\gd_cubism\bin` folder.
