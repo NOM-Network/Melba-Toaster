@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
@@ -59,15 +59,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = 2.29647
-ParamAngleY = -0.764956
-ParamAngleZ = -0.421661
-ParamBodyAngleX = -1.65613
-ParamBodyAngleY = 0.335936
-ParamBodyAngleZ = -3.68095e-07
-Param3 = 0.551656
-Param4 = 0.0
-Param5 = -0.471347
+ParamAngleX = -5.01407
+ParamAngleY = 6.45996
+ParamAngleZ = 5.44065
+ParamBodyAngleX = -1.49454
+ParamBodyAngleY = 0.497162
+ParamBodyAngleZ = -8.37386e-05
+Param3 = -1.23806
+Param4 = 1.92756
+Param5 = 4.68112
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -76,13 +76,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = -0.000871465
-Param7 = -0.0735178
-Param8 = 0.0247876
-Param10 = 0.0400801
-Param11 = -0.0163664
+Param6 = 0.0766012
+Param7 = 0.0123945
+Param8 = -0.0346046
+Param10 = 0.369966
+Param11 = -0.0160642
 Param15 = 0.0
-Param16 = 0.0
+Param16 = 0.867701
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -91,10 +91,10 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.0
-Param26 = 0.0
+Param24 = 0.000381893
+Param26 = 0.000381893
 Param25 = 0.0
-Param27 = 0.0
+Param27 = 1.56301
 ParamBrowLY = 0.0
 ParamBrowRY = 0.0
 ParamBrowLX = 0.0
@@ -104,16 +104,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.451811
+ParamBreath = 0.200256
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = 0.0
-Param12 = -0.000152756
-Param13 = 0.000134699
-Param23 = -7.38604e-06
-Param22 = -4.8066e-05
+Param = -3.57628e-07
+Param2 = 5.96046e-07
+Param12 = -0.000212781
+Param13 = -4.33487e-05
+Param23 = 0.0157593
+Param22 = -0.0157593
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -178,7 +178,7 @@ unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true
-size = Vector2i(1920, 2000)
+size = Vector2i(1920, 1920)
 render_target_update_mode = 4
 
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]

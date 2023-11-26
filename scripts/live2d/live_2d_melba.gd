@@ -30,6 +30,8 @@ func _ready() -> void:
 
 	set_expression("end")
 	play_random_idle_animation()
+	
+	Globals.pin_asset.emit("censor", true)
 
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
@@ -47,8 +49,16 @@ func intialize_toggles() -> void:
 				toggle.param = param
 
 func initialize_pinnable_assets() -> void:
+	var dict_mesh = cubism_model.get_meshes()
+	
 	for asset in Globals.pinnable_assets.values():
 		asset.node = $PinnableAssets.find_child(asset.node_name)
+	
+		var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
+		var ary_surface = ary_mesh.surface_get_arrays(0)
+		
+		asset.initial_points.A = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
+		asset.initial_points.B = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
 
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
@@ -90,7 +100,25 @@ func pin(asset: PinnableAsset) -> void:
 	var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 	var ary_surface = ary_mesh.surface_get_arrays(0)
 	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
+	var pos2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
+	
 	asset.node.position = pos + base_offset + asset.offset 
+	asset.node.rotation = get_asset_rotation(
+		asset.initial_points.A, 
+		asset.initial_points.B, 
+		pos, 
+		pos2
+	)
+
+func get_asset_rotation(point_a: Vector2, point_b: Vector2, point_a_new: Vector2, point_b_new: Vector2) -> float:
+	var delta_p: Vector2 = point_a_new - point_a 
+	var trans_point_b: Vector2 = delta_p + point_b
+
+	var angle1 = point_a_new.angle_to_point(trans_point_b) 
+	var angle2 = point_a_new.angle_to_point(point_b_new)
+	var delta_angle = angle2 - angle1
+	
+	return delta_angle
 
 func reset_overrides():
 	eye_blink.active = true
