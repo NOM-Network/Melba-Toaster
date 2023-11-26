@@ -95,38 +95,42 @@ func _process(_delta) -> void:
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
 				var line: Array = current_subtitles.pop_front()
-				var command: Array = line[1].split(" ")
 
-				match command:
-					["&CLEAR"]:
-						subtitles.text = ""
-
-					["&START", var bpm]:
-						Globals.start_dancing_motion.emit(bpm.to_int())
-
-					["&STOP"]:
-						Globals.end_dancing_motion.emit()
-
-					["&PIN", var asset_name, var enabled]:
-						Globals.pin_asset.emit(asset_name, enabled == "1")
-
-					["&POSITION", var model_position]:
-						Globals.change_position.emit(model_position)
-
-					["&TOGGLE", var toggle_name, var enabled]:
-							Globals.set_toggle.emit(toggle_name, enabled == "1")
-
-					["&ANIM", var anim_name]:
-						Globals.play_animation.emit(anim_name)
-
-					_:
-						if line[1].begins_with("&"):
-							printerr("SONG: `%s` is not a valid command" % line[1])
-						else:
-							subtitles.text = line[1]
+				if line[1].begins_with("&"):
+					_match_command(line[1])
+				else:
+					subtitles.text = line[1]
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
+
+func _match_command(line: String):
+	var command: Array = line.split(" ")
+
+	match command:
+		["&CLEAR"]:
+			subtitles.text = ""
+
+		["&START", var bpm]:
+			Globals.start_dancing_motion.emit(bpm.to_int())
+
+		["&STOP"]:
+			Globals.end_dancing_motion.emit()
+
+		["&PIN", var asset_name, var enabled]:
+			Globals.pin_asset.emit(asset_name, enabled == "1")
+
+		["&POSITION", var model_position]:
+			Globals.change_position.emit(model_position)
+
+		["&TOGGLE", var toggle_name, var enabled]:
+			Globals.set_toggle.emit(toggle_name, enabled == "1")
+
+		["&ANIM", var anim_name]:
+			Globals.play_animation.emit(anim_name)
+
+		_:
+			printerr("SONG: `%s` is not a valid command" % line)
 
 func _add_model():
 	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
