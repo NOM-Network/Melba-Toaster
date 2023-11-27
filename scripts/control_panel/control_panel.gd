@@ -334,7 +334,7 @@ func _on_asset_toggle_pressed(toggle: CheckButton):
 func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 	%CurrentSpeech/Prompt.text = prompt
-	%CurrentSpeech/Emotions.text = Globals.array_to_string(emotions)
+	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
 	%CurrentSpeech/Text.text = text
 
 func _on_start_speech() -> void:

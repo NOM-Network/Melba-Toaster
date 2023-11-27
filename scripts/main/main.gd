@@ -79,14 +79,14 @@ func _process(_delta) -> void:
 			var beat := int(pos * Globals.dancing_bpm / 60.0)
 			var seconds := int(pos)
 			var duration := int(current_song.duration)
-			$BeatsCounter.text = "BPM: %d, TIME: %d:%s (%f) / %d:%s (%d), BEAT: %d / 4" % [
-				Globals.dancing_bpm,
+			$BeatsCounter.text = "TIME: %d:%s (%f) / %d:%s (%d), BPM: %d, BEAT: %d / 4" % [
 				seconds / 60.0,
 				strsec(seconds % 60),
 				pos,
 				duration / 60.0,
 				strsec(duration % 60),
 				current_song.duration,
+				Globals.dancing_bpm,
 				beat % 4 + 1,
 			]
 
