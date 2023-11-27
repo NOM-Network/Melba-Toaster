@@ -1,6 +1,8 @@
 extends Node
 class_name Templates
 
+# region STATS
+
 static var obs_stats_template = "" \
 	+ "Active FPS: [b]{activeFps}[/b]\n" \
 	+ "CPU Usage: [b]{cpuUsage}%[/b]\n" \
@@ -46,3 +48,12 @@ static func format_godot_stats():
 
 static func _perf_mon(monitor: String) -> Variant:
 	return Performance.get_monitor(Performance[monitor])
+
+# endregion
+
+# region NODES
+
+static var filter_node_name := "Filter_%s_%s"
+static var scene_node_name := "Scene_%s"
+
+# endregion

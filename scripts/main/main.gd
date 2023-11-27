@@ -40,7 +40,7 @@ var stop_time_triggered := false
 var pending_speech: Dictionary
 var pressed: bool
 
-func _ready():
+func _ready() -> void:
 	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
@@ -58,26 +58,10 @@ func _ready():
 	# Ready for speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
-func _process(_delta) -> void:
+func _process(_delta: float) -> void:
 	if Globals.is_singing and current_song:
 		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() + (1 / Engine.get_frames_per_second()) * 2
-
-		if Globals.show_beats:
-			var beat := int(pos * Globals.dancing_bpm / 60.0)
-			var seconds := int(pos)
-			var duration := int(current_song.duration)
-			$BeatsCounter.text = "TIME: %d:%s (%f) / %d:%s (%d), BPM: %d, BEAT: %d / 4" % [
-				seconds / 60.0,
-				strsec(seconds % 60),
-				pos,
-				duration / 60.0,
-				strsec(duration % 60),
-				current_song.duration,
-				Globals.dancing_bpm,
-				beat % 4 + 1,
-			]
-
-		$BeatsCounter.visible = Globals.show_beats
+		_beats_counter(pos)
 
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
@@ -91,7 +75,26 @@ func _process(_delta) -> void:
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
 
-func _match_command(line: String):
+func _beats_counter(pos: float) -> void:
+	if Globals.show_beats:
+		var beat := pos * Globals.dancing_bpm / 60.0
+		var seconds := int(pos)
+		var duration: float = current_song.duration
+
+		$BeatsCounter.text = "TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %d, BEAT: %d / 4" % [
+			seconds / 60.0,
+			seconds % 60,
+			pos,
+			duration / 60.0,
+			int(duration) % 60,
+			current_song.duration,
+			Globals.dancing_bpm,
+			int(beat) % 4 + 1,
+		]
+
+	$BeatsCounter.visible = Globals.show_beats
+
+func _match_command(line: String) -> void:
 	var command: Array = line.split(" ")
 
 	match command:
@@ -119,7 +122,7 @@ func _match_command(line: String):
 		_:
 			printerr("SONG: `%s` is not a valid command" % line)
 
-func _add_model():
+func _add_model() -> void:
 	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 	add_child(model, true)
 	move_child(model, 0)
@@ -128,13 +131,7 @@ func _add_model():
 	user_model = model.get_node("%GDCubismUserModel")
 	model_target_point = model.get_node("%TargetPoint")
 
-func strsec(secs):
-	var s = str(secs)
-	if (secs < 10):
-		s = "0" + s
-	return s
-
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if event as InputEventMouseMotion:
 		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
 			_mouse_to_prop("position", event.relative)
@@ -158,7 +155,7 @@ func _input(event: InputEvent):
 				MOUSE_BUTTON_RIGHT:
 					_move_eyes(event, false)
 
-func _reset_model_props():
+func _reset_model_props() -> void:
 	_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
 	_mouse_to_prop("position", Globals.positions.default.model[0], true)
 
@@ -201,7 +198,7 @@ func disconnect_backend() -> void:
 	client.break_connection("from control panel")
 	await client.connection_closed
 
-func _on_data_received(data: Variant):
+func _on_data_received(data: Variant) -> void:
 	if Globals.is_paused:
 		return
 
@@ -240,7 +237,7 @@ func _on_data_received(data: Variant):
 			_:
 				print("Unhandled data type: ", message)
 
-func _on_speech_player_finished():
+func _on_speech_player_finished() -> void:
 	Globals.is_speaking = false
 	speech_player.stream = null
 
@@ -250,7 +247,7 @@ func _on_speech_player_finished():
 	trigger_cleanout()
 	Globals.speech_done.emit()
 
-func prepare_speech(message: PackedByteArray):
+func prepare_speech(message: PackedByteArray) -> void:
 	var stream = AudioStreamMP3.new()
 	stream.data = message
 	subtitles_duration = stream.get_length()
@@ -263,7 +260,7 @@ func _play_audio() -> void:
 	else:
 		printerr("NO AUDIO FOR THE MESSAGE!")
 
-func _on_ready_for_speech():
+func _on_ready_for_speech() -> void:
 	if not Globals.is_paused:
 		client.send_message({"type": "ReadyForSpeech"})
 
@@ -279,7 +276,7 @@ func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void
 	if pending_speech != {}:
 		_speak()
 
-func _speak():
+func _speak() -> void:
 	Globals.start_speech.emit()
 	lower_third.set_prompt(pending_speech.prompt, 1.0)
 	lower_third.set_subtitles(pending_speech.response, subtitles_duration)
@@ -306,22 +303,22 @@ func _on_cancel_speech() -> void:
 	await trigger_cleanout(not silent)
 	Globals.set_toggle.emit("void", false)
 
-func trigger_cleanout(timeout := true):
+func trigger_cleanout(timeout := true) -> void:
 	if timeout:
 		await get_tree().create_timer(Globals.time_before_cleanout).timeout
 
 	await get_ready_for_next_speech()
 	lower_third.clear_subtitles()
 
-func get_ready_for_next_speech():
+func get_ready_for_next_speech() -> void:
 	if not Globals.is_paused:
 		await get_tree().create_timer(Globals.time_before_ready).timeout
 		Globals.ready_for_speech.emit()
 
-func _on_connection_closed():
+func _on_connection_closed() -> void:
 	control_panel.backend_disconnected()
 
-func _on_start_singing(song: Dictionary, seek_time := 0.0):
+func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	current_song = song
 
 	Globals.is_paused = true
@@ -368,7 +365,7 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 	song_player.play(seek_time)
 	speech_player.play(seek_time)
 
-func _on_stop_singing():
+func _on_stop_singing() -> void:
 	Globals.is_singing = false
 
 	song_player.stop()

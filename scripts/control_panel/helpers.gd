@@ -8,10 +8,11 @@ static func construct_model_control_buttons(
 	type: String,
 	parent: Node,
 	controls: Dictionary,
-	target_call = null
+	target_call: Callable
 ) -> void:
 	var callback: Signal
 	var button_type := Button
+
 	match type:
 		"animations":
 			callback = Globals.play_animation
@@ -30,7 +31,7 @@ static func construct_model_control_buttons(
 	for control in controls:
 		var button = button_type.new()
 		button.text = control
-		button.name = type.capitalize() + control.to_pascal_case()
+		button.name = "%s_%s" % [type.capitalize(), control.to_pascal_case()]
 		button.focus_mode = Control.FOCUS_NONE
 
 		if type in ["toggles", "pinnable_assets"]:
@@ -75,6 +76,17 @@ static func array_to_string(arr: Array) -> String:
 		s += String(i) + " "
 	return s
 
-static func clear_node(node: Node):
-	for i in node.get_children():
-		i.queue_free()
+static func clear_nodes(nodes: Variant):
+	var arr: Array
+	if typeof(nodes) == TYPE_ARRAY:
+		arr = nodes
+	else:
+		arr.push_back(nodes)
+
+	for node in arr:
+		for child in node.get_children():
+			child.queue_free()
+
+static func insert_data(node: RichTextLabel, text: String) -> void:
+	node.clear()
+	node.append_text(text)
