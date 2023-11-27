@@ -33,12 +33,6 @@ var song_playback: AudioStreamPlayback
 var wait_time_triggered := false
 var stop_time_triggered := false
 
-# Defaults
-@onready var prompt: Label = lower_third.get_node("Prompt")
-@onready var subtitles: Label = lower_third.get_node("Subtitles")
-var prompt_font_size: int
-var subtitles_font_size: int
-
 # For AnimationPlayer
 @export_category("Nodes")
 @export var target_position: Vector2
@@ -50,13 +44,6 @@ func _ready():
 	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
-
-	# Defaults
-	prompt_font_size = prompt.label_settings.font_size
-	subtitles_font_size = subtitles.label_settings.font_size
-
-	prompt.text = ""
-	subtitles.text = ""
 
 	# Signals
 	_connect_signals()
@@ -99,7 +86,7 @@ func _process(_delta) -> void:
 				if line[1].begins_with("&"):
 					_match_command(line[1])
 				else:
-					subtitles.text = line[1]
+					lower_third.set_subtitles_fast(line[1])
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
@@ -109,7 +96,7 @@ func _match_command(line: String):
 
 	match command:
 		["&CLEAR"]:
-			subtitles.text = ""
+			lower_third.set_subtitles_fast("")
 
 		["&START", var bpm]:
 			Globals.start_dancing_motion.emit(bpm.to_int())
@@ -193,7 +180,6 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
-	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
@@ -295,32 +281,10 @@ func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void
 
 func _speak():
 	Globals.start_speech.emit()
-	_print_prompt(pending_speech.prompt)
-	_print_subtitles(pending_speech.response)
+	lower_third.set_prompt(pending_speech.prompt, 1.0)
+	lower_third.set_subtitles(pending_speech.response, subtitles_duration)
 	_play_audio()
 	pending_speech = {}
-
-func _print_prompt(text: String, duration := 0.0) -> void:
-	if text:
-		prompt.text = "%s" % text
-	else:
-		prompt.text = ""
-
-	while prompt.get_line_count() > prompt.get_visible_line_count():
-		prompt.label_settings.font_size -= 1
-
-	_tween_text(prompt, "prompt", 0.0, 1.0, duration if duration != 0.0 else 1.0)
-
-func _print_subtitles(text: String, duration := 0.0) -> void:
-	if text:
-		subtitles.text = "%s" % text
-	else:
-		subtitles.text = "tsh mebla"
-
-	while subtitles.get_line_count() > subtitles.get_visible_line_count():
-		subtitles.label_settings.font_size -= 1
-
-	_tween_text(subtitles, "subtitles", 0.0, 1.0, duration if duration != 0.0 else subtitles_duration)
 
 func _on_cancel_speech() -> void:
 	var silent := false
@@ -332,35 +296,22 @@ func _on_cancel_speech() -> void:
 	speech_player.stop()
 	speech_player.stream = null
 
-	prompt.text = ""
-	prompt.label_settings.font_size = prompt_font_size
-
-	subtitles.text = ""
-	subtitles.label_settings.font_size = subtitles_font_size
+	lower_third.clear_subtitles()
 
 	if not silent:
 		Globals.set_toggle.emit("void", true)
-		subtitles.text = "[TOASTED]"
-		_tween_text(subtitles, "subtitles", 0.0, 1.0, 0.2)
+		lower_third.set_subtitles("[TOASTED]", 1.0)
 		cancel_sound.play()
 
 	await trigger_cleanout(not silent)
 	Globals.set_toggle.emit("void", false)
-
-func _on_reset_subtitles() -> void:
-	prompt.visible_ratio = 1.0
-	subtitles.visible_ratio = 1.0
-	prompt.text = ""
-	subtitles.text = ""
 
 func trigger_cleanout(timeout := true):
 	if timeout:
 		await get_tree().create_timer(Globals.time_before_cleanout).timeout
 
 	await get_ready_for_next_speech()
-	prompt.text = ""
-	subtitles.text = ""
-	subtitles.label_settings.font_size = subtitles_font_size
+	lower_third.clear_subtitles()
 
 func get_ready_for_next_speech():
 	if not Globals.is_paused:
@@ -369,15 +320,6 @@ func get_ready_for_next_speech():
 
 func _on_connection_closed():
 	control_panel.backend_disconnected()
-
-func _tween_text(label: Label, tween_name: String, start_val: float, final_val: float, duration: float) -> void:
-	if tweens.has(tween_name):
-		tweens[tween_name].kill()
-
-	label.visible_ratio = start_val
-
-	tweens[tween_name] = create_tween()
-	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.01)
 
 func _on_start_singing(song: Dictionary, seek_time := 0.0):
 	current_song = song
@@ -392,12 +334,11 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0):
 
 	if song.subtitles:
 		current_subtitles = song.subtitles.duplicate()
-		_print_prompt("{artist} - \"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
-		subtitles.text = " "
-		subtitles.visible_ratio = 1.0
+		lower_third.set_prompt("{artist} - \"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
+		# Subtitles are handled in the _process loop
 	else:
-		_print_prompt(" ")
-		_print_subtitles("{artist}\n\"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
+		lower_third.set_prompt(" ")
+		lower_third.set_subtitles("{artist}\n\"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
 
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
