@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjb7frhypfech"]
+
+[ext_resource type="Script" path="res://scripts/main/audio_manager.gd" id="1_ybhav"]
+[ext_resource type="AudioStream" uid="uid://d3sjs2q0qb6yh" path="res://assets/main/TOASTED.mp3" id="2_bu5as"]
+
+[node name="AudioManager" type="Node"]
+script = ExtResource("1_ybhav")
+
+[node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
+
+[node name="SongPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Song"
+
+[node name="CancelSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_bu5as")
+bus = &"Voice"
+
+[connection signal="finished" from="SpeechPlayer" to="." method="_on_speech_player_finished"]
+[connection signal="finished" from="SongPlayer" to="." method="_on_song_player_finished"]

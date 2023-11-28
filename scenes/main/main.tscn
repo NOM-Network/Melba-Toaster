@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
 [ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
 [ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
-[ext_resource type="AudioStream" uid="uid://d3sjs2q0qb6yh" path="res://assets/main/TOASTED.mp3" id="6_vd5ab"]
+[ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
 atlas = ExtResource("4_ajw6o")
@@ -667,16 +667,14 @@ _data = {
 "intro": SubResource("Animation_focdv")
 }
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "cancel_sound", "speech_player", "song_player")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "audio_manager")]
 script = ExtResource("1_bldvu")
 model_parent_animation = NodePath("ModelParentAnimation")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
 lower_third = NodePath("LowerThird")
 mic = NodePath("Microphone")
-cancel_sound = NodePath("AudioNodes/CancelSound")
-speech_player = NodePath("AudioNodes/SpeechPlayer")
-song_player = NodePath("AudioNodes/SongPlayer")
+audio_manager = NodePath("AudioManager")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -756,16 +754,4 @@ theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 40
 text = "420"
 
-[node name="AudioNodes" type="Node" parent="."]
-
-[node name="SpeechPlayer" type="AudioStreamPlayer" parent="AudioNodes"]
-bus = &"Voice"
-
-[node name="SongPlayer" type="AudioStreamPlayer" parent="AudioNodes"]
-bus = &"Song"
-
-[node name="CancelSound" type="AudioStreamPlayer" parent="AudioNodes"]
-stream = ExtResource("6_vd5ab")
-bus = &"Voice"
-
-[connection signal="finished" from="AudioNodes/SpeechPlayer" to="." method="_on_speech_player_finished"]
+[node name="AudioManager" parent="." instance=ExtResource("8_jjjnc")]

@@ -12,21 +12,12 @@ var model_target_point: GDCubismEffectTargetPoint
 @export var control_panel: Window
 @export var lower_third: Control
 @export var mic: AnimatedSprite2D
-
-@export_group("Sound Bus")
-@export var cancel_sound: AudioStreamPlayer
-@export var speech_player: AudioStreamPlayer
-@export var song_player: AudioStreamPlayer
+@export var audio_manager: Node
 
 # Tweens
 @onready var tweens := {}
 
-# Cleanout stuff
-var subtitles_cleanout := false
-var subtitles_duration := 0.0
-
 # Song-related
-@onready var voice_bus := AudioServer.get_bus_index("Voice")
 var current_song: Dictionary
 var current_subtitles: Array
 var song_playback: AudioStreamPlayback
@@ -60,8 +51,14 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if Globals.is_singing and current_song:
-		var pos = song_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() + (1 / Engine.get_frames_per_second()) * 2
-		_beats_counter(pos)
+		var pos = audio_manager.get_pos()
+
+		if Globals.show_beats:
+			$BeatsCounter.text = \
+				"TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %d, BEAT: %d / 4" \
+				% audio_manager.beats_counter_data()
+
+		$BeatsCounter.visible = Globals.show_beats
 
 		if current_subtitles:
 			if pos > current_subtitles[0][0]:
@@ -71,28 +68,11 @@ func _process(_delta: float) -> void:
 					_match_command(line[1])
 				else:
 					lower_third.set_subtitles_fast(line[1])
+	else:
+		$BeatsCounter.visible = false
 
 	if model_parent_animation.is_playing():
 		model_target_point.set_target(target_position)
-
-func _beats_counter(pos: float) -> void:
-	if Globals.show_beats:
-		var beat := pos * Globals.dancing_bpm / 60.0
-		var seconds := int(pos)
-		var duration: float = current_song.duration
-
-		$BeatsCounter.text = "TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %d, BEAT: %d / 4" % [
-			seconds / 60.0,
-			seconds % 60,
-			pos,
-			duration / 60.0,
-			int(duration) % 60,
-			current_song.duration,
-			Globals.dancing_bpm,
-			int(beat) % 4 + 1,
-		]
-
-	$BeatsCounter.visible = Globals.show_beats
 
 func _match_command(line: String) -> void:
 	var command: Array = line.split(" ")
@@ -177,11 +157,10 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.speech_done.connect(_on_speech_done)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
-
-	cancel_sound.finished.connect(func (): Globals.is_speaking = false)
 
 func connect_backend() -> void:
 	client.connect_client()
@@ -214,7 +193,7 @@ func _on_data_received(data: Variant) -> void:
 			return
 
 		# Preparing for speaking
-		prepare_speech(data)
+		audio_manager.prepare_speech(data)
 	else:
 		var message = JSON.parse_string(data.message)
 
@@ -237,28 +216,8 @@ func _on_data_received(data: Variant) -> void:
 			_:
 				print("Unhandled data type: ", message)
 
-func _on_speech_player_finished() -> void:
-	Globals.is_speaking = false
-	speech_player.stream = null
-
-	if (Globals.is_singing):
-		Globals.stop_singing.emit()
-
+func _on_speech_done() -> void:
 	trigger_cleanout()
-	Globals.speech_done.emit()
-
-func prepare_speech(message: PackedByteArray) -> void:
-	var stream = AudioStreamMP3.new()
-	stream.data = message
-	subtitles_duration = stream.get_length()
-	speech_player.stream = stream
-
-func _play_audio() -> void:
-	if speech_player.stream:
-		Globals.is_speaking = true
-		speech_player.play()
-	else:
-		printerr("NO AUDIO FOR THE MESSAGE!")
 
 func _on_ready_for_speech() -> void:
 	if not Globals.is_paused:
@@ -278,9 +237,10 @@ func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void
 
 func _speak() -> void:
 	Globals.start_speech.emit()
+
 	lower_third.set_prompt(pending_speech.prompt, 1.0)
-	lower_third.set_subtitles(pending_speech.response, subtitles_duration)
-	_play_audio()
+	lower_third.set_subtitles(pending_speech.response, audio_manager.speech_duration)
+
 	pending_speech = {}
 
 func _on_cancel_speech() -> void:
@@ -289,16 +249,13 @@ func _on_cancel_speech() -> void:
 		silent = true
 
 	pending_speech = {}
-
-	speech_player.stop()
-	speech_player.stream = null
-
 	lower_third.clear_subtitles()
 
+	audio_manager.reset_speech_player()
 	if not silent:
 		Globals.set_toggle.emit("void", true)
 		lower_third.set_subtitles("[TOASTED]", 1.0)
-		cancel_sound.play()
+		audio_manager.play_cancel_sound()
 
 	await trigger_cleanout(not silent)
 	Globals.set_toggle.emit("void", false)
@@ -322,12 +279,9 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	current_song = song
 
 	Globals.is_paused = true
-	Globals.is_singing = true
 
 	mic.animation = "in"
 	mic.play()
-
-	subtitles_duration = song.wait_time if song.wait_time != 0.0 else 3.0
 
 	if song.subtitles:
 		current_subtitles = song.subtitles.duplicate()
@@ -337,15 +291,7 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 		lower_third.set_prompt(" ")
 		lower_third.set_subtitles("{artist}\n\"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
 
-	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
-	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
-
-	var song_track := _load_mp3(song, "song")
-	song_player.stream = song_track
-	current_song.duration = song_track.get_length()
-
-	var voice_track := _load_mp3(song, "voice")
-	speech_player.stream = voice_track
+	audio_manager.prepare_song(current_song)
 
 	var command := {
 		"sourceName": "Song",
@@ -362,15 +308,9 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	wait_time_triggered = false
 	stop_time_triggered = false
 
-	song_player.play(seek_time)
-	speech_player.play(seek_time)
+	audio_manager.play_song(seek_time)
 
 func _on_stop_singing() -> void:
-	Globals.is_singing = false
-
-	song_player.stop()
-	speech_player.stop()
-
 	mic.animation = "out"
 	mic.play()
 
@@ -378,20 +318,11 @@ func _on_stop_singing() -> void:
 	current_subtitles = []
 	$BeatsCounter.visible = false
 
-	AudioServer.set_bus_mute(voice_bus, false)
-	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
-
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
 
 	trigger_cleanout(false)
 	Globals.change_scene.emit("Main")
-
-func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
-	var path: String = song.path % type
-
-	assert(ResourceLoader.exists(path), "No audio file %s" % path)
-	return ResourceLoader.load(path)
 
 func _on_change_position(new_position: String) -> void:
 	if Globals.positions.has(new_position):

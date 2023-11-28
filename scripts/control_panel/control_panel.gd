@@ -474,16 +474,19 @@ func _input(event) -> void:
 		cancel_button.pressed.emit()
 
 	if event.is_action_pressed("pause_resume"):
-		pause_button.button_pressed = not pause_button.button_pressed
+		if not pause_button.disabled:
+			pause_button.button_pressed = not pause_button.button_pressed
 
 	if event.is_action_pressed("toggle_mute"):
 		var input = "Melba Speaking"
 		obs.send_command("ToggleInputMute", { "inputName": input }, input)
 
 func backend_connected() -> void:
+	pause_button.disabled = false
 	CpHelpers.change_status_color(%BackendStatus, true)
 
 func backend_disconnected() -> void:
+	pause_button.disabled = true
 	CpHelpers.change_status_color(%BackendStatus, false)
 
 func _on_pause_speech_toggled(button_pressed: bool) -> void:

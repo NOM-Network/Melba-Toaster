@@ -132,8 +132,10 @@ focus_mode = 0
 text = "Cancel (F12)"
 
 [node name="PauseSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
+disabled = true
 toggle_mode = true
 text = "Pause (F9)"
 
