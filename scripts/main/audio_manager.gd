@@ -13,6 +13,12 @@ func _ready() -> void:
 	Globals.start_speech.connect(_on_start_speech)
 	Globals.stop_singing.connect(_on_stop_singing)
 
+static func is_valid_mp3(data: PackedByteArray) -> bool:
+	return data.slice(0, 2) as Array in [
+		[255, 251],
+		[73, 68]
+	]
+
 # region PUBLIC FUNCTIONS
 
 func play_cancel_sound() -> void:
@@ -69,17 +75,17 @@ func get_pos() -> float:
 func beats_counter_data() -> Array:
 	var pos := get_pos()
 	var beat := pos * Globals.dancing_bpm / 60.0
-	var seconds := int(pos)
+	var seconds := pos as int
 
 	return [
 		seconds / 60.0,
 		seconds % 60,
 		get_pos(),
 		song_duration / 60.0,
-		int(song_duration) % 60,
+		song_duration as int % 60,
 		song_duration,
 		Globals.dancing_bpm,
-		int(beat) % 4 + 1,
+		beat as int % 4 + 1,
 	]
 
 # endregion

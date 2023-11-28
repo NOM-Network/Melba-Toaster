@@ -47,7 +47,7 @@ func _load_subtitles_file(path: String) -> Variant:
 			continue
 
 		subtitles.push_back([
-			line[0].to_float(),
+			line[0] as float,
 			line[2]
 		])
 

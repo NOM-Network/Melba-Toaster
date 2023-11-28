@@ -70,10 +70,10 @@ static func apply_color_override(
 static func change_status_color(node: Button, active: bool) -> void:
 	node.self_modulate = Color.GREEN if active else Color.RED
 
-static func array_to_string(arr: Array) -> String:
+static func array_to_string(arr: Array, separator := " ") -> String:
 	var s := ""
 	for i in arr:
-		s += String(i) + " "
+		s += i as String + separator
 	return s
 
 static func clear_nodes(nodes: Variant):

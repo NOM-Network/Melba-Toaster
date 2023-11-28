@@ -8,6 +8,8 @@ extends Window
 @export var debug_button: Button
 @export var cancel_button: Button
 @export var pause_button: Button
+@export var obs_client_status: Button
+@export var backend_status: Button
 
 @export_category("Timers")
 @export var godot_stats_timer: Timer
@@ -44,12 +46,18 @@ func _process(_delta) -> void:
 func _apply_defaults() -> void:
 	debug_button.button_pressed = Globals.debug_mode
 	pause_button.button_pressed = Globals.is_paused
+	%ShowBeats.button_pressed = Globals.show_beats
 
-	%BackendStatus.text = "Backend %s" % Globals.config.get_backend("host")
+	obs_client_status.text = "OBS (%s:%s)" % [ Globals.config.get_obs("host"), Globals.config.get_obs("port") ]
+	backend_status.text = "Backend (%s:%s)" % [ Globals.config.get_backend("host"), Globals.config.get_backend("port") ]
+
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
 	%TimeBeforeReady.value = Globals.time_before_ready
 	%TimeBeforeSpeech.value = Globals.time_before_speech
-	%ShowBeats.button_pressed = Globals.show_beats
+
+	%CurrentSpeech/Prompt.text = "Waiting for prompt..."
+	%CurrentSpeech/Emotions.text = "Waiting for emotions..."
+	%CurrentSpeech/Text.text = "Waiting for text..."
 
 func _update_control_status() -> void:
 	if last_pause_status != Globals.is_paused:
@@ -84,7 +92,7 @@ func _start_obs_processing() -> void:
 		obs.data_received.connect(_on_data_received)
 
 	%ObsStreamControl.disabled = false
-	CpHelpers.change_status_color(%ObsClientStatus, true)
+	CpHelpers.change_status_color(obs_client_status, true)
 
 	# OBS Data init
 	obs.send_command_batch([
@@ -99,7 +107,7 @@ func _start_obs_processing() -> void:
 func _stop_obs_processing() -> void:
 	obs_stats_timer.stop()
 	obs.break_connection()
-	CpHelpers.change_status_color(%ObsClientStatus, false)
+	CpHelpers.change_status_color(obs_client_status, false)
 	%ObsStreamControl.disabled = true
 
 	CpHelpers.clear_nodes([%ObsScenes, %ObsInputs, %ObsFilters])
@@ -136,7 +144,6 @@ func _generate_position_controls() -> void:
 		positions.add_child(button)
 
 	var menu := %NextPositionMenu
-	menu.add_item("NO OVERRIDE")
 	for p in Globals.positions:
 		menu.add_item(p)
 
@@ -166,7 +173,7 @@ func _generate_model_controls() -> void:
 
 		CpHelpers.construct_model_control_buttons(type, parent, Globals[type], callable)
 
-func _on_data_received(data) -> void:
+func _on_data_received(data: Object) -> void:
 	match data.op:
 		OpCodes.Event.IDENTIFIER_VALUE:
 			_handle_event(data.d)
@@ -183,7 +190,7 @@ func _on_data_received(data) -> void:
 			print_debug(data)
 			print_debug("-------------")
 
-func _handle_event(data) -> void:
+func _handle_event(data: Dictionary) -> void:
 	match data.eventType:
 		"CurrentProgramSceneChanged":
 			_change_active_scene(data.eventData)
@@ -222,7 +229,7 @@ func _handle_event(data) -> void:
 				print_debug(data)
 				print_debug("-------------")
 
-func _handle_request(data) -> void:
+func _handle_request(data: Dictionary) -> void:
 	if not data.requestStatus.result:
 		if data.requestStatus.code == 604:
 			# ignore GetInputMute's "The specified input does not support audio" errors
@@ -356,19 +363,17 @@ func _on_change_scene(scene_name: String) -> void:
 	if next_position:
 		Globals.change_position.emit(next_position)
 
-func _on_scene_button_pressed(button) -> void:
+func _on_scene_button_pressed(button: Button) -> void:
 	Globals.change_scene.emit(button.text)
 
 func _on_change_position(new_position: String) -> void:
-	var buttons := %Positions
-
-	for b in buttons.get_children():
-		if b.text == new_position:
-			b.set_pressed_no_signal(true)
+	for p in %Positions.get_children():
+		if p.text == new_position:
+			p.set_pressed_no_signal(true)
 			return
 
 func _generate_scene_buttons(data: Dictionary) -> void:
-	var active_scene = null
+	var active_scene: String
 	if data.has("currentProgramSceneName"):
 		active_scene = data.currentProgramSceneName
 	var scenes = data.scenes
@@ -423,8 +428,11 @@ func _generate_input_request(inputs: Array) -> void:
 	obs.send_command_batch(request)
 
 func _generate_input_button(data: Dictionary) -> void:
+	# Only inputs we need
+	if data.inputName not in ["Melba Speaking", "MUSIC"]:
+		return
+
 	var button = Button.new()
-	button.visible = false
 	button.name = data.inputName.to_pascal_case()
 	button.text = data.inputName
 	button.focus_mode = Control.FOCUS_NONE
@@ -439,11 +447,10 @@ func _change_input_name(data: Dictionary) -> void:
 		button.name = data.inputName.to_pascal_case()
 		button.text = data.inputName
 
-func _change_input_state(data) -> void:
+func _change_input_state(data: Dictionary) -> void:
 	var button = %ObsInputs.get_node(data.inputName.to_pascal_case())
 
 	if button:
-		button.visible = true
 		CpHelpers.apply_color_override(button, data.inputMuted, Color.RED, Color.GREEN)
 
 func _on_input_button_pressed(button: Button) -> void:
@@ -483,11 +490,11 @@ func _input(event) -> void:
 
 func backend_connected() -> void:
 	pause_button.disabled = false
-	CpHelpers.change_status_color(%BackendStatus, true)
+	CpHelpers.change_status_color(backend_status, true)
 
 func backend_disconnected() -> void:
 	pause_button.disabled = true
-	CpHelpers.change_status_color(%BackendStatus, false)
+	CpHelpers.change_status_color(backend_status, false)
 
 func _on_pause_speech_toggled(button_pressed: bool) -> void:
 	Globals.is_paused = button_pressed

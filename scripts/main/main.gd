@@ -2,7 +2,7 @@ extends Node2D
 
 @export_category("Model")
 @export var model_parent_animation: AnimationPlayer
-var model: Node2D
+@onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
@@ -21,12 +21,6 @@ var model_target_point: GDCubismEffectTargetPoint
 var current_song: Dictionary
 var current_subtitles: Array
 var song_playback: AudioStreamPlayback
-var wait_time_triggered := false
-var stop_time_triggered := false
-
-# For AnimationPlayer
-@export_category("Nodes")
-@export var target_position: Vector2
 
 var pending_speech: Dictionary
 var pressed: bool
@@ -41,7 +35,6 @@ func _ready() -> void:
 
 	# Add model
 	_add_model()
-	Globals.change_position.emit(Globals.default_position)
 
 	# Waiting for the backend
 	await connect_backend()
@@ -71,8 +64,41 @@ func _process(_delta: float) -> void:
 	else:
 		$BeatsCounter.visible = false
 
-	if model_parent_animation.is_playing():
-		model_target_point.set_target(target_position)
+func _connect_signals() -> void:
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.speech_done.connect(_on_speech_done)
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
+	Globals.change_position.connect(_on_change_position)
+
+func _add_model() -> void:
+	add_child(model, true)
+	move_child(model, 0)
+
+	model_sprite = model.get_node("%Sprite2D")
+	user_model = model.get_node("%GDCubismUserModel")
+	model_target_point = model.get_node("%TargetPoint")
+
+	Globals.change_position.emit(Globals.default_position)
+
+func connect_backend() -> void:
+	client.connect_client()
+	await client.connection_established
+	control_panel.backend_connected()
+
+	if not client.data_received.is_connected(_on_data_received):
+		client.data_received.connect(_on_data_received)
+
+	if not client.connection_closed.is_connected(_on_connection_closed):
+		client.connection_closed.connect(_on_connection_closed)
+
+func disconnect_backend() -> void:
+	client.break_connection("from control panel")
+	await client.connection_closed
+
+func _on_connection_closed() -> void:
+	control_panel.backend_disconnected()
 
 func _match_command(line: String) -> void:
 	var command: Array = line.split(" ")
@@ -82,7 +108,7 @@ func _match_command(line: String) -> void:
 			lower_third.set_subtitles_fast("")
 
 		["&START", var bpm]:
-			Globals.start_dancing_motion.emit(bpm.to_int())
+			Globals.start_dancing_motion.emit(bpm as int)
 
 		["&STOP"]:
 			Globals.end_dancing_motion.emit()
@@ -102,15 +128,6 @@ func _match_command(line: String) -> void:
 		_:
 			printerr("SONG: `%s` is not a valid command" % line)
 
-func _add_model() -> void:
-	model = preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
-	add_child(model, true)
-	move_child(model, 0)
-
-	model_sprite = model.get_node("%Sprite2D")
-	user_model = model.get_node("%GDCubismUserModel")
-	model_target_point = model.get_node("%TargetPoint")
-
 func _input(event: InputEvent) -> void:
 	if event as InputEventMouseMotion:
 		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
@@ -129,15 +146,12 @@ func _input(event: InputEvent) -> void:
 					_mouse_to_prop("scale", -Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
-					_reset_model_props()
+					_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
+					_mouse_to_prop("position", Globals.positions.default.model[0], true)
 		else:
 			match event.button_index:
 				MOUSE_BUTTON_RIGHT:
 					_move_eyes(event, false)
-
-func _reset_model_props() -> void:
-	_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-	_mouse_to_prop("position", Globals.positions.default.model[0], true)
 
 func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
 	model[prop] = change if absolute else model[prop] + change
@@ -154,31 +168,9 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	else:
 		model_target_point.set_target(Vector2.ZERO)
 
-func _connect_signals() -> void:
-	Globals.new_speech.connect(_on_new_speech)
-	Globals.cancel_speech.connect(_on_cancel_speech)
-	Globals.speech_done.connect(_on_speech_done)
-	Globals.start_singing.connect(_on_start_singing)
-	Globals.stop_singing.connect(_on_stop_singing)
-	Globals.change_position.connect(_on_change_position)
-
-func connect_backend() -> void:
-	client.connect_client()
-	await client.connection_established
-	control_panel.backend_connected()
-
-	if not client.data_received.is_connected(_on_data_received):
-		client.data_received.connect(_on_data_received)
-
-	if not client.connection_closed.is_connected(_on_connection_closed):
-		client.connection_closed.connect(_on_connection_closed)
-
-func disconnect_backend() -> void:
-	client.break_connection("from control panel")
-	await client.connection_closed
-
 func _on_data_received(data: Variant) -> void:
 	if Globals.is_paused:
+		printerr("Data when paused")
 		return
 
 	if typeof(data) == TYPE_PACKED_BYTE_ARRAY:
@@ -187,10 +179,7 @@ func _on_data_received(data: Variant) -> void:
 			return
 
 		# Testing for MP3
-		var header = data.slice(0, 2)
-		if not (header == PackedByteArray([255, 251]) or header == PackedByteArray([73, 68])):
-			printerr("%s is not an MP3 file! Skipping..." % [header])
-			return
+		assert(audio_manager.is_valid_mp3(data), "Backend sent a faulty MP3 file!")
 
 		# Preparing for speaking
 		audio_manager.prepare_speech(data)
@@ -208,10 +197,11 @@ func _on_data_received(data: Variant) -> void:
 				Globals.set_toggle.emit(message.toggleName, message.enabled)
 
 			"NewSpeech":
-				if not Globals.is_speaking:
-					Globals.new_speech.emit(message.prompt, message.text.response, message.text.emotions)
-				else:
+				if Globals.is_speaking:
 					print_debug("NewSpeech while blabbering")
+					return
+
+				Globals.new_speech.emit(message.prompt, message.text.response, message.text.emotions)
 
 			_:
 				print("Unhandled data type: ", message)
@@ -272,9 +262,6 @@ func get_ready_for_next_speech() -> void:
 		await get_tree().create_timer(Globals.time_before_ready).timeout
 		Globals.ready_for_speech.emit()
 
-func _on_connection_closed() -> void:
-	control_panel.backend_disconnected()
-
 func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	current_song = song
 
@@ -283,13 +270,15 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	mic.animation = "in"
 	mic.play()
 
+	var fade_in_time: float = 0.0 if seek_time else song.wait_time
+
 	if song.subtitles:
 		current_subtitles = song.subtitles.duplicate()
-		lower_third.set_prompt("{artist} - \"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
+		lower_third.set_prompt("{artist} - \"{name}\"".format(song), fade_in_time)
 		# Subtitles are handled in the _process loop
 	else:
 		lower_third.set_prompt(" ")
-		lower_third.set_subtitles("{artist}\n\"{name}\"".format(song), 0.0 if seek_time else song.wait_time)
+		lower_third.set_subtitles("{artist}\n\"{name}\"".format(song), fade_in_time)
 
 	audio_manager.prepare_song(current_song)
 
@@ -304,9 +293,6 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
 	Globals.change_scene.emit("Song")
-
-	wait_time_triggered = false
-	stop_time_triggered = false
 
 	audio_manager.play_song(seek_time)
 
@@ -325,24 +311,24 @@ func _on_stop_singing() -> void:
 	Globals.change_scene.emit("Main")
 
 func _on_change_position(new_position: String) -> void:
-	if Globals.positions.has(new_position):
-		var positions: Dictionary = Globals.positions[new_position]
+	assert(Globals.positions.has(new_position), "Position %s does not exist" % new_position)
 
-		match new_position:
-			"intro":
-				assert(model_parent_animation.has_animation(new_position))
+	var positions: Dictionary = Globals.positions[new_position]
+	match new_position:
+		"intro":
+			assert(model_parent_animation.has_animation("intro"))
 
-				model_parent_animation.play("intro")
-				model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
+			model_parent_animation.play("intro")
+			model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
 
-			_:
-				for p in positions:
-					var node = get(p)
+		_:
+			for p in positions:
+				var node = get(p)
 
-					if tweens.has(p):
-						tweens[p].kill()
+				if tweens.has(p):
+					tweens[p].kill()
 
-					tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
-					tweens[p].set_parallel()
-					tweens[p].tween_property(node, "position", positions[p][0], 1)
-					tweens[p].tween_property(node, "scale", positions[p][1], 1)
+				tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
+				tweens[p].set_parallel()
+				tweens[p].tween_property(node, "position", positions[p][0], 1)
+				tweens[p].tween_property(node, "scale", positions[p][1], 1)
