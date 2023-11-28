@@ -30,6 +30,7 @@ func _ready() -> void:
 
 	set_expression("end")
 	play_random_idle_animation()
+	
 
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)

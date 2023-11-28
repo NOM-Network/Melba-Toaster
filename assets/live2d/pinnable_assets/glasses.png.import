@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dow7ry1r7bvdm"
-path="res://.godot/imported/censor.png-2ec6189ce36e5c4abc278d8d30d22ab0.ctex"
+uid="uid://cym7l00g0fswe"
+path="res://.godot/imported/glasses.png-8f9a3544b54eb5c4001c56c10f29a08a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/live2d/censor/censor.png"
-dest_files=["res://.godot/imported/censor.png-2ec6189ce36e5c4abc278d8d30d22ab0.ctex"]
+source_file="res://assets/live2d/pinnable_assets/glasses.png"
+dest_files=["res://.godot/imported/glasses.png-8f9a3544b54eb5c4001c56c10f29a08a.ctex"]
 
 [params]
 

@@ -1,26 +1,27 @@
-[gd_scene load_steps=12 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=13 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
-[ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/censor/censor.png" id="6_1yxl4"]
+[ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="6_sqvm7"]
+[ext_resource type="Texture2D" uid="uid://cym7l00g0fswe" path="res://assets/live2d/pinnable_assets/glasses.png" id="7_lkcnv"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f53nl"]
-atlas = ExtResource("6_1yxl4")
+atlas = ExtResource("6_sqvm7")
 region = Rect2(0, 0, 814, 242)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4icgb"]
-atlas = ExtResource("6_1yxl4")
+atlas = ExtResource("6_sqvm7")
 region = Rect2(814, 0, 814, 242)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0jsom"]
-atlas = ExtResource("6_1yxl4")
+atlas = ExtResource("6_sqvm7")
 region = Rect2(1628, 0, 814, 242)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hove7"]
-atlas = ExtResource("6_1yxl4")
+atlas = ExtResource("6_sqvm7")
 region = Rect2(2442, 0, 814, 242)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uup0d"]
@@ -52,6 +53,7 @@ metadata/_edit_vertical_guides_ = [21.0]
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = ExtResource("2_fnydb")
+metadata/_edit_lock_ = true
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
@@ -59,15 +61,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -5.01407
-ParamAngleY = 6.45996
-ParamAngleZ = 5.44065
-ParamBodyAngleX = -1.49454
-ParamBodyAngleY = 0.497162
-ParamBodyAngleZ = -8.37386e-05
-Param3 = -1.23806
-Param4 = 1.92756
-Param5 = 4.68112
+ParamAngleX = -4.7969
+ParamAngleY = 6.54815
+ParamAngleZ = 8.55547
+ParamBodyAngleX = -1.21009
+ParamBodyAngleY = 0.511341
+ParamBodyAngleZ = -9.62959e-05
+Param3 = -1.17917
+Param4 = 0.0
+Param5 = 7.51934
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -76,13 +78,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.0766012
-Param7 = 0.0123945
-Param8 = -0.0346046
-Param10 = 0.369966
-Param11 = -0.0160642
+Param6 = 0.115392
+Param7 = 0.0331298
+Param8 = -0.0132612
+Param10 = 0.525125
+Param11 = 0.0015216
 Param15 = 0.0
-Param16 = 0.867701
+Param16 = 0.89246
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -91,10 +93,10 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.000381893
-Param26 = 0.000381893
+Param24 = 0.000437055
+Param26 = 0.000437055
 Param25 = 0.0
-Param27 = 1.56301
+Param27 = 0.0
 ParamBrowLY = 0.0
 ParamBrowRY = 0.0
 ParamBrowLX = 0.0
@@ -104,16 +106,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.200256
+ParamBreath = 0.000516087
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -3.57628e-07
-Param2 = 5.96046e-07
-Param12 = -0.000212781
-Param13 = -4.33487e-05
-Param23 = 0.0157593
-Param22 = -0.0157593
+Param = 2.38419e-07
+Param2 = 0.0
+Param12 = 6.61859e-05
+Param13 = -0.000135253
+Param23 = -0.000212517
+Param22 = 4.85689e-06
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -214,5 +216,10 @@ scale = Vector2(0.45, 0.45)
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
+
+[node name="GlassSprites" type="Sprite2D" parent="PinnableAssets"]
+position = Vector2(7.37445, -662.375)
+scale = Vector2(0.348859, 0.316506)
+texture = ExtResource("7_lkcnv")
 
 [connection signal="motion_event" from="Sprite2D/GDCubismUserModel" to="." method="_on_gd_cubism_user_model_motion_event"]
