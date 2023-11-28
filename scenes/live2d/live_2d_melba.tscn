@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="6_sqvm7"]
@@ -210,16 +210,16 @@ autostart = true
 
 [node name="PinnableAssets" type="Node2D" parent="."]
 
+[node name="GlassSprites" type="Sprite2D" parent="PinnableAssets"]
+position = Vector2(7.37445, -662.375)
+scale = Vector2(0.348859, 0.316506)
+texture = ExtResource("7_lkcnv")
+
 [node name="CensorAnimation" type="AnimatedSprite2D" parent="PinnableAssets"]
 modulate = Color(1, 1, 1, 0)
 scale = Vector2(0.45, 0.45)
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
-
-[node name="GlassSprites" type="Sprite2D" parent="PinnableAssets"]
-position = Vector2(7.37445, -662.375)
-scale = Vector2(0.348859, 0.316506)
-texture = ExtResource("7_lkcnv")
 
 [connection signal="motion_event" from="Sprite2D/GDCubismUserModel" to="." method="_on_gd_cubism_user_model_motion_event"]
