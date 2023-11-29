@@ -233,6 +233,7 @@ func _on_timer_before_speech_timeout() -> void:
 		_speak()
 
 func _speak() -> void:
+	Globals.play_animation.emit("random")
 	Globals.start_speech.emit()
 
 	lower_third.set_prompt(pending_speech.prompt, 1.0)

@@ -22,6 +22,7 @@ var is_streaming := false
 # Last state globals
 var last_pause_status := not Globals.is_paused
 var last_singing_status := not Globals.is_singing
+var last_animation := "random"
 var last_dancing_bpm := 0.1
 
 func _ready() -> void:
