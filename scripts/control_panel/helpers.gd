@@ -38,6 +38,8 @@ static func construct_model_control_buttons(
 			button.button_pressed = controls[control].enabled
 			button.pressed.connect(target_call.bind(button))
 		else:
+			button.toggle_mode = true
+			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			button.pressed.connect(func (): callback.emit(control))
 
 		parent.add_child(button)
@@ -47,13 +49,14 @@ static func change_toggle_state(
 	button_pressed: bool,
 	enabled_text := ">>> STOP <<<",
 	disabled_text := "Start",
-	apply_color = true,
+	override_color := Color.RED,
+	apply_color = true
 ):
 	toggle.set_pressed_no_signal(button_pressed)
 	toggle.text = enabled_text if button_pressed else disabled_text
 
 	if apply_color:
-		apply_color_override(toggle, button_pressed, Color.RED)
+		apply_color_override(toggle, button_pressed, override_color)
 
 static func apply_color_override(
 	node: Node,

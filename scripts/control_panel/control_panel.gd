@@ -48,11 +48,10 @@ func _apply_defaults() -> void:
 	pause_button.button_pressed = Globals.is_paused
 	%ShowBeats.button_pressed = Globals.show_beats
 
-	obs_client_status.text = "OBS (%s:%s)" % [ Globals.config.get_obs("host"), Globals.config.get_obs("port") ]
-	backend_status.text = "Backend (%s:%s)" % [ Globals.config.get_backend("host"), Globals.config.get_backend("port") ]
+	obs_client_status.text = "OBS\n%s:%s" % [ Globals.config.get_obs("host"), Globals.config.get_obs("port") ]
+	backend_status.text = "Backend\n%s:%s" % [ Globals.config.get_backend("host"), Globals.config.get_backend("port") ]
 
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
-	%TimeBeforeReady.value = Globals.time_before_ready
 	%TimeBeforeSpeech.value = Globals.time_before_speech
 
 	%CurrentSpeech/Prompt.text = "Waiting for prompt..."
@@ -66,7 +65,8 @@ func _update_control_status() -> void:
 			pause_button,
 			Globals.is_paused,
 			">>> RESUME (F9) <<<",
-			"Pause (F9)"
+			"Pause (F9)",
+			Color.YELLOW
 		)
 
 	if last_singing_status != Globals.is_singing:
@@ -78,11 +78,15 @@ func _update_control_status() -> void:
 
 	if last_dancing_bpm != Globals.dancing_bpm:
 		last_dancing_bpm = Globals.dancing_bpm
-		%CurrentDancingBpm.text = str(Globals.dancing_bpm)
 		CpHelpers.change_toggle_state(
 			%DancingToggle,
-			Globals.dancing_bpm
+			Globals.dancing_bpm,
+			"STOP (%s bpm)" % Globals.dancing_bpm
 		)
+
+	if last_animation != Globals.last_animation:
+		last_animation = Globals.last_animation
+		update_animation_buttons(Globals.last_animation)
 
 func _start_obs_processing() -> void:
 	obs.establish_connection()
@@ -91,7 +95,6 @@ func _start_obs_processing() -> void:
 	if not obs.data_received.is_connected(_on_data_received):
 		obs.data_received.connect(_on_data_received)
 
-	%ObsStreamControl.disabled = false
 	CpHelpers.change_status_color(obs_client_status, true)
 
 	# OBS Data init
@@ -108,7 +111,6 @@ func _stop_obs_processing() -> void:
 	obs_stats_timer.stop()
 	obs.break_connection()
 	CpHelpers.change_status_color(obs_client_status, false)
-	%ObsStreamControl.disabled = true
 
 	CpHelpers.clear_nodes([%ObsScenes, %ObsInputs, %ObsFilters])
 
@@ -121,6 +123,8 @@ func _connect_signals() -> void:
 
 	Globals.change_position.connect(_on_change_position)
 	Globals.change_scene.connect(_on_change_scene)
+
+	Globals.update_backend_stats.connect(_on_update_backend_stats)
 
 	print_debug("Control Panel: connected signals")
 
@@ -140,6 +144,7 @@ func _generate_position_controls() -> void:
 		button.button_pressed = p == Globals.default_position
 		button.name = "Position" + p.to_pascal_case()
 		button.button_group = button_group
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
 		positions.add_child(button)
 
@@ -204,11 +209,6 @@ func _handle_event(data: Dictionary) -> void:
 		"InputNameChanged":
 			_change_input_name(data.eventData)
 
-		"StreamStateChanged":
-			if is_streaming != data.eventData.outputActive:
-				is_streaming = data.eventData.outputActive
-				_update_stream_control_button()
-
 		"ExitStarted":
 			_stop_obs_processing()
 
@@ -241,12 +241,6 @@ func _handle_request(data: Dictionary) -> void:
 	match data.requestType:
 		"GetStats":
 			CpHelpers.insert_data(%StreamStats, Templates.format_obs_stats(data.responseData))
-
-		"GetStreamStatus":
-			var status = data.responseData
-			if is_streaming != status.outputActive:
-				is_streaming = status.outputActive
-				_update_stream_control_button()
 
 		"GetSceneList":
 			_generate_scene_buttons(data.responseData)
@@ -321,7 +315,6 @@ func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Prompt.text = prompt
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
 	%CurrentSpeech/Text.text = text
-
 func _on_start_speech() -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 
@@ -331,14 +324,6 @@ func _on_set_toggle(toggle_name: String, enabled: bool) -> void:
 	assert(toggle is CheckButton, "CheckButton `%s` was not found, returned %s" % [ui_name, toggle])
 
 	toggle.set_pressed_no_signal(enabled)
-
-func _update_stream_control_button() -> void:
-	CpHelpers.change_toggle_state(
-		%ObsStreamControl,
-		is_streaming,
-		"Stop Stream",
-		"Start Stream"
-	)
 
 func _on_obs_stream_control_pressed() -> void:
 	obs.send_command("ToggleStream")
@@ -368,9 +353,20 @@ func _on_scene_button_pressed(button: Button) -> void:
 
 func _on_change_position(new_position: String) -> void:
 	for p in %Positions.get_children():
+		if not p is Button:
+			return
+
 		if p.text == new_position:
 			p.set_pressed_no_signal(true)
-			return
+		else:
+			p.set_pressed_no_signal(false)
+
+func update_animation_buttons(new_animation: String) -> void:
+	for p in %Animations.get_children():
+		if p.text == new_animation:
+			p.set_pressed_no_signal(true)
+		else:
+			p.set_pressed_no_signal(false)
 
 func _generate_scene_buttons(data: Dictionary) -> void:
 	var active_scene: String
@@ -385,6 +381,8 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 		var button = Button.new()
 		button.text = scene.sceneName
 		button.name = Templates.scene_node_name % scene.sceneName.to_pascal_case()
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.focus_mode = Control.FOCUS_NONE
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
@@ -403,6 +401,7 @@ func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
 		button.name = Templates.filter_node_name % [scene_name, filter.filterName]
 		button.toggle_mode = true
 		button.button_pressed = filter.filterEnabled
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
 		CpHelpers.apply_color_override(button, filter.filterEnabled, Color.GREEN, Color.RED)
 		button.toggled.connect(_on_filter_button_toggled.bind(button))
@@ -435,6 +434,7 @@ func _generate_input_button(data: Dictionary) -> void:
 	var button = Button.new()
 	button.name = data.inputName.to_pascal_case()
 	button.text = data.inputName
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(_on_input_button_pressed.bind(button))
 	%ObsInputs.add_child(button)
@@ -470,11 +470,11 @@ func _on_filter_button_toggled(button_pressed: bool, button: Button) -> void:
 func _on_time_before_cleanout_value_changed(value: float) -> void:
 	Globals.time_before_cleanout = value
 
-func _on_time_before_ready_value_changed(value: float) -> void:
-	Globals.time_before_ready = value
-
 func _on_time_before_speech_value_changed(value: float) -> void:
 	Globals.time_before_speech = value
+
+func _on_update_backend_stats(data: Array) -> void:
+	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats(data))
 
 func _input(event) -> void:
 	if event.is_action_pressed("cancel_speech"):
@@ -529,7 +529,9 @@ func _on_obs_client_status_pressed() -> void:
 
 func _on_backend_status_pressed() -> void:
 	Globals.is_paused = true
+	Globals.play_animation.emit("sleep")
 	main.disconnect_backend()
+	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats([0, 0]))
 	await get_tree().create_timer(1.0).timeout
 	main.connect_backend()
 

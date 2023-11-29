@@ -95,17 +95,17 @@ func beats_counter_data() -> Array:
 func _on_start_speech() -> void:
 	play_speech()
 
-func _on_stop_singing() -> void:
-	finish_song()
-
-func _on_song_player_finished() -> void:
-	Globals.stop_singing.emit()
-
 func _on_speech_player_finished() -> void:
 	Globals.is_speaking = false
 	reset_speech_player()
 
 	Globals.speech_done.emit()
+
+func _on_stop_singing() -> void:
+	finish_song()
+
+func _on_song_player_finished() -> void:
+	Globals.stop_singing.emit()
 
 # endregion
 

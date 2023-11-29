@@ -3,6 +3,7 @@ extends Control
 # Controls
 @onready var prompt := $Prompt
 @onready var subtitles := $Subtitles
+@onready var timer := $ClearSubtitlesTimer
 
 # Defaults
 var prompt_font_size: int
@@ -18,14 +19,35 @@ func _ready() -> void:
 
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
+	Globals.start_speech.connect(_on_start_speech)
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.speech_done.connect(_on_speech_done)
+
+	timer.timeout.connect(_on_clear_subtitles_timer_timeout)
+
 	Globals.reset_subtitles.emit()
 
 # region SIGNAL CALLBACKS
 
 func _on_reset_subtitles() -> void:
 	clear_subtitles()
-	prompt.visible_ratio = 1.0
-	subtitles.visible_ratio = 1.0
+
+func _on_start_speech() -> void:
+	timer.stop()
+
+func _on_start_singing() -> void:
+	timer.stop()
+
+func _on_cancel_speech() -> void:
+	if not Globals.is_speaking:
+		start_clear_subtitles_timer()
+
+func _on_speech_done() -> void:
+	start_clear_subtitles_timer()
+
+func _on_clear_subtitles_timer_timeout() -> void:
+	clear_subtitles()
 
 # endregion
 
@@ -46,10 +68,16 @@ func clear_subtitles() -> void:
 	subtitles.text = ""
 	prompt.label_settings.font_size = prompt_font_size
 	subtitles.label_settings.font_size = subtitles_font_size
+	prompt.visible_ratio = 1.0
+	subtitles.visible_ratio = 1.0
 
 # endregion
 
 # region PRIVATE FUNCTIONS
+
+func start_clear_subtitles_timer() -> void:
+	timer.wait_time = Globals.time_before_cleanout
+	timer.start()
 
 func _print(node: Label, text := "", duration := 0.0):
 	node.text = "%s" % text

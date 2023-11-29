@@ -26,6 +26,8 @@ signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
 
+signal update_backend_stats(data: Array)
+
 # endregion
 
 # region SCENE DATA
@@ -33,26 +35,31 @@ signal reset_subtitles()
 static var default_position := "default"
 static var positions := {
 	# use Tulpes - [ position, scale ]
+	"intro": {}, # placeholder for intro animation
+
 	"intro_start": {
 		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
 	},
+
 	"default": {
 		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
+
 	"gaming": {
 		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
 		"lower_third": [ Vector2(40, 810), Vector2(0.777, 0.777) ],
 	},
-	"full": {
-		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
-		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
-	},
+
 	"close": {
 		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
 		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
 	},
-	"intro": {}, # placeholder for intro animation
+
+	"full": {
+		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
+		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+	}
 }
 
 static var scale_change := Vector2(0.05, 0.05)
@@ -93,18 +100,17 @@ static var last_expression := ""
 
 # region MELBA STATE
 
-static var config := ToasterConfig.new()
+static var debug_mode := OS.is_debug_build()
+static var config := ToasterConfig.new(debug_mode)
+
 static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
 static var dancing_bpm := 0.0
+static var show_beats := debug_mode
 
-static var debug_mode := OS.is_debug_build()
-static var show_beats := false
-
-static var time_before_cleanout := 2.0
-static var time_before_ready := 1.0
-static var time_before_speech := 2.0
+static var time_before_cleanout := 5.0
+static var time_before_speech := 3.0
 
 # endregion
 

@@ -4,9 +4,6 @@
 extends Node
 class_name ObsWebSocketClient
 
-signal obs_authenticated()
-signal obs_data_received(data)
-
 #region INTERNAL DATA
 
 enum ObsError {

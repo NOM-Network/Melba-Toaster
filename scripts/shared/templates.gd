@@ -9,15 +9,18 @@ static var obs_stats_template = "" \
 	+ "Memory Usage: [b]{memoryUsage} MB[/b]\n" \
 	+ "Disk Space: [b]{availableDiskSpace} GB[/b]\n" \
 	+ "Frame Render Time: [b]{averageFrameRenderTime} ms[/b]\n" \
-	+ "Frames Rendered/Skipped: [b]{renderTotalFrames}[/b]/[b]{renderSkippedFrames}[/b]\n" \
-	+ "Total Rendered/Skipped: [b]{outputTotalFrames}[/b]/[b]{outputSkippedFrames}[/b]\n" \
-	+ "WS Incoming/Outgoing: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]\n"
+	+ "Rendered Skipped: [b]{renderSkippedFrames}[/b]\n" \
+	+ "Total Skipped: [b]{outputSkippedFrames}[/b]\n" \
+	+ "WS In/Out: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]\n"
 
 static var godot_stats_template = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
 	+ "Frame Time: [b]{frameTime} s[/b]\n" \
 	+ "Video Memory Used: [b]{videoMemoryUsed} MB[/b]\n" \
 	+ "Audio Latency: [b]{audioLatency} ms[/b]\n"
+
+static var backend_stats_template = "" \
+	+ "WS In/Out: [b]{0}[/b]/[b]{1}[/b]\n"
 
 static func format_obs_stats(res: Dictionary):
 	var stats := {
@@ -45,6 +48,9 @@ static func format_godot_stats():
 	}
 
 	return godot_stats_template.format(stats)
+
+static func format_backend_stats(res: Array):
+	return backend_stats_template.format(res)
 
 static func _perf_mon(monitor: String) -> Variant:
 	return Performance.get_monitor(Performance[monitor])

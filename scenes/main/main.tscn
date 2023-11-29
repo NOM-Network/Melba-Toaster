@@ -667,7 +667,7 @@ _data = {
 "intro": SubResource("Animation_focdv")
 }
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "audio_manager")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "audio_manager", "timer")]
 script = ExtResource("1_bldvu")
 model_parent_animation = NodePath("ModelParentAnimation")
 client = NodePath("WebSocketClient")
@@ -675,6 +675,7 @@ control_panel = NodePath("ControlPanel")
 lower_third = NodePath("LowerThird")
 mic = NodePath("Microphone")
 audio_manager = NodePath("AudioManager")
+timer = NodePath("TimerBeforeSpeechTimer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -684,7 +685,8 @@ initial_position = 3
 current_screen = 0
 
 [node name="Microphone" type="AnimatedSprite2D" parent="."]
-position = Vector2(100, 408)
+position = Vector2(180, 474)
+scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
@@ -730,6 +732,9 @@ autowrap_mode = 3
 text_overrun_behavior = 4
 visible_characters_behavior = 1
 
+[node name="ClearSubtitlesTimer" type="Timer" parent="LowerThird"]
+wait_time = 5.0
+
 [node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
 reset_on_save = false
 libraries = {
@@ -755,3 +760,6 @@ theme_override_font_sizes/font_size = 40
 text = "420"
 
 [node name="AudioManager" parent="." instance=ExtResource("8_jjjnc")]
+
+[node name="TimerBeforeSpeechTimer" type="Timer" parent="."]
+wait_time = 5.0

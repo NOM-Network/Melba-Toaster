@@ -6,7 +6,7 @@ var songs: Array[Dictionary]
 
 var song_path = 'res://assets/songs/%s/'
 
-func _init() -> void:
+func _init(debug_mode: bool) -> void:
 	config = _load_config_file("res://config/prod.cfg")
 
 	var list = _load_config_file("res://assets/songs/songs.cfg")
@@ -23,6 +23,9 @@ func _init() -> void:
 		if not ResourceLoader.exists(song.path % "song") \
 			or not ResourceLoader.exists(song.path % "voice"):
 			printerr("No song files found for %s" % song.id)
+			continue
+
+		if song.has("test") and not debug_mode:
 			continue
 
 		if song.subtitles:

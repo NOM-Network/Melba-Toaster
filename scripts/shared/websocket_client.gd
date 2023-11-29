@@ -5,7 +5,7 @@ const URL_PATH: String = "%s://%s:%s"
 var socket: WebSocketPeer
 var last_state = WebSocketPeer.STATE_CLOSED
 
-@export var poll_time: float = 0.5
+var poll_time: float = 0.5
 var _poll_counter: float = 0.0
 
 var secure: String = "wss" if Globals.config.get_backend("secure") else "ws"
@@ -19,7 +19,11 @@ var tls_options: TLSOptions = null
 
 signal connection_established()
 signal connection_closed()
-signal data_received(data: Variant)
+signal data_received(data: Variant, stats: Dictionary)
+
+# Stats
+var incoming_messages_count := 0
+var outgoing_messages_count := 0
 
 func _ready() -> void:
 	set_process(false)
@@ -42,7 +46,8 @@ func _process(delta: float) -> void:
 				print_debug("Toaster client: Connection closed! ", socket.get_close_reason())
 
 		while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
-			data_received.emit(message_handler())
+			incoming_messages_count += 1
+			data_received.emit(message_handler(), [incoming_messages_count, outgoing_messages_count])
 
 func connect_client() -> void:
 	print_debug("Toaster client: Establishing connection!")
@@ -78,6 +83,7 @@ func message_handler() -> Variant:
 func send_message(json: Dictionary) -> void:
 	var message := JSON.stringify(json)
 
+	outgoing_messages_count += 1
 	var err := socket.send_text(message)
 	if err != OK:
 		printerr("Toaster client: Message sending error ", err)
@@ -86,5 +92,8 @@ func break_connection(reason: String = "") -> void:
 	set_process(true)
 	socket.close(1000, reason)
 	last_state = socket.get_ready_state()
+
+	incoming_messages_count = 0
+	outgoing_messages_count = 0
 
 	socket = WebSocketPeer.new()

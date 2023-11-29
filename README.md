@@ -6,6 +6,9 @@ Written in Godot, this program allows the Melba Toast model to speak, show anima
 
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 
+**Control panel interface**
+![Interface](readme_assets/interface.png)
+
 ## How to use
 
 1. Install the latest minor version of [Godot 4.2](https://godotengine.org/download/windows/) (we are currently using [4.2 RC1](https://godotengine.org/article/release-candidate-godot-4-2-rc-1/#downloads)).

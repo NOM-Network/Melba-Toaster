@@ -13,6 +13,7 @@ var model_target_point: GDCubismEffectTargetPoint
 @export var lower_third: Control
 @export var mic: AnimatedSprite2D
 @export var audio_manager: Node
+@export var timer: Timer
 
 # Tweens
 @onready var tweens := {}
@@ -40,6 +41,7 @@ func _ready() -> void:
 	await connect_backend()
 
 	# Ready for speech
+	timer.wait_time = Globals.time_before_speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 func _process(_delta: float) -> void:
@@ -71,6 +73,8 @@ func _connect_signals() -> void:
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
+
+	timer.timeout.connect(_on_timer_before_speech_timeout)
 
 func _add_model() -> void:
 	add_child(model, true)
@@ -168,7 +172,9 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	else:
 		model_target_point.set_target(Vector2.ZERO)
 
-func _on_data_received(data: Variant) -> void:
+func _on_data_received(data: Variant, stats: Array) -> void:
+	Globals.update_backend_stats.emit(stats)
+
 	if Globals.is_paused:
 		printerr("Data when paused")
 		return
@@ -178,10 +184,7 @@ func _on_data_received(data: Variant) -> void:
 			printerr("Audio while blabbering")
 			return
 
-		# Testing for MP3
 		assert(audio_manager.is_valid_mp3(data), "Backend sent a faulty MP3 file!")
-
-		# Preparing for speaking
 		audio_manager.prepare_speech(data)
 	else:
 		var message = JSON.parse_string(data.message)
@@ -207,22 +210,26 @@ func _on_data_received(data: Variant) -> void:
 				print("Unhandled data type: ", message)
 
 func _on_speech_done() -> void:
-	trigger_cleanout()
+	get_ready_for_next_speech()
 
 func _on_ready_for_speech() -> void:
 	if not Globals.is_paused:
 		client.send_message({"type": "ReadyForSpeech"})
 
 func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void:
+	# This variable might be cleared from control panel
 	pending_speech = {
 		"prompt": p_prompt,
 		"response": p_text,
 		"emotions": p_emotions,
 	}
 
-	await get_tree().create_timer(Globals.time_before_speech).timeout
+	timer.wait_time = Globals.time_before_speech
+	timer.start()
 
+func _on_timer_before_speech_timeout() -> void:
 	if pending_speech != {}:
+		timer.stop()
 		_speak()
 
 func _speak() -> void:
@@ -234,9 +241,7 @@ func _speak() -> void:
 	pending_speech = {}
 
 func _on_cancel_speech() -> void:
-	var silent := false
-	if pending_speech:
-		silent = true
+	var silent := not Globals.is_speaking
 
 	pending_speech = {}
 	lower_third.clear_subtitles()
@@ -245,21 +250,13 @@ func _on_cancel_speech() -> void:
 	if not silent:
 		Globals.set_toggle.emit("void", true)
 		lower_third.set_subtitles("[TOASTED]", 1.0)
-		audio_manager.play_cancel_sound()
+		await audio_manager.play_cancel_sound()
+		Globals.set_toggle.emit("void", false)
 
-	await trigger_cleanout(not silent)
-	Globals.set_toggle.emit("void", false)
-
-func trigger_cleanout(timeout := true) -> void:
-	if timeout:
-		await get_tree().create_timer(Globals.time_before_cleanout).timeout
-
-	await get_ready_for_next_speech()
-	lower_third.clear_subtitles()
+	get_ready_for_next_speech()
 
 func get_ready_for_next_speech() -> void:
 	if not Globals.is_paused:
-		await get_tree().create_timer(Globals.time_before_ready).timeout
 		Globals.ready_for_speech.emit()
 
 func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
@@ -307,7 +304,7 @@ func _on_stop_singing() -> void:
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
 
-	trigger_cleanout(false)
+	lower_third.clear_subtitles()
 	Globals.change_scene.emit("Main")
 
 func _on_change_position(new_position: String) -> void:
