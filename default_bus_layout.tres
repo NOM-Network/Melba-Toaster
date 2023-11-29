@@ -1,4 +1,7 @@
-[gd_resource type="AudioBusLayout" load_steps=3 format=3 uid="uid://djao8qcvwmym6"]
+[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://djao8qcvwmym6"]
+
+[sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_0sx7v"]
+resource_name = "Limiter"
 
 [sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_gq76t"]
 resource_name = "SpectrumAnalyzer"
@@ -13,6 +16,8 @@ hipass = 0.68
 wet = 0.15
 
 [resource]
+bus/0/effect/0/effect = SubResource("AudioEffectLimiter_0sx7v")
+bus/0/effect/0/enabled = true
 bus/1/name = &"Control"
 bus/1/solo = false
 bus/1/mute = false
