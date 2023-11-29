@@ -1,8 +1,8 @@
-# Melba-Toaster
+# Melba Toaster
 
-This is the presentation part of NOM Network's VTuber **Melba Toast**.
+This is the presentation part of NOM Network's VTuber **[Melba Toast](https://www.twitch.tv/melbathetoast/)**.
 
-Written in Godot, this program allows the Melba Toast model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel.
+Written using [Godot](https://godotengine.org/) and GDScript, this program allows the Melba Toast model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel.
 
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 
@@ -11,7 +11,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 ## How to use
 
-1. Install the latest minor version of [Godot 4.2](https://godotengine.org/download/windows/) (we are currently using [4.2 RC1](https://godotengine.org/article/release-candidate-godot-4-2-rc-1/#downloads)).
+1. Install the latest minor version of [Godot 4.2](https://godotengine.org/download/windows/) (we are currently using [4.2 RC 2](https://godotengine.org/article/release-candidate-godot-4-2-rc-2/#downloads)).
 
 2. Clone this repo via Git:
 
@@ -25,7 +25,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 4. Open the project in Godot.
 
-5. Hit F5 in Godot editor. Live2D and Control Panel scenes will start automatically.
+5. Hit F5 in Godot editor. Live2D and Control Panel scenes should start automatically.
 
 > The project can run without OBS and/or the backend, but nothing will actually happen. You can find a [mock backend server](backend/README.md) in the `backend` folder.
 
@@ -35,7 +35,7 @@ Melba can sing! Song support is outlined in a [separate document](assets/songs/R
 
 ### Note for Mac/Linux users
 
-This project uses already built DLLs for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the libraries](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put them in `addons\gd_cubism\bin` folder.
+This project uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build them first](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put them in `addons/gd_cubism/bin` folder.
 
 ## License
 
