@@ -43,7 +43,7 @@ static var positions := {
 
 	"default": {
 		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
-		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
 	},
 
 	"gaming": {
@@ -53,12 +53,12 @@ static var positions := {
 
 	"close": {
 		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
-		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
 	},
 
 	"full": {
 		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
-		"lower_third": [ Vector2(34, 722), Vector2(1, 1) ],
+		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
 	}
 }
 

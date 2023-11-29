@@ -20,7 +20,7 @@ func _ready() -> void:
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_speech.connect(_on_start_speech)
-	Globals.start_singing.connect(_on_start_singing)
+	Globals.start_singing.connect(_on_start_singing.unbind(2))
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.speech_done.connect(_on_speech_done)
 
