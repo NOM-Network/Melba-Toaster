@@ -1,8 +1,8 @@
-# Melba Toaster
+# Toaster
 
-This is the presentation part of NOM Network's VTuber **[Melba Toast](https://www.twitch.tv/melbathetoast/)**.
+This is the presentation part of NOM Network's AI VTuber **[Melba Toast](https://www.twitch.tv/melbathetoast/)**.
 
-Written using [Godot](https://godotengine.org/) and GDScript, this program allows the Melba Toast model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel.
+Written using [Godot](https://godotengine.org/) and GDScript, this program allows Melba Toast's model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel, which can be used to drive the model, OBS Studio and moderate incoming speech.
 
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 
