@@ -271,7 +271,7 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	var fade_in_time: float = 0.0 if seek_time else song.wait_time
 
 	if song.subtitles:
-		current_subtitles = song.subtitles.duplicate()
+		current_subtitles = Globals.config.load_subtitles_file(song.id)
 		lower_third.set_prompt("{artist} - \"{name}\"".format(song), fade_in_time)
 		# Subtitles are handled in the _process loop
 	else:
