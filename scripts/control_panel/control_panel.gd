@@ -160,9 +160,11 @@ func _generate_singing_controls() -> void:
 	var menu := %SingingMenu
 	menu.clear()
 
-	var songs = Globals.config.songs
+	var songs := Globals.config.songs
+	var i := 0
 	for song in songs:
-		menu.add_item(song.name)
+		menu.add_item("%s - %s" % [i, song.name])
+		i += 1
 
 func _generate_model_controls() -> void:
 	for type in ["animations", "pinnable_assets", "expressions", "toggles"]:

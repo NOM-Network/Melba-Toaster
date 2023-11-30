@@ -4,7 +4,7 @@ class_name ToasterConfig
 var config: ConfigFile
 var songs: Array[Dictionary]
 
-var song_path = 'res://assets/songs/%s/'
+var song_folder_path = 'res://assets/songs/%s/'
 
 func _init(debug_mode: bool) -> void:
 	config = _load_config_file("res://config/prod.cfg")
@@ -18,7 +18,7 @@ func _init(debug_mode: bool) -> void:
 		var song := {}
 		for key in list.get_section_keys(section):
 			song[key] = list.get_value(section, key)
-			song["path"] = song_path % list.get_value(section, "id") + '%s.mp3'
+			song["path"] = song_folder_path % list.get_value(section, "id") + '%s.mp3'
 
 		if not ResourceLoader.exists(song.path % "song") \
 			or not ResourceLoader.exists(song.path % "voice"):
@@ -28,14 +28,12 @@ func _init(debug_mode: bool) -> void:
 		if song.has("test") and not debug_mode:
 			continue
 
-		if song.subtitles:
-			song.subtitles = _load_subtitles_file(song_path % song.id)
-
 		songs.push_back(song)
 
 	print("Songs loaded: ", songs.size())
 
-func _load_subtitles_file(path: String) -> Variant:
+func load_subtitles_file(id: String) -> Variant:
+	var path = song_folder_path % id
 	if not FileAccess.file_exists(path + "subtitles.txt"):
 		printerr("No subtitles found in %s" % path)
 		return null

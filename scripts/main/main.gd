@@ -50,7 +50,7 @@ func _process(_delta: float) -> void:
 
 		if Globals.show_beats:
 			$BeatsCounter.text = \
-				"TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %d, BEAT: %d / 4" \
+				"TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %.1f, BEAT: %d / 4" \
 				% audio_manager.beats_counter_data()
 
 		$BeatsCounter.visible = Globals.show_beats
@@ -112,7 +112,7 @@ func _match_command(line: String) -> void:
 			lower_third.set_subtitles_fast("")
 
 		["&START", var bpm]:
-			Globals.start_dancing_motion.emit(bpm as int)
+			Globals.start_dancing_motion.emit(bpm as float)
 
 		["&STOP"]:
 			Globals.end_dancing_motion.emit()
