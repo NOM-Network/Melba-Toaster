@@ -694,10 +694,10 @@ centered = false
 [node name="LowerThird" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 34.0
-offset_top = 717.0
-offset_right = 1884.0
-offset_bottom = 1064.0
+offset_left = 35.0
+offset_top = 690.0
+offset_right = 1885.0
+offset_bottom = 1037.0
 script = ExtResource("6_buuj2")
 
 [node name="Prompt" type="Label" parent="LowerThird"]
@@ -705,9 +705,9 @@ clip_contents = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 13.0
+offset_top = 5.0
 offset_right = -494.0
-offset_bottom = 131.0
+offset_bottom = 123.0
 grow_horizontal = 2
 text = "cjmaxik: тест тест test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string"
 label_settings = SubResource("LabelSettings_8wgd5")
