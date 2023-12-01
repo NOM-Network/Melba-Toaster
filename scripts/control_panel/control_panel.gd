@@ -87,7 +87,7 @@ func _update_control_status() -> void:
 
 	if last_animation != Globals.last_animation:
 		last_animation = Globals.last_animation
-		update_animation_buttons(Globals.last_animation)
+		_update_animation_buttons(Globals.last_animation)
 
 func _start_obs_processing() -> void:
 	obs.establish_connection()
@@ -117,6 +117,8 @@ func _stop_obs_processing() -> void:
 
 func _connect_signals() -> void:
 	Globals.set_toggle.connect(_on_set_toggle)
+	Globals.pin_asset.connect(_on_pin_asset)
+
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.start_speech.connect(_on_start_speech)
 
@@ -318,15 +320,23 @@ func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Prompt.text = prompt
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
 	%CurrentSpeech/Text.text = text
+
 func _on_start_speech() -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 
 func _on_set_toggle(toggle_name: String, enabled: bool) -> void:
 	var ui_name := "Toggles_%s" % toggle_name.to_pascal_case()
-	var toggle: CheckButton = %Toggles.get_node(ui_name)
-	assert(toggle is CheckButton, "CheckButton `%s` was not found, returned %s" % [ui_name, toggle])
+	_change_checkbutton_state(%Toggles, ui_name, enabled)
 
-	toggle.set_pressed_no_signal(enabled)
+func _on_pin_asset(asset_name: String, enabled: bool) -> void:
+	var ui_name := "PinnableAssets_%s" % asset_name.to_pascal_case()
+	_change_checkbutton_state(%PinnableAssets, ui_name, enabled)
+
+func _change_checkbutton_state(node: Node, ui_name: String, enabled: bool) -> void:
+	var asset: CheckButton = node.get_node(ui_name)
+	assert(asset is CheckButton, "CheckButton `%s` was not found, returned %s" % [ui_name, asset])
+
+	asset.set_pressed_no_signal(enabled)
 
 func _on_obs_stream_control_pressed() -> void:
 	obs.send_command("ToggleStream")
@@ -356,20 +366,12 @@ func _on_scene_button_pressed(button: Button) -> void:
 
 func _on_change_position(new_position: String) -> void:
 	for p in %Positions.get_children():
-		if not p is Button:
-			return
+		if p is Button:
+			p.set_pressed_no_signal(p.text == new_position)
 
-		if p.text == new_position:
-			p.set_pressed_no_signal(true)
-		else:
-			p.set_pressed_no_signal(false)
-
-func update_animation_buttons(new_animation: String) -> void:
+func _update_animation_buttons(new_animation: String) -> void:
 	for p in %Animations.get_children():
-		if p.text == new_animation:
-			p.set_pressed_no_signal(true)
-		else:
-			p.set_pressed_no_signal(false)
+		p.set_pressed_no_signal(p.text == new_animation)
 
 func _generate_scene_buttons(data: Dictionary) -> void:
 	var active_scene: String

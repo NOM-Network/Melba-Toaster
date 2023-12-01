@@ -31,7 +31,7 @@ static func construct_model_control_buttons(
 	for control in controls:
 		var button = button_type.new()
 		button.text = control
-		button.name = "%s_%s" % [type.capitalize(), control.to_pascal_case()]
+		button.name = "%s_%s" % [type.to_pascal_case(), control.to_pascal_case()]
 		button.focus_mode = Control.FOCUS_NONE
 
 		if type in ["toggles", "pinnable_assets"]:
