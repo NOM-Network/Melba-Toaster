@@ -291,7 +291,8 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	# TODO: decouple
 	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
-	Globals.change_scene.emit("Song")
+	if not Globals.fixed_scene:
+		Globals.change_scene.emit("Song")
 
 	audio_manager.play_song(seek_time)
 
@@ -307,7 +308,9 @@ func _on_stop_singing() -> void:
 	Globals.end_singing_mouth_movement.emit()
 
 	lower_third.clear_subtitles()
-	Globals.change_scene.emit("Main")
+
+	if not Globals.fixed_scene:
+		Globals.change_scene.emit("Main")
 
 func _on_change_position(new_position: String) -> void:
 	assert(Globals.positions.has(new_position), "Position %s does not exist" % new_position)

@@ -59,6 +59,8 @@ func _apply_defaults() -> void:
 	%CurrentSpeech/Emotions.text = "Waiting for emotions..."
 	%CurrentSpeech/Text.text = "Waiting for text..."
 
+	%FixedScene.button_pressed = Globals.fixed_scene
+
 func _update_control_status() -> void:
 	if last_pause_status != Globals.is_paused:
 		last_pause_status = Globals.is_paused
@@ -362,6 +364,7 @@ func _on_change_scene(scene_name: String) -> void:
 		Globals.change_position.emit(next_position)
 
 func _on_scene_button_pressed(button: Button) -> void:
+	CpHelpers.apply_color_override(button, true, Color.YELLOW)
 	Globals.change_scene.emit(button.text)
 
 func _on_change_position(new_position: String) -> void:
@@ -385,9 +388,11 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 	for scene in scenes:
 		var button = Button.new()
 		button.text = scene.sceneName
+		button.toggle_mode = true
 		button.name = Templates.scene_node_name % scene.sceneName.to_pascal_case()
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
+		button.button_pressed = scene.sceneName == active_scene
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
@@ -395,6 +400,7 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 func _change_active_scene(data: Dictionary) -> void:
 	for button in %ObsScenes.get_children():
 		var scene_name = Templates.scene_node_name % data.sceneName.to_pascal_case()
+		button.button_pressed = button.text == data.sceneName
 		CpHelpers.apply_color_override(button, button.name == scene_name, Color.GREEN)
 
 func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
@@ -408,6 +414,7 @@ func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
 		button.button_pressed = filter.filterEnabled
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
+		button.button_pressed = filter.filterEnabled
 		CpHelpers.apply_color_override(button, filter.filterEnabled, Color.GREEN, Color.RED)
 		button.toggled.connect(_on_filter_button_toggled.bind(button))
 		%ObsFilters.add_child(button)
@@ -439,6 +446,7 @@ func _generate_input_button(data: Dictionary) -> void:
 	var button = Button.new()
 	button.name = data.inputName.to_pascal_case()
 	button.text = data.inputName
+	button.toggle_mode = true
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(_on_input_button_pressed.bind(button))
@@ -456,6 +464,7 @@ func _change_input_state(data: Dictionary) -> void:
 	var button = %ObsInputs.get_node(data.inputName.to_pascal_case())
 
 	if button:
+		button.button_pressed = data.inputMuted
 		CpHelpers.apply_color_override(button, data.inputMuted, Color.RED, Color.GREEN)
 
 func _on_input_button_pressed(button: Button) -> void:
@@ -526,6 +535,9 @@ func _on_reset_subtitles_pressed() -> void:
 
 func _on_show_beats_toggled(toggled_on: bool) -> void:
 	Globals.show_beats = toggled_on
+
+func _on_fixed_scene_toggled(toggled_on: bool) -> void:
+	Globals.fixed_scene = toggled_on
 
 func _on_obs_client_status_pressed() -> void:
 	_stop_obs_processing()

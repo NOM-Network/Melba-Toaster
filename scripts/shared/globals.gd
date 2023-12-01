@@ -107,7 +107,9 @@ static var is_paused := true
 static var is_speaking := false
 static var is_singing := false
 static var dancing_bpm := 0.0
+
 static var show_beats := debug_mode
+static var fixed_scene := false
 
 static var time_before_cleanout := 5.0
 static var time_before_speech := 3.0

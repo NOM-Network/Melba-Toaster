@@ -587,6 +587,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Test"
 
+[node name="FixedScene" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+text = "Don't change automatically"
+
 [node name="InputsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 10
@@ -780,6 +787,7 @@ autostart = true
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/ShowBeats" to="." method="_on_show_beats_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/ObsClientStatus" to="." method="_on_obs_client_status_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/BackendStatus" to="." method="_on_backend_status_pressed"]
+[connection signal="toggled" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/FixedScene" to="." method="_on_fixed_scene_toggled"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="Timers/GodotStatsTimer" to="." method="_on_godot_stats_timer_timeout"]
 [connection signal="timeout" from="Timers/ObsStatsTimer" to="." method="_on_obs_stats_timer_timeout"]
