@@ -6,17 +6,15 @@ extends Control
 @onready var timer := $ClearSubtitlesTimer
 
 # Defaults
-var prompt_font_size: int
-var subtitles_font_size: int
+@onready var default_font_size := {
+	"Prompt": prompt.label_settings.font_size,
+	"Subtitles": subtitles.label_settings.font_size,
+}
 
 # Tweens
 @onready var tweens := {}
 
 func _ready() -> void:
-	# Defaults
-	prompt_font_size = prompt.label_settings.font_size
-	subtitles_font_size = subtitles.label_settings.font_size
-
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_speech.connect(_on_start_speech)
@@ -66,8 +64,10 @@ func set_subtitles_fast(text: String) -> void:
 func clear_subtitles() -> void:
 	prompt.text = ""
 	subtitles.text = ""
-	prompt.label_settings.font_size = prompt_font_size
-	subtitles.label_settings.font_size = subtitles_font_size
+
+	prompt.label_settings.font_size = default_font_size["Prompt"]
+	subtitles.label_settings.font_size = default_font_size["Subtitles"]
+
 	prompt.visible_ratio = 1.0
 	subtitles.visible_ratio = 1.0
 
@@ -82,6 +82,7 @@ func start_clear_subtitles_timer() -> void:
 func _print(node: Label, text := "", duration := 0.0):
 	node.text = "%s" % text
 
+	node.label_settings.font_size = default_font_size[node.name]
 	while node.get_line_count() > node.get_visible_line_count():
 		node.label_settings.font_size -= 1
 
