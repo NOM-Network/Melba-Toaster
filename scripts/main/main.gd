@@ -102,6 +102,7 @@ func disconnect_backend() -> void:
 	await client.connection_closed
 
 func _on_connection_closed() -> void:
+	Globals.is_paused = true
 	control_panel.backend_disconnected()
 
 func _match_command(line: String) -> void:
