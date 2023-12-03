@@ -9,9 +9,16 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 **Control panel interface**
 ![Interface](readme_assets/interface.png)
 
-## How to use
+## Development
 
-1. Install the latest minor version of [Godot 4.2](https://godotengine.org/download/windows/) (we are currently using [4.2 RC 2](https://godotengine.org/article/release-candidate-godot-4-2-rc-2/#downloads)).
+1. Install the latest minor version of Godot 4.2:
+
+    - atandalone: <https://godotengine.org/download/windows/>
+    - via winget:
+
+    ```powershell
+    winget install GodotEngine.GodotEngine
+    ```
 
 2. Clone this repo via Git:
 
@@ -33,9 +40,27 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 Melba can sing! Song support is outlined in a [separate document](assets/songs/README.md).
 
+### Going live
+
+Due to issues with Live2D plugin (memory leaks in the editor), it is recommended to use the exported version of this project for livestreams.
+
+> If you want [songs](#song-support) to be in the live project, add them in `assets/songs` folder with proper before exporting.
+
+1. Open the project in Godot
+
+2. Navigate to `Project` -> `Export...` in the main menu
+
+3. In the `Export` window, hit `Export All...`, then `Release`. Close the editor.
+
+4. Navigate to `dist` folder
+
+5. Copy-paste the `config` folder from the project root, change `prod.cfg` config accordingly
+
+6. Launch `toaster.console.exe`
+
 ### Note for Mac/Linux users
 
-This project uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build them first](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put them in `addons/gd_cubism/bin` folder.
+This project is built for use on Windows and uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the extension first](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put the files in `addons/gd_cubism/bin` folder.
 
 ## License
 
