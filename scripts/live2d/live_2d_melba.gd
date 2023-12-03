@@ -24,13 +24,8 @@ func _ready() -> void:
 	connect_signals()
 	intialize_toggles()
 	initialize_pinnable_assets()
-
-	for child in $PinnableAssets.get_children():
-		child.modulate.a = 0
-
 	set_expression("end")
 	play_random_idle_animation()
-
 
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
@@ -54,6 +49,8 @@ func initialize_pinnable_assets() -> void:
 	for asset in Globals.pinnable_assets.values():
 		asset.node = $PinnableAssets.find_child(asset.node_name)
 
+		asset.node.modulate.a = 0
+
 		var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 		var ary_surface = ary_mesh.surface_get_arrays(0)
 
@@ -64,8 +61,8 @@ func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
 
-	for asset in assets_to_pin.values():
-		pin(asset)
+	for asset in assets_to_pin.keys():
+		pin(assets_to_pin[asset])
 
 func nudge_model() -> void:
 	play_random_idle_animation()
@@ -78,22 +75,25 @@ func nudge_model() -> void:
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
 
 func pin_asset(asset_name: String, enabled: bool) -> void:
-	var asset = Globals.pinnable_assets[asset_name]
+	var asset: PinnableAsset = Globals.pinnable_assets[asset_name]
 	asset.enabled = enabled
+
+	_tween_pinned_asset(asset, enabled)
+
+func _tween_pinned_asset(asset: PinnableAsset, enabled: bool) -> void:
+	var asset_name := asset.asset_name
 
 	if enabled:
 		assets_to_pin[asset_name] = asset
-		tween_pinned_asset(asset.node, false)
-	else:
-		assets_to_pin.erase(asset_name)
-		tween_pinned_asset(asset.node, true)
 
-func tween_pinned_asset(node, opaque: bool) -> void:
-	if tweens.has("pin"):
-		tweens.pin.kill()
+	if tweens.has(asset_name):
+		tweens[asset_name].kill()
 
-	tweens.pin = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens.pin.tween_property(node, "modulate:a", 0.0 if opaque else 1.0, 0.5)
+	tweens[asset_name] = create_tween().set_trans(Tween.TRANS_QUINT)
+	tweens[asset_name].tween_property(asset.node, "modulate:a", 1.0 if enabled else 0.0, 0.5)
+
+	if not enabled:
+		tweens[asset.asset_name].tween_callback(func (): assets_to_pin.erase(asset_name))
 
 func pin(asset: PinnableAsset) -> void:
 	var base_offset = cubism_model.size * -0.5
