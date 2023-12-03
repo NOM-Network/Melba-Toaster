@@ -124,7 +124,7 @@ func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.start_speech.connect(_on_start_speech)
 
-	Globals.start_singing.connect(_on_start_singing)
+	Globals.start_singing.connect(_on_start_singing.unbind(2))
 
 	Globals.change_position.connect(_on_change_position)
 	Globals.change_scene.connect(_on_change_scene)
@@ -165,9 +165,9 @@ func _generate_singing_controls() -> void:
 	menu.clear()
 
 	var songs := Globals.config.songs
-	var i := 0
+	var i := 1
 	for song in songs:
-		menu.add_item("%s - %s" % [i, song.name])
+		menu.add_item("%s - %s" % [i, song.song_name])
 		i += 1
 
 func _generate_model_controls() -> void:
@@ -293,11 +293,11 @@ func _on_obs_stats_timer_timeout() -> void:
 func _on_godot_stats_timer_timeout() -> void:
 	CpHelpers.insert_data(%GodotStats, Templates.format_godot_stats())
 
-func _on_start_singing(_song, _seek_time) -> void:
+func _on_start_singing() -> void:
 	Globals.is_paused = true
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
-	var song: Dictionary = Globals.config.songs[%SingingMenu.selected]
+	var song: Song = Globals.config.songs[%SingingMenu.selected]
 	var seek_time: float = %SingingSeekTime.value
 
 	if button_pressed:

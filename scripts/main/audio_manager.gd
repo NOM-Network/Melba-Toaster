@@ -44,17 +44,14 @@ func reset_speech_player() -> void:
 	speech_player.stream = null
 	speech_duration = 0.0
 
-func prepare_song(song: Dictionary) -> void:
+func prepare_song(song: Song) -> void:
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
 
-	var song_track := _load_mp3(song, "song")
-	song_player.stream = song_track
+	song_player.stream = song.load("song")
+	speech_player.stream = song.load("voice")
 
-	var voice_track := _load_mp3(song, "voice")
-	speech_player.stream = voice_track
-
-	song_duration = song_track.get_length()
+	song_duration = song_player.stream.get_length()
 
 func play_song(seek_time := 0.0) -> void:
 	Globals.is_singing = true
@@ -120,10 +117,5 @@ func finish_song() -> void:
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
 
-func _load_mp3(song: Dictionary, type: String) -> AudioStreamMP3:
-	var path: String = song.path % type
-
-	assert(ResourceLoader.exists(path), "No audio file %s" % path)
-	return ResourceLoader.load(path)
 
 # endregion

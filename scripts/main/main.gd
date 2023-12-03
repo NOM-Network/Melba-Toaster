@@ -19,7 +19,7 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var tweens := {}
 
 # Song-related
-var current_song: Dictionary
+var current_song: Song
 var current_subtitles: Array
 var song_playback: AudioStreamPlayback
 
@@ -261,7 +261,7 @@ func get_ready_for_next_speech() -> void:
 	if not Globals.is_paused:
 		Globals.ready_for_speech.emit()
 
-func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
+func _on_start_singing(song: Song, seek_time := 0.0) -> void:
 	current_song = song
 
 	Globals.is_paused = true
@@ -272,12 +272,12 @@ func _on_start_singing(song: Dictionary, seek_time := 0.0) -> void:
 	var fade_in_time: float = 0.0 if seek_time else song.wait_time
 
 	if song.subtitles:
-		current_subtitles = Globals.config.load_subtitles_file(song.id)
-		lower_third.set_prompt("{artist} - \"{name}\"".format(song), fade_in_time)
+		current_subtitles = song.load_subtitles_file()
+		lower_third.set_prompt(song.full_name % " - ", fade_in_time)
 		# Subtitles are handled in the _process loop
 	else:
 		lower_third.set_prompt(" ")
-		lower_third.set_subtitles("{artist}\n\"{name}\"".format(song), fade_in_time)
+		lower_third.set_subtitles(song.full_name % "\n", fade_in_time)
 
 	audio_manager.prepare_song(current_song)
 
@@ -300,7 +300,7 @@ func _on_stop_singing() -> void:
 	mic.animation = "out"
 	mic.play()
 
-	current_song = {}
+	current_song = null
 	current_subtitles = []
 	$BeatsCounter.visible = false
 

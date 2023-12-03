@@ -2,57 +2,28 @@ extends Node
 class_name ToasterConfig
 
 var config: ConfigFile
-var songs: Array[Dictionary]
-
-var song_folder_path = 'res://assets/songs/%s/'
+var songs: Array[Song]
 
 func _init(debug_mode: bool) -> void:
 	config = _load_config_file("res://config/prod.cfg")
+	assert(config is ConfigFile, "No config present!")
 
 	var list = _load_config_file("res://assets/songs/songs.cfg")
 	if not list:
-		print("Songs loaded: ", songs.size())
+		print("No songs were loaded")
 		return
 
 	for section in list.get_sections():
 		var song := {}
 		for key in list.get_section_keys(section):
 			song[key] = list.get_value(section, key)
-			song["path"] = song_folder_path % list.get_value(section, "id") + '%s.mp3'
-
-		if not ResourceLoader.exists(song.path % "song") \
-			or not ResourceLoader.exists(song.path % "voice"):
-			printerr("No song files found for %s" % song.id)
-			continue
 
 		if song.has("test") and not debug_mode:
 			continue
 
-		songs.push_back(song)
+		songs.push_back(Song.new(song))
 
 	print("Songs loaded: ", songs.size())
-
-func load_subtitles_file(id: String) -> Variant:
-	var path = song_folder_path % id
-	if not FileAccess.file_exists(path + "subtitles.txt"):
-		printerr("No subtitles found in %s" % path)
-		return null
-
-	var file := FileAccess.open(path + "subtitles.txt", FileAccess.READ)
-	var subtitles := []
-	while not file.eof_reached():
-		var file_line := file.get_line()
-		var line := file_line.split("\t")
-
-		if line[0] == "":
-			continue
-
-		subtitles.push_back([
-			line[0] as float,
-			line[2]
-		])
-
-	return subtitles
 
 func _load_config_file(filename: String) -> Variant:
 	var file := ConfigFile.new()

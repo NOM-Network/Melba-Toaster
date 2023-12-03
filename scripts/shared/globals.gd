@@ -7,7 +7,7 @@ signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
 signal pin_asset(asset_name: String, enabled: bool)
 
-signal start_singing(song: Dictionary, seek_time: float)
+signal start_singing(song: Song, seek_time: float)
 signal stop_singing()
 
 signal start_dancing_motion(bpm: float)
