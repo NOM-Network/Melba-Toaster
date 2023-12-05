@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
-[ext_resource type="Texture2D" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
+[ext_resource type="Texture2D" uid="uid://c8pi35r1kmq8m" path="res://assets/live2d/melba_model.tres" id="2_fnydb"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="6_sqvm7"]
@@ -61,15 +61,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -4.7969
-ParamAngleY = 6.54815
-ParamAngleZ = 8.55547
-ParamBodyAngleX = -1.21009
-ParamBodyAngleY = 0.511341
-ParamBodyAngleZ = -9.62959e-05
-Param3 = -1.17917
+ParamAngleX = -2.41539
+ParamAngleY = -0.999257
+ParamAngleZ = 8.58426
+ParamBodyAngleX = 1.51675
+ParamBodyAngleY = 0.535976
+ParamBodyAngleZ = -0.000289018
+Param3 = 0.0
 Param4 = 0.0
-Param5 = 7.51934
+Param5 = 7.56904
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -78,13 +78,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.115392
-Param7 = 0.0331298
-Param8 = -0.0132612
-Param10 = 0.525125
-Param11 = 0.0015216
-Param15 = 0.0
-Param16 = 0.89246
+Param6 = 0.120266
+Param7 = -0.0525518
+Param8 = 0.0345767
+Param10 = 0.448849
+Param11 = 0.00136835
+Param15 = 4.0054
+Param16 = 0.935447
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -93,8 +93,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.000437055
-Param26 = 0.000437055
+Param24 = 0.00131541
+Param26 = 0.00131541
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -106,16 +106,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.000516087
+ParamBreath = 0.286269
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
 Param = 2.38419e-07
 Param2 = 0.0
-Param12 = 6.61859e-05
-Param13 = -0.000135253
-Param23 = -0.000212517
-Param22 = 4.85689e-06
+Param12 = -0.00110651
+Param13 = 0.000440379
+Param23 = 0.000335263
+Param22 = -3.33786e-06
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0

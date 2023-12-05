@@ -3,7 +3,8 @@ extends Node2D
 @export_category("Cubism Model")
 @export var cubism_model: GDCubismUserModel
 
-#region EFFECTS
+#region EFFECTS FOR OVERRIDE 
+# re activate these nodes on function reset_overrides
 @onready var eye_blink = %EyeBlink
 #endregion
 
@@ -22,6 +23,7 @@ var assets_to_pin := {}
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
+	initialize_animations() 
 	intialize_toggles()
 	initialize_pinnable_assets()
 	set_expression("end")
@@ -35,6 +37,11 @@ func connect_signals() -> void:
 	Globals.pin_asset.connect(pin_asset)
 
 	anim_timer.timeout.connect(_on_animation_finished)
+
+func initialize_animations() -> void: 
+	for anim in Globals.animations.values():
+		if anim.override_name != "": 
+			anim.override = cubism_model.get_node(anim.override_name)
 
 func intialize_toggles() -> void:
 	var parameters = cubism_model.get_parameters()
@@ -143,10 +150,10 @@ func play_animation(anim_name: String) -> void:
 
 			anim_timer.wait_time = Globals.animations[anim_name]["duration"]
 			anim_timer.start()
-			var anim_id = Globals.animations[anim_name]["id"]
-			var override = Globals.animations[anim_name]["override"]
-			if override == "eye_blink":
-				eye_blink.active = false
+			var anim_id = Globals.animations[anim_name].id
+			var override = Globals.animations[anim_name].override
+			if override:
+				override.active = false
 			cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)
 
 func set_expression(expression_name: String) -> void:
@@ -182,8 +189,8 @@ func play_random_idle_animation() -> void:
 		random_int = randi_range(1, 10)
 
 	if random_int <= 3: # 30% chance, 0 % when idle2 was last_animation
-		play_animation("idle1")
-	elif random_int <= 6: # 30% chance, ~43% when idle2 was last_animation
 		play_animation("idle2")
+	elif random_int <= 6: # 30% chance, ~43% when idle2 was last_animation
+		play_animation("idle1")
 	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation
 		play_animation("idle3")

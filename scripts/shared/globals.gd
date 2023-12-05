@@ -81,12 +81,11 @@ static var toggles := {
 }
 
 static var animations := {
-	"end": {"id": -1, "override": "none"},
-	"idle1": {"id": 0, "override": "none", "duration": 7}, # Original: 8.067
-	"idle2": {"id": 1, "override": "none", "duration": 4}, # Original: 4.267
-	"idle3": {"id": 2, "override": "none", "duration": 5}, # Original: 5.367
-	"sleep": {"id": 3, "override": "eye_blink", "duration": 10.3}, # Original: 10.3
-	"confused": {"id": 4, "override": "eye_blink", "duration": 4.0} # Original: 10
+	"idle1": Live2DAnimation.new(0, 7), # Original: 8.067
+	"idle2": Live2DAnimation.new(1, 4), # Original: 4.267
+	"idle3": Live2DAnimation.new(2, 5), # Original: 5.367
+	"sleep": Live2DAnimation.new(3, 10.3, "EyeBlink"), # Original: 10.3
+	"confused": Live2DAnimation.new(4, 4.0, "EyeBlink")  # Original: 10
 }
 static var last_animation := ""
 
