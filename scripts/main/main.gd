@@ -271,13 +271,9 @@ func _on_start_singing(song: Song, seek_time := 0.0) -> void:
 
 	var fade_in_time: float = 0.0 if seek_time else song.wait_time
 
-	if song.subtitles:
-		current_subtitles = song.load_subtitles_file()
-		lower_third.set_prompt(song.full_name % " - ", fade_in_time)
-		# Subtitles are handled in the _process loop
-	else:
-		lower_third.set_prompt(" ")
-		lower_third.set_subtitles(song.full_name % "\n", fade_in_time)
+	current_subtitles = song.load_subtitles_file()
+	lower_third.set_prompt(song.full_name % " - ", fade_in_time)
+	# Subtitles are handled in the _process loop
 
 	audio_manager.prepare_song(current_song)
 

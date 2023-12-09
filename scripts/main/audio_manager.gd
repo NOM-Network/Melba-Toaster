@@ -54,6 +54,7 @@ func prepare_song(song: Song) -> void:
 	song_duration = song_player.stream.get_length()
 
 func play_song(seek_time := 0.0) -> void:
+	Globals.reset_subtitles.emit()
 	Globals.is_singing = true
 	song_player.play(seek_time)
 	speech_player.play(seek_time)
