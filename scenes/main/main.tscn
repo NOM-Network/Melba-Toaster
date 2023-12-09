@@ -695,9 +695,9 @@ centered = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 35.0
-offset_top = 690.0
+offset_top = 682.0
 offset_right = 1885.0
-offset_bottom = 1037.0
+offset_bottom = 1029.0
 script = ExtResource("6_buuj2")
 
 [node name="Prompt" type="Label" parent="LowerThird"]
@@ -706,7 +706,7 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 5.0
-offset_right = -494.0
+offset_right = -511.0
 offset_bottom = 123.0
 grow_horizontal = 2
 text = "cjmaxik: тест тест test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string"
@@ -743,14 +743,13 @@ libraries = {
 }
 
 [node name="BeatsCounter" type="Label" parent="."]
-visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 36.0
-offset_top = 743.0
-offset_right = 1077.0
-offset_bottom = 798.0
+offset_left = 33.0
+offset_top = 642.0
+offset_right = 1074.0
+offset_bottom = 697.0
 grow_vertical = 0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

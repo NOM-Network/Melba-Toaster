@@ -33,32 +33,36 @@ signal update_backend_stats(data: Array)
 # region SCENE DATA
 
 static var default_position := "default"
+static var default_model_position := [ Vector2(737, 1124), Vector2(1, 1) ]
+static var default_lower_third_position := [ Vector2(35, 682), Vector2(1, 1) ]
+
 static var positions := {
 	# use Tulpes - [ position, scale ]
 	"intro": {}, # placeholder for intro animation
 
 	"intro_start": {
 		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
+		"lower_third": default_lower_third_position,
 	},
 
 	"default": {
-		"model": [ Vector2(737, 1124), Vector2(1, 1) ],
-		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
+		"model": default_model_position,
+		"lower_third": default_lower_third_position,
 	},
 
 	"gaming": {
 		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
-		"lower_third": [ Vector2(40, 810), Vector2(0.777, 0.777) ],
+		"lower_third": [ Vector2(35, 800), Vector2(0.777, 0.777) ],
 	},
 
 	"close": {
 		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
-		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
+		"lower_third": default_lower_third_position,
 	},
 
 	"full": {
 		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
-		"lower_third": [ Vector2(34, 717), Vector2(1, 1) ],
+		"lower_third": default_lower_third_position,
 	}
 }
 
