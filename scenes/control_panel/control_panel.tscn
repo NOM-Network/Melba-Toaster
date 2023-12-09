@@ -474,7 +474,10 @@ layout_mode = 2
 text = "Singing"
 horizontal_alignment = 1
 
-[node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing"]
+layout_mode = 2
+
+[node name="SingingMenu" type="OptionButton" parent="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -484,6 +487,11 @@ item_count = 1
 selected = 0
 popup/item_0/text = "money machine"
 popup/item_0/id = 0
+
+[node name="ReloadSongList" type="Button" parent="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer2"]
+layout_mode = 2
+tooltip_text = "Reloads the list of songs"
+text = "R"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing"]
 layout_mode = 2
@@ -768,6 +776,14 @@ text = "Do you really want to close the Toaster?
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="ReloadSongListWarning" type="AcceptDialog" parent="."]
+title = "Duh!"
+initial_position = 2
+size = Vector2i(350, 100)
+ok_button_text = "Gotcha!"
+dialog_text = "Set Pause or stop singing to update the list!"
+dialog_autowrap = true
+
 [node name="Timers" type="Node" parent="."]
 
 [node name="GodotStatsTimer" type="Timer" parent="Timers"]
@@ -783,6 +799,7 @@ autostart = true
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeSpeech" to="." method="_on_time_before_speech_value_changed"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/ResetSubtitles" to="." method="_on_reset_subtitles_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel/MarginContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
+[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer2/ReloadSongList" to="." method="_on_reload_song_list_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/SingingToggle" to="." method="_on_singing_toggle_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/ShowBeats" to="." method="_on_show_beats_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/ObsClientStatus" to="." method="_on_obs_client_status_pressed"]

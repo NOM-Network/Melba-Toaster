@@ -6,29 +6,27 @@ Melba can sing! This document outlines how the song support works.
 
 ## Specification
 
-Each song lives in its own folder, the name of the folder is its ID. Song consists of 3 files:
+All the songs live in the `songs/` folder.
+Each song lives in its own folder, the name of the folder is its ID. Song consists of 4 files, all the files are required:
 
+- `config.cfg` - config file for the song
 - `song.mp3` - fully mixed song (or just instrumental)
 - `voice.mp3` - only Melba's voice (for the mouth movement)
 - `subtitles.txt` - subtitles and actions for the song
 
 `song` and `voice` files must be identical in duration.
 
-> You have to open the project in Godot at least once in order to import the song assets.
-
 ## Config file
 
-`songs.cfg` contains the metadata for each song presented in the folder.
+`song.cfg` contains the metadata for the song.
 
 ```ini
-[0] ; unique song position in the menu
 id="i_cant_fix_you" ; unique song ID, the same as the folder name
 artist="The Living Tombstone" ; song artist
 name="I Can't Fix You" ; song name
 wait_time=13.83 ; time for the song name fading in on the screen
 mute_voice=1 ; mute the voice track (if you have `song.mp3` fully mixed)
 reverb=0 ; enabled reverb on the voice track
-subtitles=1 ; is subtitles available
 ```
 
 ## Subtitles
