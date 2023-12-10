@@ -23,7 +23,7 @@ func _init(
 	self.mute_voice = p_data.mute_voice
 	self.reverb = p_data.reverb
 
-	self.full_name = "%s%s%s" % [p_data.artist, "%s", p_data.name]
+	self.full_name = "%s - %s" % [p_data.artist, p_data.name]
 	if p_data.has("feat"):
 		self.full_name += " %s" % p_data.feat
 
