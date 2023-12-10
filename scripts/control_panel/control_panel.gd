@@ -539,6 +539,14 @@ func _on_show_beats_toggled(toggled_on: bool) -> void:
 func _on_fixed_scene_toggled(toggled_on: bool) -> void:
 	Globals.fixed_scene = toggled_on
 
+func _on_reload_song_list_pressed() -> void:
+	if not Globals.is_paused or Globals.is_singing:
+		$ReloadSongListWarning.show()
+		return
+
+	Globals.config.init_songs(Globals.debug_mode)
+	_generate_singing_controls()
+
 func _on_obs_client_status_pressed() -> void:
 	_stop_obs_processing()
 	await get_tree().create_timer(1.0).timeout
@@ -553,9 +561,10 @@ func _on_backend_status_pressed() -> void:
 	main.connect_backend()
 
 func _on_close_requested() -> void:
-	$CloseConfirm.visible = true
+	$CloseConfirm.show()
 
 func _on_close_confirm_confirmed() -> void:
 	_stop_obs_processing()
 	main.disconnect_backend()
 	get_tree().quit()
+

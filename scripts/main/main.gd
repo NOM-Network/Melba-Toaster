@@ -262,22 +262,15 @@ func get_ready_for_next_speech() -> void:
 		Globals.ready_for_speech.emit()
 
 func _on_start_singing(song: Song, seek_time := 0.0) -> void:
-	current_song = song
-
+	_reset_toggles()
 	Globals.is_paused = true
 
 	mic.animation = "in"
 	mic.play()
 
-	var fade_in_time: float = 0.0 if seek_time else song.wait_time
-
-	if song.subtitles:
-		current_subtitles = song.load_subtitles_file()
-		lower_third.set_prompt(song.full_name % " - ", fade_in_time)
-		# Subtitles are handled in the _process loop
-	else:
-		lower_third.set_prompt(" ")
-		lower_third.set_subtitles(song.full_name % "\n", fade_in_time)
+	current_song = song
+	current_subtitles = song.load_subtitles_file()
+	lower_third.set_prompt(song.full_name, 0.0 if seek_time else song.wait_time)
 
 	audio_manager.prepare_song(current_song)
 
@@ -334,3 +327,8 @@ func _on_change_position(new_position: String) -> void:
 				tweens[p].set_parallel()
 				tweens[p].tween_property(node, "position", positions[p][0], 1)
 				tweens[p].tween_property(node, "scale", positions[p][1], 1)
+
+
+func _reset_toggles() -> void:
+	for toggle in Globals.toggles:
+		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].enabled)

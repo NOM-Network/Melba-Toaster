@@ -35,6 +35,7 @@ func _on_start_speech() -> void:
 	timer.stop()
 
 func _on_start_singing() -> void:
+	clear_subtitles()
 	timer.stop()
 
 func _on_cancel_speech() -> void:
@@ -80,7 +81,7 @@ func start_clear_subtitles_timer() -> void:
 	timer.start()
 
 func _print(node: Label, text := "", duration := 0.0):
-	node.text = "%s" % text
+	node.text = ("%s" % text).strip_edges()
 
 	node.label_settings.font_size = default_font_size[node.name]
 	while node.get_line_count() > node.get_visible_line_count():

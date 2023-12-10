@@ -38,7 +38,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 ### Song support
 
-Melba can sing! Song support is outlined in a [separate document](assets/songs/README.md).
+Melba can sing! Song support is outlined in a [separate document](dist/songs/README.md).
 
 ### Going live
 
