@@ -737,6 +737,8 @@ visible_characters_behavior = 1
 [node name="ClearSubtitlesTimer" type="Timer" parent="LowerThird"]
 wait_time = 5.0
 
+[node name="PrintTimer" type="Timer" parent="LowerThird"]
+
 [node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
 reset_on_save = false
 libraries = {
