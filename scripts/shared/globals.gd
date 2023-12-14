@@ -33,6 +33,7 @@ signal update_backend_stats(data: Array)
 # region SCENE DATA
 
 static var default_position := "default"
+static var last_position := "default"
 static var default_model_position := [ Vector2(737, 1124), Vector2(1, 1) ]
 static var default_lower_third_position := [ Vector2(35, 682), Vector2(1, 1) ]
 
@@ -123,6 +124,11 @@ static var time_before_speech := 3.0
 func _ready() -> void:
 	for s in get_signal_list():
 		self.connect(s.name, _debug_event.bind(s.name))
+
+	self.change_position.connect(_on_change_position)
+
+func _on_change_position(position: String):
+	self.last_position = position
 
 func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> void:
 	if not debug_mode:

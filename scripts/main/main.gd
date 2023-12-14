@@ -145,21 +145,27 @@ func _input(event: InputEvent) -> void:
 		if event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_UP:
-					_mouse_to_prop("scale", Globals.scale_change)
+					_mouse_to_scale(Globals.scale_change)
 
 				MOUSE_BUTTON_WHEEL_DOWN:
-					_mouse_to_prop("scale", -Globals.scale_change)
+					_mouse_to_scale(-Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
-					_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-					_mouse_to_prop("position", Globals.positions.default.model[0], true)
+					Globals.change_position.emit(Globals.last_position)
 		else:
 			match event.button_index:
 				MOUSE_BUTTON_RIGHT:
 					_move_eyes(event, false)
 
-func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	model[prop] = change if absolute else model[prop] + change
+func _mouse_to_scale(change: Vector2) -> void:
+	if tweens.has("model_scale"):
+		tweens.model_scale.kill()
+
+	tweens.model_scale = create_tween()
+	tweens.model_scale.tween_property(model, "scale", model.scale + change, 0.05)
+
+func _mouse_to_prop(prop: String, change: Vector2) -> void:
+	model[prop] += change
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	if is_pressed:
