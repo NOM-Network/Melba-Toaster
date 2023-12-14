@@ -729,6 +729,7 @@ grow_vertical = 0
 text = "тесттестwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww                "
 label_settings = SubResource("LabelSettings_rpyvj")
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 3
 text_overrun_behavior = 4
 visible_characters_behavior = 1
