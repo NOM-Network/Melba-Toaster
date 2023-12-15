@@ -354,10 +354,10 @@ func _on_change_scene(scene_name: String) -> void:
 	if not next_position:
 		match scene_name:
 			"Main", "Song":
-				next_position = "default"
+				next_position = "Default"
 
 			"Gaming":
-				next_position = "gaming"
+				next_position = "Gaming"
 
 	%NextPositionMenu.selected = 0
 	if next_position:

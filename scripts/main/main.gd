@@ -241,11 +241,11 @@ func _on_timer_before_speech_timeout() -> void:
 
 func _speak() -> void:
 	Globals.play_animation.emit("random")
-	Globals.start_speech.emit()
 
 	lower_third.set_prompt(pending_speech.prompt, 1.0)
 	lower_third.set_subtitles(pending_speech.response, audio_manager.speech_duration)
 
+	Globals.start_speech.emit()
 	pending_speech = {}
 
 func _on_cancel_speech() -> void:
@@ -320,7 +320,7 @@ func _on_change_position(new_position: String) -> void:
 			assert(model_parent_animation.has_animation("intro"))
 
 			model_parent_animation.play("intro")
-			model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
+			model_parent_animation.animation_finished.emit(_on_change_position.bind("Default"))
 
 		_:
 			for p in positions:
