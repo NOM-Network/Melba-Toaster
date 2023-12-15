@@ -32,7 +32,6 @@ func _ready() -> void:
 
 	Globals.reset_subtitles.emit()
 
-
 func _process(delta: float) -> void:
 	if not print_timer.is_stopped():
 		var current_time: float = current_duration - print_timer.time_left
@@ -80,6 +79,7 @@ func _on_clear_subtitles_timer_timeout() -> void:
 # region PUBLIC FUNCTIONS
 
 func set_prompt(text: String, duration := 0.0) -> void:
+	prompt.text = ""
 	text = text.strip_edges()
 	if not text:
 		return
@@ -99,7 +99,7 @@ func set_subtitles(text: String, duration := 0.0) -> void:
 	if not text:
 		return
 
-	var time_per_symbol = duration / text.length()
+	var time_per_symbol = (duration - 0.5) / text.length()
 
 	current_duration = duration
 	current_subtitle_text = []
@@ -109,6 +109,7 @@ func set_subtitles(text: String, duration := 0.0) -> void:
 	for i in tokenized_text.size():
 		time += time_per_symbol * tokenized_text[i].length()
 		current_subtitle_text.push_back([time, tokenized_text[i] + " "])
+
 		if i != tokenized_text.size():
 			time += time_per_symbol
 			current_subtitle_text.push_back([time, ""])
