@@ -46,12 +46,13 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if Globals.is_singing and current_song:
-		var pos = audio_manager.get_pos()
+		var full_position: Array[float] = audio_manager.get_position()
+		var pos: float = full_position[0]
 
 		if Globals.show_beats:
 			$BeatsCounter.text = \
-				"TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %.1f, BEAT: %d / 4" \
-				% audio_manager.beats_counter_data()
+				"TIME: %d:%02d (%6.2f) [%.4f] / %d:%02d (%.2f), BPM: %.1f, BEAT: %d / 4" \
+				% audio_manager.beats_counter_data(full_position)
 
 		$BeatsCounter.visible = Globals.show_beats
 

@@ -17,12 +17,13 @@ static var godot_stats_template = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
 	+ "Frame Time: [b]{frameTime} s[/b]\n" \
 	+ "Video Memory Used: [b]{videoMemoryUsed} MB[/b]\n" \
-	+ "Audio Latency: [b]{audioLatency} ms[/b]\n"
+	+ "Audio Latency: [b]{audioLatency} ms[/b]\n" \
+	+ "Audio Compensation: [b]{audioCompensation} ms[/b]\n"
 
 static var backend_stats_template = "" \
 	+ "WS In/Out: [b]{0}[/b]/[b]{1}[/b]\n"
 
-static func format_obs_stats(res: Dictionary):
+static func format_obs_stats(res: Dictionary) -> String:
 	var stats := {
 		"activeFps": snapped(res.activeFps, 0),
 		"cpuUsage": snapped(res.cpuUsage, 0.001),
@@ -39,17 +40,19 @@ static func format_obs_stats(res: Dictionary):
 
 	return obs_stats_template.format(stats)
 
-static func format_godot_stats():
+static func format_godot_stats() -> String:
 	var stats := {
 		"fps": _perf_mon("TIME_FPS"),
 		"frameTime": snapped(_perf_mon("TIME_PROCESS"), 0.0001),
 		"videoMemoryUsed": snapped(_perf_mon("RENDER_VIDEO_MEM_USED") / 1024 / 1000, 0.01),
 		"audioLatency": snapped(_perf_mon("AUDIO_OUTPUT_LATENCY"), 0.0001),
+		"audioCompensation": snapped(Globals.get_audio_compensation(), 0.0001)
 	}
 
 	return godot_stats_template.format(stats)
 
-static func format_backend_stats(res: Array):
+
+static func format_backend_stats(res: Array) -> String:
 	return backend_stats_template.format(res)
 
 static func _perf_mon(monitor: String) -> Variant:

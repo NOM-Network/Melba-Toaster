@@ -124,6 +124,15 @@ static var last_expression := ""
 
 # endregion
 
+# region HELPERS
+
+func get_audio_compensation() -> float:
+	return AudioServer.get_time_since_last_mix() \
+		- AudioServer.get_output_latency() \
+		+ (1 / Engine.get_frames_per_second()) * 2
+
+# endregion
+
 # region EVENT BUS DEBUG
 
 func _ready() -> void:

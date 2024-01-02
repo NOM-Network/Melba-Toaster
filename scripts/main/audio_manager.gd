@@ -63,21 +63,20 @@ func reset_song_player() -> void:
 	song_player.stream = null
 	song_duration = 0.0
 
-func get_pos() -> float:
-	return song_player.get_playback_position() \
-		+ AudioServer.get_time_since_last_mix() \
-		- AudioServer.get_output_latency() \
-		+ (1 / Engine.get_frames_per_second()) * 2
+func get_position() -> Array[float]:
+	var comp := Globals.get_audio_compensation()
+	return [song_player.get_playback_position() + comp, comp]
 
-func beats_counter_data() -> Array:
-	var pos := get_pos()
-	var beat := pos * Globals.dancing_bpm / 60.0
-	var seconds := pos as int
+func beats_counter_data(full_position: Array[float]) -> Array:
+	var position := full_position[0]
+	var beat := position * Globals.dancing_bpm / 60.0
+	var seconds := position as int
 
 	return [
 		seconds / 60.0,
 		seconds % 60,
-		get_pos(),
+		position,
+		full_position[1],
 		song_duration / 60.0,
 		song_duration as int % 60,
 		song_duration,
