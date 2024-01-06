@@ -1,0 +1,10 @@
+[OBS]
+secure=0
+host="127.0.0.1"
+port="4455"
+password=""
+
+[backend]
+secure=0
+host="127.0.0.1"
+port="9876"
