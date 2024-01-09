@@ -317,7 +317,7 @@ func _on_change_position(new_position: String) -> void:
 
 	var positions: Dictionary = Globals.positions[new_position]
 	match new_position:
-		"intro":
+		"Intro":
 			assert(model_parent_animation.has_animation("intro"))
 
 			model_parent_animation.play("intro")
