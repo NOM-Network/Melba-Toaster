@@ -707,9 +707,9 @@ size_flags_vertical = 3
 bbcode_enabled = true
 text = "Active FPS: [b]???[/b]
 Frame Time: [b]???[/b]
-Video Memory Used: [b]???[/b]
+VRAM Used: [b]???[/b]
 Audio Latency: [b]???[/b]
-Audio Compensation: [b]???[/b]"
+Audio Comp: [b]???[/b]"
 fit_content = true
 
 [node name="Label2" type="Label" parent="Margins/HSplitContainer/RightPanel/StatsPanel/HBoxContainer/MarginContainer2/VBoxContainer"]

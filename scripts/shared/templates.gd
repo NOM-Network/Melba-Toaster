@@ -16,9 +16,9 @@ static var obs_stats_template = "" \
 static var godot_stats_template = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
 	+ "Frame Time: [b]{frameTime} s[/b]\n" \
-	+ "Video Memory Used: [b]{videoMemoryUsed} MB[/b]\n" \
+	+ "VRAM Used: [b]{videoMemoryUsed} MB[/b]\n" \
 	+ "Audio Latency: [b]{audioLatency} ms[/b]\n" \
-	+ "Audio Compensation: [b]{audioCompensation} ms[/b]\n"
+	+ "Audio Comp: [b]{audioCompensation} ms[/b]\n"
 
 static var backend_stats_template = "" \
 	+ "WS In/Out: [b]{0}[/b]/[b]{1}[/b]\n"
