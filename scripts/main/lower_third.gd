@@ -39,6 +39,9 @@ func _process(delta: float) -> void:
 			var time_check := current_time + delta
 			if current_subtitle_text[0][1] == "STOP":
 				print_timer.stop()
+
+				# Reset auto toggles
+				Globals.set_toggle.emit("toa", false)
 				return
 
 			if time_check >= current_subtitle_text[0][0]:
@@ -47,6 +50,11 @@ func _process(delta: float) -> void:
 					return
 
 				subtitles.text += text
+
+				# Auto toggles
+				match text.strip_edges():
+					"Toa-Chan", "Toa-chan", "Toa":
+						Globals.set_toggle.emit("toa", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
 				while subtitles.get_line_count() > subtitles.get_visible_line_count():
