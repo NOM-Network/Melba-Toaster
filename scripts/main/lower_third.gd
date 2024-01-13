@@ -52,8 +52,15 @@ func _process(delta: float) -> void:
 				subtitles.text += text
 
 				# Auto toggles
-				match text.strip_edges():
-					"Toa-Chan", "Toa-chan", "Toa":
+				var search_string := text.strip_edges().to_lower()
+				var unwanted_chars := [".", ",", ":", "?"]
+
+				var result := ""
+				for c in unwanted_chars:
+					result = search_string.replace(c, "")
+
+				match result:
+					"toa-chan", "toa":
 						Globals.set_toggle.emit("toa", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
