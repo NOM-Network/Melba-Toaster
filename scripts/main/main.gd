@@ -46,12 +46,13 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if Globals.is_singing and current_song:
-		var pos = audio_manager.get_pos()
+		var full_position: Array[float] = audio_manager.get_position()
+		var pos: float = full_position[0]
 
 		if Globals.show_beats:
 			$BeatsCounter.text = \
-				"TIME: %d:%02d (%6.2f) / %d:%02d (%.2f), BPM: %.1f, BEAT: %d / 4" \
-				% audio_manager.beats_counter_data()
+				"TIME: %d:%02d (%6.2f) [%.4f] / %d:%02d (%.2f), BPM: %.1f, BEAT: %d / 4" \
+				% audio_manager.beats_counter_data(full_position)
 
 		$BeatsCounter.visible = Globals.show_beats
 
@@ -145,21 +146,27 @@ func _input(event: InputEvent) -> void:
 		if event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_WHEEL_UP:
-					_mouse_to_prop("scale", Globals.scale_change)
+					_mouse_to_scale(Globals.scale_change)
 
 				MOUSE_BUTTON_WHEEL_DOWN:
-					_mouse_to_prop("scale", -Globals.scale_change)
+					_mouse_to_scale(-Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
-					_mouse_to_prop("scale", Vector2(1.0, 1.0), true)
-					_mouse_to_prop("position", Globals.positions.default.model[0], true)
+					Globals.change_position.emit(Globals.last_position)
 		else:
 			match event.button_index:
 				MOUSE_BUTTON_RIGHT:
 					_move_eyes(event, false)
 
-func _mouse_to_prop(prop: String, change: Vector2, absolute := false) -> void:
-	model[prop] = change if absolute else model[prop] + change
+func _mouse_to_scale(change: Vector2) -> void:
+	if tweens.has("model_scale"):
+		tweens.model_scale.kill()
+
+	tweens.model_scale = create_tween()
+	tweens.model_scale.tween_property(model, "scale", model.scale + change, 0.05)
+
+func _mouse_to_prop(prop: String, change: Vector2) -> void:
+	model[prop] += change
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	if is_pressed:
@@ -235,11 +242,11 @@ func _on_timer_before_speech_timeout() -> void:
 
 func _speak() -> void:
 	Globals.play_animation.emit("random")
-	Globals.start_speech.emit()
 
 	lower_third.set_prompt(pending_speech.prompt, 1.0)
 	lower_third.set_subtitles(pending_speech.response, audio_manager.speech_duration)
 
+	Globals.start_speech.emit()
 	pending_speech = {}
 
 func _on_cancel_speech() -> void:
@@ -310,11 +317,11 @@ func _on_change_position(new_position: String) -> void:
 
 	var positions: Dictionary = Globals.positions[new_position]
 	match new_position:
-		"intro":
+		"Intro":
 			assert(model_parent_animation.has_animation("intro"))
 
 			model_parent_animation.play("intro")
-			model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
+			model_parent_animation.animation_finished.emit(_on_change_position.bind("Default"))
 
 		_:
 			for p in positions:

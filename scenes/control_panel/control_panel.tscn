@@ -191,7 +191,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Time before cleanout"
-max_value = 10.0
+max_value = 30.0
 step = 0.1
 value = 0.1
 alignment = 1
@@ -208,7 +208,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Time before ready"
-max_value = 10.0
+max_value = 30.0
 step = 0.1
 value = 0.1
 alignment = 1
@@ -439,9 +439,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 tooltip_text = "BPM (beats per minute)"
-max_value = 1000.0
+max_value = 10000.0
 step = 0.1
-value = 128.0
+value = 1000.0
 alignment = 1
 update_on_text_changed = true
 suffix = "bpm"
@@ -707,8 +707,9 @@ size_flags_vertical = 3
 bbcode_enabled = true
 text = "Active FPS: [b]???[/b]
 Frame Time: [b]???[/b]
-Video Memory Used: [b]???[/b]
-Audio Latency: [b]???[/b]"
+VRAM Used: [b]???[/b]
+Audio Latency: [b]???[/b]
+Audio Comp: [b]???[/b]"
 fit_content = true
 
 [node name="Label2" type="Label" parent="Margins/HSplitContainer/RightPanel/StatsPanel/HBoxContainer/MarginContainer2/VBoxContainer"]

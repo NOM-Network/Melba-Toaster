@@ -30,37 +30,61 @@ signal update_backend_stats(data: Array)
 
 # endregion
 
+# region MELBA STATE
+
+static var debug_mode := OS.is_debug_build()
+static var config := ToasterConfig.new(debug_mode)
+
+static var is_paused := true
+static var is_speaking := false
+static var is_singing := false
+static var dancing_bpm := 0.0
+
+static var show_beats := debug_mode
+static var fixed_scene := false
+
+static var time_before_cleanout := 10.0
+static var time_before_speech := 0.1
+
+# endregion
+
 # region SCENE DATA
 
-static var default_position := "default"
+static var default_position := "Default"
+static var last_position := default_position
 static var default_model_position := [ Vector2(737, 1124), Vector2(1, 1) ]
 static var default_lower_third_position := [ Vector2(35, 682), Vector2(1, 1) ]
 
 static var positions := {
 	# use Tulpes - [ position, scale ]
-	"intro": {}, # placeholder for intro animation
+	"Intro": {}, # placeholder for intro animation
 
-	"intro_start": {
+	"Under": {
 		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
 		"lower_third": default_lower_third_position,
 	},
 
-	"default": {
+	"Default": {
 		"model": default_model_position,
 		"lower_third": default_lower_third_position,
 	},
 
-	"gaming": {
+	"Gaming": {
 		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
 		"lower_third": [ Vector2(35, 800), Vector2(0.777, 0.777) ],
 	},
 
-	"close": {
+	"Close": {
 		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
 		"lower_third": default_lower_third_position,
 	},
 
-	"full": {
+	"Full Screen": {
+		"model": [ Vector2(950, 2988), Vector2(3.6, 3.6) ],
+		"lower_third": default_lower_third_position,
+	},
+
+	"Full Height": {
 		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
 		"lower_third": default_lower_third_position,
 	}
@@ -100,21 +124,12 @@ static var last_expression := ""
 
 # endregion
 
-# region MELBA STATE
+# region HELPERS
 
-static var debug_mode := OS.is_debug_build()
-static var config := ToasterConfig.new(debug_mode)
-
-static var is_paused := true
-static var is_speaking := false
-static var is_singing := false
-static var dancing_bpm := 0.0
-
-static var show_beats := debug_mode
-static var fixed_scene := false
-
-static var time_before_cleanout := 5.0
-static var time_before_speech := 3.0
+func get_audio_compensation() -> float:
+	return AudioServer.get_time_since_last_mix() \
+		- AudioServer.get_output_latency() \
+		+ (1 / Engine.get_frames_per_second()) * 2
 
 # endregion
 
@@ -123,6 +138,11 @@ static var time_before_speech := 3.0
 func _ready() -> void:
 	for s in get_signal_list():
 		self.connect(s.name, _debug_event.bind(s.name))
+
+	self.change_position.connect(_on_change_position)
+
+func _on_change_position(position: String):
+	self.last_position = position
 
 func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> void:
 	if not debug_mode:
