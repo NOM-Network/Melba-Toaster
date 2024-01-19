@@ -3,7 +3,7 @@ extends Node
 var current_speech_id: int
 var current_speech_text: String
 
-var skip_message_id := 2**31 - 1
+var skip_message_id := 0
 
 func _ready() -> void:
 	Globals.cancel_speech.connect(_on_cancel_speech)
@@ -25,6 +25,7 @@ func _process(_delta: float) -> void:
 	match message.type:
 		"NewSpeech":
 			print("NewSpeech: ", message.id)
+			self.skip_message_id = 0
 			Globals.new_speech_v2.emit(message)
 
 		"ContinueSpeech":

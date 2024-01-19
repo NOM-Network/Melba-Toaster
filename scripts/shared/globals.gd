@@ -162,16 +162,14 @@ func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> v
 	if not debug_mode:
 		return
 
-	var args := [arg1, arg2, arg3, arg4, arg5] \
-		.filter(func (d): return d != null) \
-		.map(func (d): if d is Dictionary: return d.duplicate() else: return d)
+	var args := [arg1, arg2, arg3, arg4, arg5].filter(func (d): return d != null)
 
 	var eventName = args.pop_back()
 
 	# remove audio buffer from debug
 	if args.size() > 0:
 		if eventName in ["new_speech_v2", "continue_speech_v2", "end_speech_v2"]:
-			args[0] = CpHelpers.remove_audio_buffer(args[0])
+			args[0] = CpHelpers.remove_audio_buffer(args[0].duplicate())
 
 	print_debug(
 		"EVENT BUS: `%s` - %s" % [eventName, args]
