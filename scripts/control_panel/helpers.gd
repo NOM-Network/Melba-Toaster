@@ -93,3 +93,10 @@ static func clear_nodes(nodes: Variant):
 static func insert_data(node: RichTextLabel, text: String) -> void:
 	node.clear()
 	node.append_text(text)
+
+static func remove_audio_buffer(data: Dictionary) -> Dictionary:
+	if data is Dictionary:
+		if data.has("audio"):
+			data.audio = "<<< TRIMMED >>>"
+
+	return data

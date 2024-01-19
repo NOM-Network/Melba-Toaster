@@ -20,11 +20,22 @@ signal change_position(name: String)
 signal change_scene(scene: String)
 
 signal ready_for_speech()
-signal new_speech(prompt: String, text: String, emotions: Array)
+signal new_speech()
+signal continue_speech()
 signal start_speech()
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
+
+# Speech Manager
+signal ready_for_speech_v2()
+signal new_speech_v2(data: Dictionary)
+signal speech_player_free_v2()
+signal continue_speech_v2(data: Dictionary)
+signal end_speech_v2(data: Dictionary)
+signal push_speech_from_queue(response: String)
+signal stop_speech_v2()
+signal cancel_speech_v2()
 
 signal update_backend_stats(data: Array)
 
@@ -32,19 +43,22 @@ signal update_backend_stats(data: Array)
 
 # region MELBA STATE
 
-static var debug_mode := OS.is_debug_build()
-static var config := ToasterConfig.new(debug_mode)
+@export var debug_mode := OS.is_debug_build()
+@export var config := ToasterConfig.new(debug_mode)
 
-static var is_paused := true
-static var is_speaking := false
-static var is_singing := false
-static var dancing_bpm := 0.0
+@export var is_paused := true
+@export var is_speaking := false
+@export var is_singing := false
+@export var dancing_bpm := 0.0
 
-static var show_beats := debug_mode
-static var fixed_scene := false
+@export var show_beats := debug_mode
+@export var fixed_scene := false
 
-static var time_before_cleanout := 10.0
-static var time_before_speech := 0.1
+@export var time_before_cleanout := 20.0
+@export var time_before_next_response := 1.5
+
+func is_ready() -> bool:
+	return not (is_speaking or is_singing)
 
 # endregion
 
@@ -148,9 +162,16 @@ func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> v
 	if not debug_mode:
 		return
 
-	var args := [arg1, arg2, arg3, arg4, arg5].filter(func (d): return d != null)
+	var args := [arg1, arg2, arg3, arg4, arg5] \
+		.filter(func (d): return d != null) \
+		.map(func (d): if d is Dictionary: return d.duplicate() else: return d)
 
 	var eventName = args.pop_back()
+
+	# remove audio buffer from debug
+	if args.size() > 0:
+		if eventName in ["new_speech_v2", "continue_speech_v2", "end_speech_v2"]:
+			args[0] = CpHelpers.remove_audio_buffer(args[0])
 
 	print_debug(
 		"EVENT BUS: `%s` - %s" % [eventName, args]

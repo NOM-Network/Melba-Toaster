@@ -18,6 +18,8 @@ boot_splash/show_image=false
 [autoload]
 
 Globals="*res://scripts/shared/globals.gd"
+MessageQueue="*res://scripts/shared/message_queue.gd"
+SpeechManager="*res://scripts/main/speech_manager.gd"
 
 [display]
 

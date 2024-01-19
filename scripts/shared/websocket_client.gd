@@ -19,7 +19,7 @@ var tls_options: TLSOptions = null
 
 signal connection_established()
 signal connection_closed()
-signal data_received(data: Variant, stats: Dictionary)
+signal data_received(data: Variant, stats: Array)
 
 # Stats
 var incoming_messages_count := 0
@@ -47,7 +47,7 @@ func _process(delta: float) -> void:
 
 		while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
 			incoming_messages_count += 1
-			data_received.emit(message_handler(), [incoming_messages_count, outgoing_messages_count])
+			data_received.emit(socket.get_packet(), [incoming_messages_count, outgoing_messages_count])
 
 func connect_client() -> void:
 	print_debug("Toaster client: Establishing connection!")
@@ -66,19 +66,6 @@ func connect_client() -> void:
 		connection_closed.emit()
 
 	last_state = socket.get_ready_state()
-
-func message_handler() -> Variant:
-	var packet = socket.get_packet()
-
-	print_debug("Incoming text...")
-	if socket.was_string_packet():
-		return {
-			"type": "text",
-			"message": packet.get_string_from_utf8()
-		}
-
-	print_debug("Incoming buffer...")
-	return packet
 
 func send_message(json: Dictionary) -> void:
 	var message := JSON.stringify(json)

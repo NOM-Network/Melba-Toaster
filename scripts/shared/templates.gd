@@ -11,17 +11,20 @@ static var obs_stats_template = "" \
 	+ "Frame Render Time: [b]{averageFrameRenderTime} ms[/b]\n" \
 	+ "Rendered Skipped: [b]{renderSkippedFrames}[/b]\n" \
 	+ "Total Skipped: [b]{outputSkippedFrames}[/b]\n" \
-	+ "WS In/Out: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]\n"
+	+ "WS In/Out: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]"
 
 static var godot_stats_template = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
 	+ "Frame Time: [b]{frameTime} s[/b]\n" \
 	+ "VRAM Used: [b]{videoMemoryUsed} MB[/b]\n" \
 	+ "Audio Latency: [b]{audioLatency} ms[/b]\n" \
-	+ "Audio Comp: [b]{audioCompensation} ms[/b]\n"
+	+ "Audio Comp: [b]{audioCompensation} ms[/b]"
 
 static var backend_stats_template = "" \
-	+ "WS In/Out: [b]{0}[/b]/[b]{1}[/b]\n"
+	+ "Messages In/Out: [b]{0}[/b]/[b]{1}[/b]"
+
+static var message_queue_stats_template = "" \
+	+ "Queue length: [b]%s[/b]"
 
 static func format_obs_stats(res: Dictionary) -> String:
 	var stats := {
@@ -54,6 +57,9 @@ static func format_godot_stats() -> String:
 
 static func format_backend_stats(res: Array) -> String:
 	return backend_stats_template.format(res)
+
+static func format_message_queue_stats() -> String:
+	return message_queue_stats_template % MessageQueue.size()
 
 static func _perf_mon(monitor: String) -> Variant:
 	return Performance.get_monitor(Performance[monitor])

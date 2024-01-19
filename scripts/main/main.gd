@@ -1,19 +1,16 @@
 extends Node2D
 
-@export_category("Model")
-@export var model_parent_animation: AnimationPlayer
+@onready var model_parent_animation := $ModelParentAnimation
 @onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
 
-@export_category("Nodes")
-@export var client: WebSocketClient
-@export var control_panel: Window
-@export var lower_third: Control
-@export var mic: AnimatedSprite2D
-@export var audio_manager: Node
-@export var timer: Timer
+@onready var client := $WebSocketClient
+@onready var control_panel := $ControlPanel
+@onready var lower_third := $LowerThird
+@onready var mic := $Microphone
+@onready var audio_manager := $AudioManager
 
 # Tweens
 @onready var tweens := {}
@@ -31,6 +28,9 @@ func _ready() -> void:
 	get_tree().get_root().set_transparent_background(true)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
 
+	# Timers
+	%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
+
 	# Signals
 	_connect_signals()
 
@@ -41,7 +41,6 @@ func _ready() -> void:
 	await connect_backend()
 
 	# Ready for speech
-	timer.wait_time = Globals.time_before_speech
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 func _process(_delta: float) -> void:
@@ -75,7 +74,9 @@ func _connect_signals() -> void:
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
 
-	timer.timeout.connect(_on_timer_before_speech_timeout)
+	Globals.new_speech_v2.connect(_on_new_speech_v2)
+	Globals.continue_speech_v2.connect(_on_continue_speech_v2)
+	Globals.end_speech_v2.connect(_on_end_speech_v2)
 
 func _add_model() -> void:
 	add_child(model, true)
@@ -180,42 +181,34 @@ func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
 	else:
 		model_target_point.set_target(Vector2.ZERO)
 
-func _on_data_received(data: Variant, stats: Array) -> void:
+func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 	Globals.update_backend_stats.emit(stats)
 
-	if Globals.is_paused:
-		printerr("Data when paused")
+	var data := MessagePack.decode(message)
+	if data.error != OK:
+		printerr("MessagePack decode error: ", data.error)
 		return
 
-	if typeof(data) == TYPE_PACKED_BYTE_ARRAY:
-		if Globals.is_speaking:
-			printerr("Audio while blabbering")
-			return
+	if Globals.is_paused:
+		printerr("Message when paused: ", data)
+		return
 
-		assert(audio_manager.is_valid_mp3(data), "Backend sent a faulty MP3 file!")
-		audio_manager.prepare_speech(data)
-	else:
-		var message = JSON.parse_string(data.message)
+	match data.result.type:
+		"NewSpeech", "ContinueSpeech", "EndSpeech":
+			data.result.id = hash(data.result.prompt if data.result.prompt else "MelBuh")
+			SpeechManager.push_message(data.result)
 
-		match message.type:
-			"PlayAnimation":
-				Globals.play_animation.emit(message.animationName)
+		"PlayAnimation":
+			Globals.play_animation.emit(data.animationName)
 
-			"SetExpression":
-				Globals.set_expression.emit(message.expressionName)
+		"SetExpression":
+			Globals.set_expression.emit(data.expressionName)
 
-			"SetToggle":
-				Globals.set_toggle.emit(message.toggleName, message.enabled)
+		"SetToggle":
+			Globals.set_toggle.emit(data.toggleName, data.enabled)
 
-			"NewSpeech":
-				if Globals.is_speaking:
-					print_debug("NewSpeech while blabbering")
-					return
-
-				Globals.new_speech.emit(message.prompt, message.text.response, message.text.emotions)
-
-			_:
-				print("Unhandled data type: ", message)
+		_:
+			print("Unhandled data type: ", data)
 
 func _on_speech_done() -> void:
 	get_ready_for_next_speech()
@@ -232,14 +225,6 @@ func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void
 		"emotions": p_emotions,
 	}
 
-	timer.wait_time = Globals.time_before_speech
-	timer.start()
-
-func _on_timer_before_speech_timeout() -> void:
-	if pending_speech != {}:
-		timer.stop()
-		_speak()
-
 func _speak() -> void:
 	Globals.play_animation.emit("random")
 
@@ -249,23 +234,51 @@ func _speak() -> void:
 	Globals.start_speech.emit()
 	pending_speech = {}
 
+func _on_new_speech_v2(data: Dictionary) -> void:
+	%BeforeNextResponseTimer.stop()
+	Globals.play_animation.emit("random")
+
+	audio_manager.prepare_speech(data.audio)
+
+	lower_third.set_prompt(data.prompt, 1.0)
+	lower_third.set_subtitles(data.response, audio_manager.speech_duration)
+
+	audio_manager.play_speech()
+
+func _on_continue_speech_v2(data: Dictionary) -> void:
+	_on_subsequent_speech_v2(data)
+
+func _on_end_speech_v2(data: Dictionary) -> void:
+	_on_subsequent_speech_v2(data)
+
+func _on_subsequent_speech_v2(data: Dictionary) -> void:
+	%BeforeNextResponseTimer.stop()
+
+	Globals.play_animation.emit("random")
+	audio_manager.prepare_speech(data.audio)
+	lower_third.set_subtitles(data.response, audio_manager.speech_duration, true)
+	audio_manager.play_speech()
+
 func _on_cancel_speech() -> void:
-	var silent := not Globals.is_speaking
+	if not Globals.is_speaking or Globals.is_singing:
+		return
 
 	pending_speech = {}
 	lower_third.clear_subtitles()
 
 	audio_manager.reset_speech_player()
-	if not silent:
-		Globals.set_toggle.emit("void", true)
-		lower_third.set_subtitles("[TOASTED]", 1.0)
-		await audio_manager.play_cancel_sound()
-		Globals.set_toggle.emit("void", false)
+	lower_third.set_subtitles_fast("[TOASTED]")
+	Globals.set_toggle.emit("void", true)
+	await audio_manager.play_cancel_sound()
+	Globals.set_toggle.emit("void", false)
 
 	get_ready_for_next_speech()
 
 func get_ready_for_next_speech() -> void:
-	if not Globals.is_paused:
+	%BeforeNextResponseTimer.start()
+
+func _on_before_next_response_timer_timeout() -> void:
+	if SpeechManager.is_no_more_chunks() and not Globals.is_paused:
 		Globals.ready_for_speech.emit()
 
 func _on_start_singing(song: Song, seek_time := 0.0) -> void:
