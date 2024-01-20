@@ -44,10 +44,15 @@ func _process(_delta: float) -> void:
 func push_message(message: Dictionary) -> void:
 	MessageQueue.add(message)
 
-	if message.type == "NewSpeech":
-		self.current_speech_text = message.response
-	else:
-		self.current_speech_text += " " + message.response
+	match message.type:
+		"NewSpeech":
+			self.current_speech_text = message.response
+
+		"ContinueSpeech":
+			self.current_speech_text += "\n" + message.response
+
+		"EndSpeech":
+			self.current_speech_text += "\n" + message.response + " [END]"
 
 	Globals.push_speech_from_queue.emit(self.current_speech_text)
 

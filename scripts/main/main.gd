@@ -69,7 +69,7 @@ func _process(_delta: float) -> void:
 func _connect_signals() -> void:
 	Globals.new_speech.connect(_on_new_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
-	Globals.speech_done.connect(_on_speech_done)
+	# Globals.speech_done.connect(_on_speech_done)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 	Globals.change_position.connect(_on_change_position)
@@ -189,10 +189,6 @@ func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 		printerr("MessagePack decode error: ", data.error)
 		return
 
-	if Globals.is_paused:
-		printerr("Message when paused: ", data)
-		return
-
 	match data.result.type:
 		"NewSpeech", "ContinueSpeech", "EndSpeech":
 			data.result.id = hash(data.result.prompt if data.result.prompt else "MelBuh")
@@ -246,10 +242,12 @@ func _on_new_speech_v2(data: Dictionary) -> void:
 	audio_manager.play_speech()
 
 func _on_continue_speech_v2(data: Dictionary) -> void:
-	_on_subsequent_speech_v2(data)
+	await _on_subsequent_speech_v2(data)
 
 func _on_end_speech_v2(data: Dictionary) -> void:
-	_on_subsequent_speech_v2(data)
+	await _on_subsequent_speech_v2(data)
+	# Globals.end_speech_v2.emit()
+	get_ready_for_next_speech()
 
 func _on_subsequent_speech_v2(data: Dictionary) -> void:
 	%BeforeNextResponseTimer.stop()
@@ -258,9 +256,10 @@ func _on_subsequent_speech_v2(data: Dictionary) -> void:
 	audio_manager.prepare_speech(data.audio)
 	lower_third.set_subtitles(data.response, audio_manager.speech_duration, true)
 	audio_manager.play_speech()
+	await Globals.speech_done
 
 func _on_cancel_speech() -> void:
-	if not Globals.is_speaking or Globals.is_singing:
+	if Globals.is_singing:
 		return
 
 	pending_speech = {}

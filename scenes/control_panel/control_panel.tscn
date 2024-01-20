@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bjp2bck62tl2m"]
+[gd_scene load_steps=12 format=3 uid="uid://bjp2bck62tl2m"]
 
 [ext_resource type="Script" path="res://scripts/control_panel/control_panel.gd" id="1_rhl0v"]
 [ext_resource type="Script" path="res://scripts/control_panel/obs_websocket_client.gd" id="2_1sf50"]
@@ -15,9 +15,6 @@ MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vdigh"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="Theme" id="Theme_16b5c"]
 MarginContainer/constants/margin_bottom = 10
@@ -172,21 +169,22 @@ text = "sad happy"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Text" type="TextEdit" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/CurrentSpeech"]
+[node name="Text" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/CurrentSpeech"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_readonly_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_vdigh")
-theme_override_styles/focus = SubResource("StyleBoxFlat_vdigh")
-theme_override_styles/read_only = SubResource("StyleBoxFlat_vdigh")
+tooltip_text = "Click to copy to clipboard"
+mouse_filter = 1
 text = "Eh, I gotta admit mate, I'm not the biggest fan of pineapple on pizza. It's just not my thing. Sure it has a sweet taste, but it just doesn't mix well with the savoury flavour of the cheese and the tomato. But hey, I ain't gonna be a hater, mate! To each their own, am I right? Some people might like pineapple on their pizza, and that's totally fine with me. I'll just stick to my jam, cheese, and peanut butter toast. (and yes, I do love to eat my peanut butter and jam toast!)"
-placeholder_text = "Text"
-editable = false
-wrap_mode = 1
-scroll_smooth = true
-draw_control_chars = true
-draw_tabs = true
-draw_spaces = true
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TextCopied" type="Label" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/CurrentSpeech"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.0392157, 0.0235294, 1)
+text = "Copied to clipboard!"
+horizontal_alignment = 2
 
 [node name="Misc" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -809,6 +807,7 @@ wait_time = 0.5
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode" to="." method="_on_debug_mode_button_toggled"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech" to="." method="_on_pause_speech_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech" to="." method="_on_cancel_speech_pressed"]
+[connection signal="gui_input" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/CurrentSpeech/Text" to="." method="_on_speech_text_gui_input"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeCleanout" to="." method="_on_time_before_cleanout_value_changed"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeNextResponse" to="." method="_on_time_before_next_response_value_changed"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/ResetSubtitles" to="." method="_on_reset_subtitles_pressed"]

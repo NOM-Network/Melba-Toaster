@@ -132,6 +132,7 @@ func _connect_signals() -> void:
 	Globals.update_backend_stats.connect(_on_update_backend_stats)
 
 	Globals.new_speech_v2.connect(_on_new_speech_v2)
+	Globals.end_speech_v2.connect(_on_end_speech_v2)
 	Globals.push_speech_from_queue.connect(_on_push_speech_from_queue)
 
 	print_debug("Control Panel: connected signals")
@@ -330,8 +331,12 @@ func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
 	%CurrentSpeech/Text.text = text
 
 func _on_new_speech_v2(data: Dictionary) -> void:
+	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 	%CurrentSpeech/Prompt.text = "%s (%s)" % [data.prompt, data.id]
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(data.emotions)
+
+func _on_end_speech_v2(_data: Dictionary) -> void:
+	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 
 func _on_push_speech_from_queue(response: String) -> void:
 	%CurrentSpeech/Text.text = response
@@ -572,6 +577,16 @@ func _on_backend_status_pressed() -> void:
 	await get_tree().create_timer(1.0).timeout
 	main.connect_backend()
 
+func _on_speech_text_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+				%CurrentSpeech/TextCopied.show()
+				var text: String = %CurrentSpeech/Prompt.text
+				text += "\n\n" + %CurrentSpeech/Text.text.replace("\n", " ")
+				DisplayServer.clipboard_set(text)
+				await get_tree().create_timer(2.0).timeout
+				%CurrentSpeech/TextCopied.hide()
+
 func _on_close_requested() -> void:
 	$CloseConfirm.show()
 
@@ -579,4 +594,3 @@ func _on_close_confirm_confirmed() -> void:
 	_stop_obs_processing()
 	main.disconnect_backend()
 	get_tree().quit()
-

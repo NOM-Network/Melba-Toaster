@@ -38,13 +38,11 @@ async def hello(websocket):
                 print("-- Sending the message {} times".format(chunks))
 
                 for i in range(chunks):
-                    type = ""
+                    type = "ContinueSpeech"
                     if i == 0:
                         type = "NewSpeech"
                     elif i == chunks - 1:
                         type = "EndSpeech"
-                    else:
-                        type = "ContinueSpeech"
 
                     current_chunk = response[i]
                     f = open(filename.format(current_chunk[1]), mode="rb")
@@ -59,7 +57,7 @@ async def hello(websocket):
 
                     print(message["response"])
 
-                    time_to_sleep = 3
+                    time_to_sleep = random.uniform(1.0, 5.0)
                     await websocket.send(msgpack.packb(message, use_bin_type=True))
 
                     print(
