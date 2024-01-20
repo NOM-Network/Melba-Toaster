@@ -21,11 +21,11 @@ func _process(_delta: float) -> void:
 		return
 
 	print("Message ID: ", message.id)
-	self.current_speech_id = message.id
+	current_speech_id = message.id
 	match message.type:
 		"NewSpeech":
 			print("NewSpeech: ", message.id)
-			self.skip_message_id = 0
+			skip_message_id = 0
 			Globals.new_speech_v2.emit(message)
 
 		"ContinueSpeech":
@@ -35,7 +35,7 @@ func _process(_delta: float) -> void:
 		"EndSpeech":
 			print("EndSpeech: ", message.id)
 			Globals.is_speaking = true
-			self.current_speech_id = 0
+			current_speech_id = 0
 			Globals.end_speech_v2.emit(message)
 
 		_:
@@ -46,20 +46,20 @@ func push_message(message: Dictionary) -> void:
 
 	match message.type:
 		"NewSpeech":
-			self.current_speech_text = message.response
+			current_speech_text = message.response
 
 		"ContinueSpeech":
-			self.current_speech_text += "\n" + message.response
+			current_speech_text += "\n" + message.response
 
 		"EndSpeech":
-			self.current_speech_text += "\n" + message.response + " [END]"
+			current_speech_text += "\n" + message.response + " [END]"
 
-	Globals.push_speech_from_queue.emit(self.current_speech_text)
+	Globals.push_speech_from_queue.emit(current_speech_text)
 
 func is_no_more_chunks() -> bool:
-	return self.current_speech_id == 0
+	return current_speech_id == 0
 
 func _on_cancel_speech() -> void:
-	MessageQueue.remove_by_id(self.current_speech_id)
-	self.skip_message_id = self.current_speech_id
-	self.current_speech_id = 0
+	MessageQueue.remove_by_id(current_speech_id)
+	skip_message_id = current_speech_id
+	current_speech_id = 0

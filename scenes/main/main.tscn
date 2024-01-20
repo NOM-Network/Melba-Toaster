@@ -764,5 +764,6 @@ text = "420"
 [node name="BeforeNextResponseTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 5.0
+one_shot = true
 
 [connection signal="timeout" from="BeforeNextResponseTimer" to="." method="_on_before_next_response_timer_timeout"]

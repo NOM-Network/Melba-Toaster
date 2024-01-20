@@ -55,7 +55,7 @@ signal update_backend_stats(data: Array)
 @export var fixed_scene := false
 
 @export var time_before_cleanout := 20.0
-@export var time_before_next_response := 1.5
+@export var time_before_next_response := 1.0
 
 func is_ready() -> bool:
 	return not (is_speaking or is_singing)

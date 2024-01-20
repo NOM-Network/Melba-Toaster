@@ -3,7 +3,7 @@ extends Node2D
 @export_category("Cubism Model")
 @export var cubism_model: GDCubismUserModel
 
-#region EFFECTS FOR OVERRIDE 
+#region EFFECTS FOR OVERRIDE
 # re activate these nodes on function reset_overrides
 @onready var eye_blink = %EyeBlink
 #endregion
@@ -23,7 +23,7 @@ var assets_to_pin := {}
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
-	initialize_animations() 
+	initialize_animations()
 	intialize_toggles()
 	initialize_pinnable_assets()
 	set_expression("end")
@@ -38,9 +38,9 @@ func connect_signals() -> void:
 
 	anim_timer.timeout.connect(_on_animation_finished)
 
-func initialize_animations() -> void: 
+func initialize_animations() -> void:
 	for anim in Globals.animations.values():
-		if anim.override_name != "": 
+		if anim.override_name != "":
 			anim.override = cubism_model.get_node(anim.override_name)
 
 func intialize_toggles() -> void:
@@ -78,8 +78,8 @@ func nudge_model() -> void:
 		tweens.nudge.kill()
 
 	tweens.nudge = create_tween()
-	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.5, 1.0).set_ease(Tween.EASE_IN)
-	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.7, 1.0).set_ease(Tween.EASE_IN)
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.0, 2.0).set_ease(Tween.EASE_OUT)
 
 func pin_asset(asset_name: String, enabled: bool) -> void:
 	var asset: PinnableAsset = Globals.pinnable_assets[asset_name]
