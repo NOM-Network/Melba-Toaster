@@ -3,9 +3,9 @@ extends Node2D
 @export_category("Cubism Model")
 @export var cubism_model: GDCubismUserModel
 
-#region EFFECTS FOR OVERRIDE 
+#region EFFECTS FOR OVERRIDE
 # re activate these nodes on function reset_overrides
-@onready var eye_blink = %EyeBlink
+@onready var eye_blink = %EyeBlinking
 #endregion
 
 #region OTHER NODES
@@ -23,7 +23,7 @@ var assets_to_pin := {}
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	connect_signals()
-	initialize_animations() 
+	initialize_animations()
 	intialize_toggles()
 	initialize_pinnable_assets()
 	set_expression("end")
@@ -38,9 +38,9 @@ func connect_signals() -> void:
 
 	anim_timer.timeout.connect(_on_animation_finished)
 
-func initialize_animations() -> void: 
+func initialize_animations() -> void:
 	for anim in Globals.animations.values():
-		if anim.override_name != "": 
+		if anim.override_name != "":
 			anim.override = cubism_model.get_node(anim.override_name)
 
 func intialize_toggles() -> void:
@@ -148,10 +148,15 @@ func play_animation(anim_name: String) -> void:
 				printerr("Cannot found `%s` animation" % anim_name)
 				return
 
-			anim_timer.wait_time = Globals.animations[anim_name]["duration"]
+			var anim = Globals.animations[anim_name]
+
+			anim_timer.wait_time = anim["duration"]
 			anim_timer.start()
-			var anim_id = Globals.animations[anim_name].id
-			var override = Globals.animations[anim_name].override
+			var anim_id = anim.id
+			var override = anim.override
+
+			eye_blink.active = not anim.ignore_blinking
+
 			if override:
 				override.active = false
 			cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)

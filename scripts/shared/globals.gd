@@ -111,9 +111,9 @@ static var toggles := {
 static var animations := {
 	"idle1": Live2DAnimation.new(0, 7), # Original: 8.067
 	"idle2": Live2DAnimation.new(1, 4), # Original: 4.267
-	"idle3": Live2DAnimation.new(2, 5, "EyeBlink"), # Original: 5.367
-	"sleep": Live2DAnimation.new(3, 10.3, "EyeBlink"), # Original: 10.3
-	"confused": Live2DAnimation.new(4, 4.0, "EyeBlink")  # Original: 10
+	"idle3": Live2DAnimation.new(2, 5), # Original: 5.367
+	"sleep": Live2DAnimation.new(3, 10.3, true), # Original: 10.3
+	"confused": Live2DAnimation.new(4, 4.0, true)  # Original: 10
 }
 static var last_animation := ""
 
