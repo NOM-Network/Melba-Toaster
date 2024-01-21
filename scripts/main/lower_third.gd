@@ -27,6 +27,8 @@ func _ready() -> void:
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.speech_done.connect(_on_speech_done)
 
+	Globals.ready_for_speech.connect(_on_ready_for_speech)
+
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
 	print_timer.one_shot = true
 
@@ -39,9 +41,6 @@ func _process(delta: float) -> void:
 			var time_check := current_time + delta
 			if current_subtitle_text[0][1] == "STOP":
 				print_timer.stop()
-
-				# Reset auto toggles
-				Globals.set_toggle.emit("toa", false)
 				return
 
 			if time_check >= current_subtitle_text[0][0]:
@@ -88,6 +87,9 @@ func _on_speech_done() -> void:
 
 func _on_clear_subtitles_timer_timeout() -> void:
 	clear_subtitles()
+
+func _on_ready_for_speech() -> void:
+	Globals.set_toggle.emit("toa", false)
 
 # endregion
 

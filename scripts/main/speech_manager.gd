@@ -44,6 +44,9 @@ func _process(_delta: float) -> void:
 
 		_:
 			printerr("Unknown message type: ", message.type)
+			return
+
+	_process_emotions(message.emotions)
 
 func push_message(message: Dictionary) -> void:
 	if not primed:
@@ -88,3 +91,31 @@ func _on_cancel_speech() -> void:
 	skip_message_id = current_speech_id
 	messages = messages.filter(func (d): return d.id != current_speech_id)
 	primed = false
+
+func _process_emotions(emotions: Array) -> void:
+	if not emotions:
+		return
+
+	var max_emotion = ["anger", -1.0]
+
+	for emotion in emotions:
+		if not Globals.emotions_modifiers.has(emotion):
+			printerr("Unknown emotion: %s" % emotion)
+			return
+
+		if Globals.emotions_modifiers[emotion] > max_emotion[1]:
+			max_emotion = [emotion, Globals.emotions_modifiers[emotion]]
+
+	print(max_emotion)
+
+	Globals.current_emotion_modifier = max_emotion[1]
+
+	for toggle in ["tears", "void"]:
+		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
+
+	match max_emotion[0]:
+		"fear", "sadness":
+			Globals.set_toggle.emit("tears", true)
+
+		"anger":
+			Globals.set_toggle.emit("void", true)

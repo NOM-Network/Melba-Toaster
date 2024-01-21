@@ -29,6 +29,23 @@ async def hello(websocket):
                     ],
                     ["Peace out! Try saying that three times fast.", 4],
                 ]
+                emotions = []
+                emotions.append(
+                    random.choice(
+                        [
+                            "fear",
+                            "anger",
+                            "anticipation",
+                            "trust",
+                            "surprise",
+                            "positive",
+                            "negative",
+                            "sadness",
+                            "disgust",
+                            "joy",
+                        ]
+                    )
+                )
 
                 another = not another
                 if another:
@@ -50,14 +67,14 @@ async def hello(websocket):
                         "type": type,
                         "prompt": prompt2 if another else prompt1,
                         "response": current_chunk[0],
-                        "emotions": ["sad", "happy"],
+                        "emotions": emotions,
                         "audio": f.read(),
                     }
                     f.close()
 
                     print(message["response"])
 
-                    time_to_sleep = random.uniform(1.0, 5.0)
+                    time_to_sleep = random.uniform(1.0, 2.0)
                     await websocket.send(msgpack.packb(message, use_bin_type=True))
 
                     print(

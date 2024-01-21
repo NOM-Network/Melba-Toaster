@@ -5,7 +5,7 @@
     "Fps": 30.0,
     "Loop": true,
     "AreBeziersRestricted": true,
-    "CurveCount": 31,
+    "CurveCount": 30,
     "TotalSegmentCount": 300,
     "TotalPointCount": 911,
     "UserDataCount": 0,

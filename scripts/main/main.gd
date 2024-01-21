@@ -286,6 +286,8 @@ func _on_before_next_response_timer_timeout() -> void:
 		Globals.ready_for_speech.emit()
 
 func _on_start_singing(song: Song, seek_time := 0.0) -> void:
+	Globals.current_emotion_modifier = 0.0
+
 	_reset_toggles()
 	Globals.is_paused = true
 
@@ -352,7 +354,6 @@ func _on_change_position(new_position: String) -> void:
 				tweens[p].tween_property(node, "position", positions[p][0], 1)
 				tweens[p].tween_property(node, "scale", positions[p][1], 1)
 
-
 func _reset_toggles() -> void:
 	for toggle in Globals.toggles:
-		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].enabled)
+		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)

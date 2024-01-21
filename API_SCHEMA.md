@@ -50,6 +50,7 @@ Contains the subsequence responses from LLM (including audio). Must include the 
         "type": "ContinueSpeech",
         "prompt": "<prompt_text>",
         "response": "<response_text>",
+        "emotions": ["<array_of_emotions>"],
         "audio": "<binary data>"
     }
 ```
@@ -63,6 +64,7 @@ Contains the last response chunk from LLM (including audio). Must include the in
         "type": "EndSpeech",
         "prompt": "<prompt_text>",
         "response": "<response_text>",
+        "emotions": ["<array_of_emotions>"],
         "audio": "<binary data>"
     }
 ```

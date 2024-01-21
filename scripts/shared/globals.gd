@@ -136,6 +136,20 @@ static var expressions := {
 }
 static var last_expression := ""
 
+static var emotions_modifiers := {
+	"fear": -0.3,
+	"anger": -0.5,
+	"anticipation": 0.0,
+	"trust": 0.0,
+	"surprise": 0.5,
+	"positive": 0.5,
+	"negative": -0.5,
+	"sadness": -0.1,
+	"disgust": -0.5,
+	"joy": 0.0
+}
+static var current_emotion_modifier = 0.0
+
 # endregion
 
 # region HELPERS
