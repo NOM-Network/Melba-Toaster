@@ -5,7 +5,7 @@ extends Node2D
 
 #region EFFECTS FOR OVERRIDE
 # re activate these nodes on function reset_overrides
-@onready var eye_blink = %EyeBlink
+@onready var eye_blink = %EyeBlinking
 #endregion
 
 #region OTHER NODES
@@ -148,10 +148,15 @@ func play_animation(anim_name: String) -> void:
 				printerr("Cannot found `%s` animation" % anim_name)
 				return
 
-			anim_timer.wait_time = Globals.animations[anim_name]["duration"]
+			var anim = Globals.animations[anim_name]
+
+			anim_timer.wait_time = anim["duration"]
 			anim_timer.start()
-			var anim_id = Globals.animations[anim_name].id
-			var override = Globals.animations[anim_name].override
+			var anim_id = anim.id
+			var override = anim.override
+
+			eye_blink.active = not anim.ignore_blinking
+
 			if override:
 				override.active = false
 			cubism_model.start_motion("", anim_id, GDCubismUserModel.PRIORITY_FORCE)

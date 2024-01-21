@@ -186,11 +186,6 @@ render_target_update_mode = 4
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]
 unique_name_in_owner = true
 
-[node name="EyeBlink" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel" node_paths=PackedStringArray("blink_timer")]
-unique_name_in_owner = true
-script = ExtResource("3_6ft37")
-blink_timer = NodePath("../../../BlinkTimer")
-
 [node name="SingingMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
 unique_name_in_owner = true
 script = ExtResource("4_xiarh")
@@ -201,9 +196,14 @@ script = ExtResource("1_2m8bk")
 [node name="TargetPoint" type="GDCubismEffectTargetPoint" parent="Sprite2D/GDCubismUserModel"]
 unique_name_in_owner = true
 
-[node name="BlinkTimer" type="Timer" parent="."]
+[node name="EyeBlinking" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+unique_name_in_owner = true
+script = ExtResource("3_6ft37")
+
+[node name="BlinkTimer" type="Timer" parent="Sprite2D/GDCubismUserModel/EyeBlinking"]
 unique_name_in_owner = true
 wait_time = 3.0
+one_shot = true
 autostart = true
 
 [node name="AnimTimer" type="Timer" parent="."]
