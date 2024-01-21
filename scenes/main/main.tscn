@@ -1,8 +1,7 @@
-[gd_scene load_steps=98 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=97 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
-[ext_resource type="Script" path="res://scripts/main/speech_manager.gd" id="3_3brc5"]
 [ext_resource type="Texture2D" uid="uid://d31jgtyln1dig" path="res://assets/main/mic/mic_in.png" id="4_ajw6o"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
@@ -673,9 +672,6 @@ script = ExtResource("1_bldvu")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
-
-[node name="SpeechManager" type="Node" parent="."]
-script = ExtResource("3_3brc5")
 
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
