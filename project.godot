@@ -18,7 +18,6 @@ boot_splash/show_image=false
 [autoload]
 
 Globals="*res://scripts/shared/globals.gd"
-MessageQueue="*res://scripts/shared/message_queue.gd"
 SpeechManager="*res://scripts/main/speech_manager.gd"
 
 [display]
@@ -66,7 +65,6 @@ toggle_mute={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=2
-driver/threads/thread_model=2
 textures/default_filters/anisotropic_filtering_level=4
 anti_aliasing/quality/msaa_2d=3
 viewport/transparent_background=true

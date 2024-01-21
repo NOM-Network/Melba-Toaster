@@ -59,7 +59,7 @@ static func format_backend_stats(res: Array) -> String:
 	return backend_stats_template.format(res)
 
 static func format_message_queue_stats() -> String:
-	return message_queue_stats_template % MessageQueue.size()
+	return message_queue_stats_template % SpeechManager.messages.size()
 
 static func _perf_mon(monitor: String) -> Variant:
 	return Performance.get_monitor(Performance[monitor])

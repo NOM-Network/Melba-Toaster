@@ -1,23 +1,27 @@
 extends Node
 
-var current_speech_id: int
-var current_speech_text: String
-
+@export var messages := []
+var primed := false
 var skip_message_id := 0
 
+var current_speech_id := 0
+var current_speech_text := ""
+
 func _ready() -> void:
+	Globals.ready_for_speech.connect(_on_ready_for_speech)
 	Globals.cancel_speech.connect(_on_cancel_speech)
 
 func _process(_delta: float) -> void:
-	if MessageQueue.is_empty() or not Globals.is_ready():
+	if not messages.size() or not Globals.is_ready():
 		return
 
-	var message = MessageQueue.get_next()
+	var message = messages.pop_front()
 	if message == null:
+		printerr("Message is empty on process")
 		return
 
 	if message.id == skip_message_id:
-		print("Skipping message ", message.id)
+		printerr("Skipping message %s - skipped on process" % message.id)
 		return
 
 	print("Message ID: ", message.id)
@@ -42,24 +46,45 @@ func _process(_delta: float) -> void:
 			printerr("Unknown message type: ", message.type)
 
 func push_message(message: Dictionary) -> void:
-	MessageQueue.add(message)
+	if not primed:
+		if message.type == "EndSpeech":
+			skip_message_id = 0
+			current_speech_id = 0
+			return
+		elif message.type != "NewSpeech":
+			printerr("Skipping %s message %s - not primed on push" % [message.type, message.id])
+			return
+
+	if message.id == skip_message_id:
+		printerr("Skipping %s message %s - skipped on push" % [message.type, message.id])
+		return
 
 	match message.type:
 		"NewSpeech":
+			skip_message_id = 0
+			primed = true
 			current_speech_text = message.response
 
 		"ContinueSpeech":
 			current_speech_text += "\n" + message.response
 
 		"EndSpeech":
-			current_speech_text += "\n" + message.response + " [END]"
+			current_speech_id = 0
+			primed = false
+			current_speech_text += "\n" + message.response
 
+	messages.append(message)
 	Globals.push_speech_from_queue.emit(current_speech_text)
 
-func is_no_more_chunks() -> bool:
-	return current_speech_id == 0
+func ready_for_new_message() -> bool:
+	return current_speech_id == 0 and messages.size() == 0
+
+func _on_ready_for_speech() -> void:
+	current_speech_id = 0
+	current_speech_text = ""
+	skip_message_id = 0
 
 func _on_cancel_speech() -> void:
-	MessageQueue.remove_by_id(current_speech_id)
 	skip_message_id = current_speech_id
-	current_speech_id = 0
+	messages = messages.filter(func (d): return d.id != current_speech_id)
+	primed = false

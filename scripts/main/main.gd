@@ -277,7 +277,12 @@ func get_ready_for_next_speech() -> void:
 	%BeforeNextResponseTimer.start()
 
 func _on_before_next_response_timer_timeout() -> void:
-	if SpeechManager.is_no_more_chunks() and not Globals.is_paused:
+	# Starting the timer again if there are still chunks to skip
+	if not SpeechManager.ready_for_new_message():
+		%BeforeNextResponseTimer.start()
+		return
+
+	if not Globals.is_paused:
 		Globals.ready_for_speech.emit()
 
 func _on_start_singing(song: Song, seek_time := 0.0) -> void:
