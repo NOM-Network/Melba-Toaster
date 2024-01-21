@@ -667,15 +667,8 @@ _data = {
 "intro": SubResource("Animation_focdv")
 }
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("model_parent_animation", "client", "control_panel", "lower_third", "mic", "audio_manager", "timer")]
+[node name="Main" type="Node2D"]
 script = ExtResource("1_bldvu")
-model_parent_animation = NodePath("ModelParentAnimation")
-client = NodePath("WebSocketClient")
-control_panel = NodePath("ControlPanel")
-lower_third = NodePath("LowerThird")
-mic = NodePath("Microphone")
-audio_manager = NodePath("AudioManager")
-timer = NodePath("TimerBeforeSpeechTimer")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -764,5 +757,9 @@ text = "420"
 
 [node name="AudioManager" parent="." instance=ExtResource("8_jjjnc")]
 
-[node name="TimerBeforeSpeechTimer" type="Timer" parent="."]
+[node name="BeforeNextResponseTimer" type="Timer" parent="."]
+unique_name_in_owner = true
 wait_time = 5.0
+one_shot = true
+
+[connection signal="timeout" from="BeforeNextResponseTimer" to="." method="_on_before_next_response_timer_timeout"]

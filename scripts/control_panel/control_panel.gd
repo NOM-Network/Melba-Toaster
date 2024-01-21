@@ -1,8 +1,7 @@
 extends Window
 @onready var main: Node2D = get_parent()
 
-@export_category("General")
-@export var obs: ObsWebSocketClient
+@onready var obs := $ObsWebSocketClient
 
 @export_category("UI")
 @export var debug_button: Button
@@ -11,12 +10,12 @@ extends Window
 @export var obs_client_status: Button
 @export var backend_status: Button
 
-@export_category("Timers")
-@export var godot_stats_timer: Timer
-@export var obs_stats_timer: Timer
+@onready var godot_stats_timer := $Timers/GodotStatsTimer
+@onready var obs_stats_timer := $Timers/ObsStatsTimer
+@onready var message_queue_stats_timer := $Timers/MessageQueueStatsTimer
 
 # OBS info
-var OpCodes := obs.OpCodeEnums.WebSocketOpCode
+var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
 
 # Last state globals
@@ -31,6 +30,7 @@ func _ready() -> void:
 		i.queue_free()
 
 	godot_stats_timer.start()
+	message_queue_stats_timer.start()
 
 	_apply_defaults()
 
@@ -53,7 +53,7 @@ func _apply_defaults() -> void:
 	backend_status.text = "Backend\n%s:%s" % [ Globals.config.get_backend("host"), Globals.config.get_backend("port") ]
 
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
-	%TimeBeforeSpeech.value = Globals.time_before_speech
+	%TimeBeforeNextResponse.value = Globals.time_before_next_response
 
 	%CurrentSpeech/Prompt.text = "Waiting for prompt..."
 	%CurrentSpeech/Emotions.text = "Waiting for emotions..."
@@ -130,6 +130,10 @@ func _connect_signals() -> void:
 	Globals.change_scene.connect(_on_change_scene)
 
 	Globals.update_backend_stats.connect(_on_update_backend_stats)
+
+	Globals.new_speech_v2.connect(_on_new_speech_v2)
+	Globals.end_speech_v2.connect(_on_end_speech_v2)
+	Globals.push_speech_from_queue.connect(_on_push_speech_from_queue)
 
 	print_debug("Control Panel: connected signals")
 
@@ -287,11 +291,14 @@ func _handle_request(data: Dictionary) -> void:
 				print(data)
 				print("-------------")
 
+func _on_godot_stats_timer_timeout() -> void:
+	CpHelpers.insert_data(%GodotStats, Templates.format_godot_stats())
+
 func _on_obs_stats_timer_timeout() -> void:
 	obs.send_command("GetStats")
 
-func _on_godot_stats_timer_timeout() -> void:
-	CpHelpers.insert_data(%GodotStats, Templates.format_godot_stats())
+func _on_message_queue_stats_timer_timeout() -> void:
+	CpHelpers.insert_data(%MessageQueueStats, Templates.format_message_queue_stats())
 
 func _on_start_singing() -> void:
 	Globals.is_paused = true
@@ -318,10 +325,21 @@ func _on_asset_toggle_pressed(toggle: CheckButton) -> void:
 	Globals.pin_asset.emit(toggle.text, toggle.button_pressed)
 
 func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
-	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
+	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 	%CurrentSpeech/Prompt.text = prompt
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
 	%CurrentSpeech/Text.text = text
+
+func _on_new_speech_v2(data: Dictionary) -> void:
+	%CurrentSpeech/Text.remove_theme_color_override("font_color")
+	%CurrentSpeech/Prompt.text = "%s (%s)" % [data.prompt, data.id]
+	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(data.emotions)
+
+func _on_end_speech_v2(_data: Dictionary) -> void:
+	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
+
+func _on_push_speech_from_queue(response: String) -> void:
+	%CurrentSpeech/Text.text = response
 
 func _on_start_speech() -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")
@@ -484,8 +502,8 @@ func _on_filter_button_toggled(button_pressed: bool, button: Button) -> void:
 func _on_time_before_cleanout_value_changed(value: float) -> void:
 	Globals.time_before_cleanout = value
 
-func _on_time_before_speech_value_changed(value: float) -> void:
-	Globals.time_before_speech = value
+func _on_time_before_next_response_value_changed(value: float) -> void:
+	Globals.time_before_next_response = value
 
 func _on_update_backend_stats(data: Array) -> void:
 	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats(data))
@@ -513,7 +531,7 @@ func backend_disconnected() -> void:
 func _on_pause_speech_toggled(button_pressed: bool) -> void:
 	Globals.is_paused = button_pressed
 
-	if not button_pressed:
+	if not button_pressed and Globals.is_ready():
 		Globals.ready_for_speech.emit()
 
 func _on_debug_mode_button_toggled(button_pressed: bool) -> void:
@@ -528,7 +546,6 @@ func _on_debug_mode_button_toggled(button_pressed: bool) -> void:
 
 func _on_cancel_speech_pressed() -> void:
 	Globals.cancel_speech.emit()
-	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.RED)
 
 func _on_reset_subtitles_pressed() -> void:
 	Globals.reset_subtitles.emit()
@@ -560,6 +577,16 @@ func _on_backend_status_pressed() -> void:
 	await get_tree().create_timer(1.0).timeout
 	main.connect_backend()
 
+func _on_speech_text_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+				%CurrentSpeech/TextCopied.show()
+				var text: String = %CurrentSpeech/Prompt.text
+				text += "\n\n" + %CurrentSpeech/Text.text.replace("\n", " ")
+				DisplayServer.clipboard_set(text)
+				await get_tree().create_timer(2.0).timeout
+				%CurrentSpeech/TextCopied.hide()
+
 func _on_close_requested() -> void:
 	$CloseConfirm.show()
 
@@ -567,4 +594,3 @@ func _on_close_confirm_confirmed() -> void:
 	_stop_obs_processing()
 	main.disconnect_backend()
 	get_tree().quit()
-

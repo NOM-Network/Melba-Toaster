@@ -78,8 +78,8 @@ func nudge_model() -> void:
 		tweens.nudge.kill()
 
 	tweens.nudge = create_tween()
-	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.5, 1.0).set_ease(Tween.EASE_IN)
-	tweens.nudge.tween_property(cubism_model, "speed_scale", 1, 1.0).set_ease(Tween.EASE_OUT)
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.7, 1.0).set_ease(Tween.EASE_IN)
+	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.0, 2.0).set_ease(Tween.EASE_OUT)
 
 func pin_asset(asset_name: String, enabled: bool) -> void:
 	var asset: PinnableAsset = Globals.pinnable_assets[asset_name]

@@ -27,6 +27,8 @@ func _ready() -> void:
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.speech_done.connect(_on_speech_done)
 
+	Globals.ready_for_speech.connect(_on_ready_for_speech)
+
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
 	print_timer.one_shot = true
 
@@ -39,9 +41,6 @@ func _process(delta: float) -> void:
 			var time_check := current_time + delta
 			if current_subtitle_text[0][1] == "STOP":
 				print_timer.stop()
-
-				# Reset auto toggles
-				Globals.set_toggle.emit("toa", false)
 				return
 
 			if time_check >= current_subtitle_text[0][0]:
@@ -53,14 +52,14 @@ func _process(delta: float) -> void:
 
 				# Auto toggles
 				var search_string := text.strip_edges().to_lower()
-				var unwanted_chars := [".", ",", ":", "?"]
+				var unwanted_chars := [".", ",", ":", "?", "!", ";", "-"]
 
 				var result := ""
 				for c in unwanted_chars:
 					result = search_string.replace(c, "")
 
 				match result:
-					"toa-chan", "toa":
+					"toachan", "toa":
 						Globals.set_toggle.emit("toa", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
@@ -89,6 +88,9 @@ func _on_speech_done() -> void:
 func _on_clear_subtitles_timer_timeout() -> void:
 	clear_subtitles()
 
+func _on_ready_for_speech() -> void:
+	Globals.set_toggle.emit("toa", false)
+
 # endregion
 
 # region PUBLIC FUNCTIONS
@@ -99,6 +101,9 @@ func set_prompt(text: String, duration := 0.0) -> void:
 	if not text:
 		return
 
+	if text == "random":
+		return
+
 	prompt.text = text
 	prompt.label_settings.font_size = default_font_size[prompt.name]
 	while prompt.get_line_count() > prompt.get_visible_line_count():
@@ -106,8 +111,9 @@ func set_prompt(text: String, duration := 0.0) -> void:
 
 	_tween_visible_ratio(prompt, prompt.name, 0.0, 1.0, duration)
 
-func set_subtitles(text: String, duration := 0.0) -> void:
-	subtitles.text = ""
+func set_subtitles(text: String, duration := 0.0, continue_print := false) -> void:
+	if not continue_print:
+		subtitles.text = ""
 	print_timer.stop()
 
 	text = text.strip_edges()

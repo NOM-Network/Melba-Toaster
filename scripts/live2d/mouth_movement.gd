@@ -86,13 +86,13 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 		selected_mouth_form = _map_to_log_range(selected_vowel)
 
 	var unaltered_mouth_value = overall_energy * max_mouth_value
-	var unaltered_mouth_form = clamp(selected_mouth_form * overall_energy, 0.0, 1.0)
+	var unaltered_mouth_form = Globals.current_emotion_modifier + clamp(selected_mouth_form * overall_energy, 0.0, 0.8)
 
 	if Globals.is_singing or Globals.is_speaking:
 		manage_speaking()
 	else:
-		param_mouth_form.value = 0.0
 		param_mouth.value = 0.0
+		param_mouth_form.value = lerp(param_mouth_form.value, Globals.current_emotion_modifier, 0.01)
 
 	prev_mouth_values.remove_at(0)
 	prev_mouth_values.append(unaltered_mouth_value)
@@ -102,7 +102,7 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 
 func manage_speaking() -> void:
 	param_mouth.value = _find_avg(prev_mouth_values.slice(-3))
-	param_mouth_form.value = _find_avg(prev_mouth_form_values.slice(-5))
+	param_mouth_form.value = _find_avg(prev_mouth_form_values.slice(-3))
 
 	if prev_mouth_values[prev_values_amount - 1] != 0.0 \
 		and prev_mouth_values.slice(0, prev_values_amount - 1) == test_array \
