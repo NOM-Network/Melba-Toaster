@@ -4,8 +4,8 @@ class_name MouthMovement
 @export var mouth_movement := MouthMovement # MouthMovement node
 @export var audio_bus_name := "Voice"
 @export var min_db := 60.0
-@export var min_voice_freq := 200
-@export var max_voice_freq := 800
+@export var min_voice_freq := 450
+@export var max_voice_freq := 750
 
 # Parameter Names
 @export_category("Param Names")
@@ -14,7 +14,7 @@ class_name MouthMovement
 
 # Parameter Values
 @export_category("Param Values")
-@export var max_mouth_value := 0.6
+@export var max_mouth_value := 0.8
 @export var mouth_form_value := 0.0
 
 # Parameters
@@ -31,8 +31,8 @@ var prev_unaltered_values := []
 var test_array := []
 
 func _ready():
-	self.cubism_init.connect(_on_cubism_init)
-	self.cubism_process.connect(_on_cubism_process)
+	cubism_init.connect(_on_cubism_init)
+	cubism_process.connect(_on_cubism_process)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var any_param = model.get_parameters()
@@ -83,7 +83,7 @@ func manage_singing() -> void:
 
 func manage_speaking() -> void:
 	param_mouth.value = find_avg(prev_unaltered_values.slice(-4))
-	
+
 	if param_mouth.value < 0.1:
 		var force_value := false
 		for i in prev_unaltered_values:
@@ -92,22 +92,15 @@ func manage_speaking() -> void:
 		if force_value:
 			param_mouth.value = 0.1
 
-	#if abs(prev_value - param_mouth.value) > 0.06:
-		#if prev_value > param_mouth.value:
-			#param_mouth.value = prev_value - 0.06
-		#else:
-			#param_mouth.value = prev_value + 0.06
-
 	if prev_unaltered_values[prev_values_amount - 1] != 0.0 \
 		and prev_unaltered_values.slice(0, prev_values_amount - 1) == test_array:
 		Globals.nudge_model.emit()
 
 	prev_value = param_mouth.value
 
-
-func find_avg(numbers: Array) -> float: 
+func find_avg(numbers: Array) -> float:
 	var total := 0.0
-	for num in numbers: 
+	for num in numbers:
 		total += num
 	var avg: float = total / float(numbers.size())
 	return avg
