@@ -148,13 +148,14 @@ func _generate_position_controls() -> void:
 
 	for p in Globals.positions:
 		var button = Button.new()
-		button.text = p
+		button.text = p.capitalize()
 		button.toggle_mode = true
 		button.button_pressed = p == Globals.default_position
 		button.name = "Position" + p.to_pascal_case()
 		button.button_group = button_group
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
+		button.set_meta("position_name", p)
 		positions.add_child(button)
 
 	var menu := %NextPositionMenu
@@ -162,7 +163,7 @@ func _generate_position_controls() -> void:
 		menu.add_item(p)
 
 func _on_position_button_pressed(button: BaseButton) -> void:
-	Globals.change_position.emit(button.text)
+	Globals.change_position.emit(button.get_meta("position_name"))
 
 func _generate_singing_controls() -> void:
 	var menu := %SingingMenu

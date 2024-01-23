@@ -332,15 +332,19 @@ func _on_stop_singing() -> void:
 		Globals.change_scene.emit("Main")
 
 func _on_change_position(new_position: String) -> void:
-	assert(Globals.positions.has(new_position), "Position %s does not exist" % new_position)
+	new_position = new_position.to_snake_case()
+
+	if not Globals.positions.has(new_position):
+		printerr("Position %s does not exist" % new_position)
+		return
 
 	var positions: Dictionary = Globals.positions[new_position]
 	match new_position:
-		"Intro":
+		"intro":
 			assert(model_parent_animation.has_animation("intro"))
 
 			model_parent_animation.play("intro")
-			model_parent_animation.animation_finished.emit(_on_change_position.bind("Default"))
+			model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
 
 		_:
 			for p in positions:

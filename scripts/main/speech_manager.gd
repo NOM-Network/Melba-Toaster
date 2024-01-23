@@ -106,8 +106,6 @@ func _process_emotions(emotions: Array) -> void:
 		if Globals.emotions_modifiers[emotion] > max_emotion[1]:
 			max_emotion = [emotion, Globals.emotions_modifiers[emotion]]
 
-	print(max_emotion)
-
 	Globals.current_emotion_modifier = max_emotion[1]
 
 	for toggle in ["tears", "void"]:

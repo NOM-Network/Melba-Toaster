@@ -64,41 +64,41 @@ func is_ready() -> bool:
 
 # region SCENE DATA
 
-static var default_position := "Default"
+static var default_position := "default"
 static var last_position := default_position
 static var default_model_position := [ Vector2(737, 1124), Vector2(1, 1) ]
 static var default_lower_third_position := [ Vector2(35, 682), Vector2(1, 1) ]
 
 static var positions := {
 	# use Tulpes - [ position, scale ]
-	"Intro": {}, # placeholder for intro animation
+	"intro": {}, # placeholder for intro animation
 
-	"Under": {
+	"under": {
 		"model": [ Vector2(737, 2036), Vector2(1, 1) ],
 		"lower_third": default_lower_third_position,
 	},
 
-	"Default": {
+	"default": {
 		"model": default_model_position,
 		"lower_third": default_lower_third_position,
 	},
 
-	"Gaming": {
+	"gaming": {
 		"model": [ Vector2(1700, 1300), Vector2(0.74, 0.74) ],
 		"lower_third": [ Vector2(35, 800), Vector2(0.777, 0.777) ],
 	},
 
-	"Close": {
+	"close": {
 		"model": [ Vector2(812, 1537), Vector2(1.6, 1.6) ],
 		"lower_third": default_lower_third_position,
 	},
 
-	"Full Screen": {
+	"fullsreen": {
 		"model": [ Vector2(950, 2988), Vector2(3.6, 3.6) ],
 		"lower_third": default_lower_third_position,
 	},
 
-	"Full Height": {
+	"full_height": {
 		"model": [ Vector2(829, 544), Vector2(0.55, 0.55) ],
 		"lower_third": default_lower_third_position,
 	}
