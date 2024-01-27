@@ -73,14 +73,17 @@ func initialize_pinnable_assets() -> void:
 
 	for asset in Globals.pinnable_assets.values():
 		asset.node = $PinnableAssets.find_child(asset.node_name)
+		if not asset.node:
+			printerr("Cannot found `%s` asset node" % asset.node_name)
+			continue
 
 		asset.node.modulate.a = 0
 
 		var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 		var ary_surface = ary_mesh.surface_get_arrays(0)
 
-		asset.initial_points.A = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
-		asset.initial_points.B = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
+		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
+		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
 
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
@@ -99,40 +102,39 @@ func nudge_model() -> void:
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.7, 1.0).set_ease(Tween.EASE_IN)
 	tweens.nudge.tween_property(cubism_model, "speed_scale", 1.0, 2.0).set_ease(Tween.EASE_OUT)
 
-func pin_asset(asset_name: String, enabled: bool) -> void:
-	var asset: PinnableAsset = Globals.pinnable_assets[asset_name]
+func pin_asset(node_name: String, enabled: bool) -> void:
+	var asset: PinnableAsset = Globals.pinnable_assets[node_name]
 	asset.enabled = enabled
 
 	_tween_pinned_asset(asset, enabled)
 
 func _tween_pinned_asset(asset: PinnableAsset, enabled: bool) -> void:
-	var asset_name := asset.asset_name
+	var node_name := asset.node_name
 
 	if enabled:
-		assets_to_pin[asset_name] = asset
+		assets_to_pin[node_name] = asset
 
-	if tweens.has(asset_name):
-		tweens[asset_name].kill()
+	if tweens.has(node_name):
+		tweens[node_name].kill()
 
-	tweens[asset_name] = create_tween().set_trans(Tween.TRANS_QUINT)
-	tweens[asset_name].tween_property(asset.node, "modulate:a", 1.0 if enabled else 0.0, 0.5)
+	tweens[node_name] = create_tween().set_trans(Tween.TRANS_QUINT)
+	tweens[node_name].tween_property(asset.node, "modulate:a", 1.0 if enabled else 0.0, 0.5)
 
 	if not enabled:
-		tweens[asset.asset_name].tween_callback(func (): assets_to_pin.erase(asset_name))
+		tweens[node_name].tween_callback(func (): assets_to_pin.erase(node_name))
 
 func pin(asset: PinnableAsset) -> void:
-	var base_offset = cubism_model.size * -0.5
-
 	var dict_mesh = cubism_model.get_meshes()
 	var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 	var ary_surface = ary_mesh.surface_get_arrays(0)
 	var pos = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
 	var pos2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
 
-	asset.node.position = pos + base_offset + asset.offset
+	asset.node.position = pos + (model_scale * asset.position_offset)
+	asset.node.scale = Vector2(model_scale, model_scale) * asset.scale_offset
 	asset.node.rotation = get_asset_rotation(
-		asset.initial_points.A,
-		asset.initial_points.B,
+		asset.initial_points[0],
+		asset.initial_points[1],
 		pos,
 		pos2
 	)

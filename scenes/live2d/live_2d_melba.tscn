@@ -72,32 +72,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [0.33]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D/GDCubismUserModel:adjust_scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.33]
-}
-tracks/3/type = "method"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D/GDCubismUserModel/TargetPoint")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [Vector2(0, 0)],
-"method": &"set_target"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_rc6ug"]
 resource_name = "emerge"
@@ -334,13 +308,10 @@ autostart = true
 [node name="PinnableAssets" type="Node2D" parent="."]
 
 [node name="GlassSprites" type="Sprite2D" parent="PinnableAssets"]
-position = Vector2(7.37445, -662.375)
-scale = Vector2(0.348859, 0.316506)
 texture = ExtResource("7_lkcnv")
 
 [node name="CensorAnimation" type="AnimatedSprite2D" parent="PinnableAssets"]
 modulate = Color(1, 1, 1, 0)
-scale = Vector2(0.45, 0.45)
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
