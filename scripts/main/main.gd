@@ -1,6 +1,5 @@
 extends Node2D
 
-@onready var model_parent_animation := $ModelParentAnimation
 @onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
@@ -170,6 +169,7 @@ func _mouse_to_prop(prop: String, change: Vector2) -> void:
 	model[prop] += change
 
 func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
+	# TODO: rewrite to accomodate position inside the model viewport
 	if is_pressed:
 		var local_pos: Vector2 = model.to_local(event.position)
 		var render_size: Vector2 = Vector2(
@@ -341,22 +341,22 @@ func _on_change_position(new_position: String) -> void:
 	var positions: Dictionary = Globals.positions[new_position]
 	match new_position:
 		"intro":
-			assert(model_parent_animation.has_animation("intro"))
-
-			model_parent_animation.play("intro")
-			model_parent_animation.animation_finished.emit(_on_change_position.bind("default"))
+			model.play_emerge_animation()
 
 		_:
 			for p in positions:
 				var node = get(p)
+
+				var position_prop = "model_position" if p == "model" else "position"
+				var scale_prop = "model_scale" if p == "model" else "scale"
 
 				if tweens.has(p):
 					tweens[p].kill()
 
 				tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
 				tweens[p].set_parallel()
-				tweens[p].tween_property(node, "position", positions[p][0], 1)
-				tweens[p].tween_property(node, "scale", positions[p][1], 1)
+				tweens[p].tween_property(node, position_prop, positions[p][0], 1)
+				tweens[p].tween_property(node, scale_prop, positions[p][1], 1)
 
 func _reset_toggles() -> void:
 	for toggle in Globals.toggles:

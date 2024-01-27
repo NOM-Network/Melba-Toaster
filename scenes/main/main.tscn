@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=94 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -620,53 +620,6 @@ shadow_size = 0
 shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="Animation" id="Animation_gq6hp"]
-length = 5.0
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Live2DMelba:position:y")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(2036, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-
-[sub_resource type="Animation" id="Animation_focdv"]
-resource_name = "intro"
-length = 10.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:target_position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 3.3, 5.3, 10),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(-0.7, 0.7), Vector2(0.7, 0.7), Vector2(0, 0)]
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Live2DMelba:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0),
-"points": PackedFloat32Array(2036, -0.25, 0, 0.25, 0, 2036, -0.25, 0, 0.25, 0, 1648, -0.6, -2, 0.25, 0, 1652, -0.5, -37.7632, 0.133333, 10.0702, 1886, -0.678343, -7, 0.921657, 3, 1124, -2.67834, -7, 0, 0),
-"times": PackedFloat32Array(0, 1.3, 3.1, 6.4, 7.5, 10)
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_hww7n"]
-_data = {
-"RESET": SubResource("Animation_gq6hp"),
-"intro": SubResource("Animation_focdv")
-}
-
 [node name="Main" type="Node2D"]
 script = ExtResource("1_bldvu")
 
@@ -731,12 +684,6 @@ visible_characters_behavior = 1
 wait_time = 5.0
 
 [node name="PrintTimer" type="Timer" parent="LowerThird"]
-
-[node name="ModelParentAnimation" type="AnimationPlayer" parent="."]
-reset_on_save = false
-libraries = {
-"": SubResource("AnimationLibrary_hww7n")
-}
 
 [node name="BeatsCounter" type="Label" parent="."]
 anchors_preset = 2

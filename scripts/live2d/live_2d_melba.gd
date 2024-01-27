@@ -1,7 +1,25 @@
 extends Node2D
 
+@onready var cubism_model := %GDCubismUserModel
+
+#region MODEL EXPORTS
+
 @export_category("Cubism Model")
-@export var cubism_model: GDCubismUserModel
+@export var model_position: Vector2 = Vector2.ZERO:
+	get:
+		return cubism_model.adjust_position
+	set(value):
+		if cubism_model:
+			cubism_model.adjust_position = value
+
+@export var model_scale: float = 0.15:
+	get:
+		return cubism_model.adjust_scale
+	set(value):
+		if cubism_model:
+			cubism_model.adjust_scale = value
+
+#endregion
 
 #region EFFECTS FOR OVERRIDE
 # re activate these nodes on function reset_overrides
@@ -199,3 +217,8 @@ func play_random_idle_animation() -> void:
 		play_animation("idle1")
 	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation
 		play_animation("idle3")
+
+func play_emerge_animation() -> void:
+	$AnimationPlayer.play("emerge")
+	await $AnimationPlayer.animation_finished
+	Globals.change_position.emit("default")
