@@ -62,14 +62,62 @@ Due to issues with Live2D plugin (memory leaks in the editor), it is recommended
 
 This project is built for use on Windows and uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the extension first](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put the files in `addons/gd_cubism/bin` folder.
 
+### Build machine perparations
+
+This is required to build GDCubism plugin for Windows. You won't need it to use Melba Toaster from the release tag.
+
+> We are using Windows 11 Build Machine, available via Hyper-V's Quick Create function.
+
+1. Install Git, Python and SCons:
+
+```ps
+winget install Git.Git
+winget install Python.Python.3.12
+```
+
+2. Install SCons:
+
+```ps
+pip install SCons
+```
+
+3. Get the plugin:
+
+```ps
+git clone https://github.com/MizunagiKB/gd_cubism.git
+cd gd_cubism
+git submodule update --init
+```
+
+4. Get the SDK from the Live2D website (latest beta version), put to `thirdparty` folder: <https://www.live2d.com/en/sdk/download/native/>
+
+5. Get the Cubism Native Framework:
+
+```ps
+pushd thirdparty
+git clone <https://github.com/Live2D/CubismNativeFramework.git>
+popd
+```
+
+6. Build the plugin:
+
+```ps
+scons platform=windows arch=x86_64 target=template_debug
+scons platform=windows arch=x86_64 target=template_release
+```
+
+7. Retrieve the `gd_cubism` folder from`gd_cubism\demo\addons` and put it into `addons` folder.
+
+8. You can safely delete `cs` and `example` folders, as well as non-DLL files in `bin` folder.
+
 ## License
 
 Melba Toast © 2023 NOM Network and contributors.
 
-Code is licensed under a [AGPL 3.0 (and later) license](LICENSE.md).
+Project codebase is licensed under a [AGPL 3.0 (and later) license](LICENSE.md).
 
 Art assets are licensed under a [CC BY-SA 4.0 license](LICENSE-ASSETS.md).
 
 This project uses [New Bread font](https://www.dafont.com/new-bread.font) by Syafrizal a.k.a. Khurasan.
 
-This project uses [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism) by MizunagiKB.
+This project uses [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism) by MizunagiKB, as well as [Live2D Cubism SDK](https://github.com/Live2D/CubismNativeFramework/blob/develop/LICENSE.md).
