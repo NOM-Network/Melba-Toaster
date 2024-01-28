@@ -66,7 +66,7 @@ func is_ready() -> bool:
 
 static var default_position := "default"
 static var last_position := default_position
-static var default_model_position := [ Vector2(-200, 580), 0.33 ]
+static var default_model_position := [ Vector2(740, 1160), 0.33 ]
 static var default_lower_third_position := [ Vector2(35, 682), Vector2(1, 1) ]
 
 static var positions := {
@@ -74,7 +74,7 @@ static var positions := {
 	"intro": {}, # placeholder for intro animation
 
 	"under": {
-		"model": [ Vector2(-200, 1600), 0.33 ],
+		"model": [ Vector2(740, 2080), 0.33 ],
 		"lower_third": default_lower_third_position,
 	},
 
@@ -84,27 +84,28 @@ static var positions := {
 	},
 
 	"gaming": {
-		"model": [ Vector2(720, 800), 0.25 ],
+		"model": [ Vector2(1680, 1420), 0.3 ],
 		"lower_third": [ Vector2(35, 800), Vector2(0.777, 0.777) ],
 	},
 
 	"close": {
-		"model": [ Vector2(-200, 1000), 0.5],
+		"model": [ Vector2(740, 1500), 0.5],
 		"lower_third": default_lower_third_position,
 	},
 
 	"fullsreen": {
-		"model": [ Vector2(0, 2150), 1.0 ],
+		"model": [ Vector2(920, 3265), 1.35 ],
 		"lower_third": default_lower_third_position,
 	},
 
 	"full_height": {
-		"model": [ Vector2(-200, 0), 0.15 ],
+		"model": [ Vector2(740, 520), 0.15 ],
 		"lower_third": default_lower_third_position,
 	}
 }
 
-static var scale_change := Vector2(0.05, 0.05)
+static var scale_change := 0.05
+static var rotation_change := 5.0
 
 # region LIVE2D DATA
 

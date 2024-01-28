@@ -95,7 +95,7 @@ git submodule update --init
 
 ```ps
 pushd thirdparty
-git clone <https://github.com/Live2D/CubismNativeFramework.git>
+git clone https://github.com/Live2D/CubismNativeFramework.git
 popd
 ```
 

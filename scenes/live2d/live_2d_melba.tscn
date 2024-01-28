@@ -48,30 +48,6 @@ animations = [{
 
 [sub_resource type="Animation" id="Animation_07avk"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D/GDCubismUserModel:adjust_position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-200, 580)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D/GDCubismUserModel:adjust_scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.33]
-}
 
 [sub_resource type="Animation" id="Animation_rc6ug"]
 resource_name = "emerge"
@@ -79,55 +55,57 @@ length = 10.0
 tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D/GDCubismUserModel:adjust_position:x")
+tracks/0/path = NodePath(".:model_position:x")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(-200, -0.25, 0, 0.25, 0, -200, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1.7)
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(740, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
 }
 tracks/1/type = "bezier"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D/GDCubismUserModel:adjust_position:y")
+tracks/1/path = NodePath(".:model_position:y")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0),
-"points": PackedFloat32Array(1600, -0.25, 0, 0.25, 0, 1600, -0.25, 0, 0.7, 4, 1100, -1.45, -1, 0.25, 0, 1100, -0.25, 0, 1.125, 0, 1600, -0.9, -1, 1, 0, 580, -2.24062, 1, 0.25, 0),
-"times": PackedFloat32Array(0, 1.7, 4.7, 5.7, 7.1, 10)
+"points": PackedFloat32Array(2080, -0.25, 0, 0.25, 0, 2080, -0.25, 0, 0.6, 0, 1700, -0.675, -1, 0.25, 0, 1700, -0.25, 0, 0.95, 1, 2080, -0.875, -1, 0.25, 0, 1160, -1.13, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1.5, 3.6, 6, 8, 10)
 }
 tracks/2/type = "bezier"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D/GDCubismUserModel:adjust_scale")
+tracks/2/path = NodePath(".:model_scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0.33, -0.25, 0, 0.25, 0, 0.33, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1.7)
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0.33, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
 }
-tracks/3/type = "method"
+tracks/3/type = "bezier"
 tracks/3/imported = false
-tracks/3/enabled = false
-tracks/3/path = NodePath("Sprite2D/GDCubismUserModel/TargetPoint")
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:model_eyes_target:x")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 3.9, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1),
-"values": [{
-"args": [Vector2(0, 0)],
-"method": &"set_target"
-}, {
-"args": [Vector2(-0.7, 0.7)],
-"method": &"set_target"
-}, {
-"args": [Vector2(0.7, 0.7)],
-"method": &"set_target"
-}]
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, -1, -0.25, 0, 0.25, 0, -1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1.5, 2.6, 3.9, 4.8, 5.6, 6.5)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:model_eyes_target:y")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0.7, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 2.6)
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_a8dkn"]
@@ -138,35 +116,34 @@ _data = {
 
 [node name="Live2DMelba" type="Node2D"]
 script = ExtResource("1_gym56")
-model_position = Vector2(-200, 1600)
-model_scale = 0.33
-metadata/_edit_horizontal_guides_ = [13.0, -942.0]
-metadata/_edit_vertical_guides_ = [21.0]
+model_position = Vector2(740, 1160)
+model_scale = 0.0
+metadata/_edit_horizontal_guides_ = [-942.0, -560.0, 1100.0]
+metadata/_edit_vertical_guides_ = [1100.0]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = SubResource("ViewportTexture_qkp5x")
 centered = false
-metadata/_edit_lock_ = true
+offset = Vector2(-1100, -1100)
 
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
 auto_scale = false
 adjust_scale = 0.33
-adjust_position = Vector2(-200, 580)
+adjust_position = Vector2(-200, 1600)
 anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = 2.8068
-ParamAngleY = -2.3459
-ParamAngleZ = 5.48646
-ParamBodyAngleX = -1.27567
-ParamBodyAngleY = 0.330071
 ParamBodyAngleZ = -7.25992e-07
 Param3 = 0.0
 Param4 = -0.725519
 Param5 = 4.8874
+ParamBodyAngleZ = -0.00616784
+Param3 = 2.47907
+Param4 = 1.39557
+Param5 = 8.10426
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -175,13 +152,17 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.0860813
 Param7 = -0.0726582
 Param8 = -0.00733908
 Param10 = 0.265142
 Param11 = 0.056136
-Param15 = -3.36677
-Param16 = 0.576079
+Param6 = 0.138516
+Param7 = -0.0347522
+Param8 = 0.0130649
+Param10 = 0.514608
+Param11 = 0.00735841
+Param15 = 5.61991
+Param16 = 1.25488
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -190,8 +171,6 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.0
-Param26 = 0.0
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -203,16 +182,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.384325
+ParamBreath = 0.302175
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
 Param = 2.38419e-07
-Param2 = -5.96046e-07
-Param12 = -0.00096153
-Param13 = 0.000299705
-Param23 = 0.0150883
-Param22 = -0.0150883
+Param2 = 0.0
+Param12 = -0.00137474
+Param13 = -0.000370706
+Param23 = 0.000281545
+Param22 = 1.63042e-06
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -277,7 +256,7 @@ unique_name_in_owner = true
 disable_3d = true
 transparent_bg = true
 gui_disable_input = true
-size = Vector2i(1920, 1080)
+size = Vector2i(2200, 2200)
 render_target_update_mode = 4
 
 [node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]
@@ -303,18 +282,20 @@ wait_time = 3.0
 one_shot = true
 autostart = true
 
-[node name="AnimTimer" type="Timer" parent="."]
+[node name="PinnableAssets" type="Node2D" parent="Sprite2D"]
+unique_name_in_owner = true
+position = Vector2(-1100, -1100)
 
-[node name="PinnableAssets" type="Node2D" parent="."]
-
-[node name="GlassSprites" type="Sprite2D" parent="PinnableAssets"]
+[node name="GlassSprites" type="Sprite2D" parent="Sprite2D/PinnableAssets"]
 texture = ExtResource("7_lkcnv")
 
-[node name="CensorAnimation" type="AnimatedSprite2D" parent="PinnableAssets"]
+[node name="CensorAnimation" type="AnimatedSprite2D" parent="Sprite2D/PinnableAssets"]
 modulate = Color(1, 1, 1, 0)
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
+
+[node name="AnimTimer" type="Timer" parent="."]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

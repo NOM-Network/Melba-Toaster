@@ -137,49 +137,35 @@ func _match_command(line: String) -> void:
 func _input(event: InputEvent) -> void:
 	if event as InputEventMouseMotion:
 		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
-			_mouse_to_prop("position", event.relative)
+			model.mouse_to_position(event.relative)
 
 		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
-			_move_eyes(event, true)
+			model.move_eyes(event, true)
 
 	if event as InputEventMouseButton:
 		if event.is_pressed():
 			match event.button_index:
+				MOUSE_BUTTON_LEFT:
+					model.print_model_data()
+
 				MOUSE_BUTTON_WHEEL_UP:
-					_mouse_to_scale(Globals.scale_change)
+					if event.ctrl_pressed:
+						model.mouse_to_rotation(Globals.rotation_change)
+					else:
+						model.mouse_to_scale(Globals.scale_change)
 
 				MOUSE_BUTTON_WHEEL_DOWN:
-					_mouse_to_scale(-Globals.scale_change)
+					if event.ctrl_pressed:
+						model.mouse_to_rotation(-Globals.rotation_change)
+					else:
+						model.mouse_to_scale(-Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
 					Globals.change_position.emit(Globals.last_position)
 		else:
 			match event.button_index:
 				MOUSE_BUTTON_RIGHT:
-					_move_eyes(event, false)
-
-func _mouse_to_scale(change: Vector2) -> void:
-	if tweens.has("model_scale"):
-		tweens.model_scale.kill()
-
-	tweens.model_scale = create_tween()
-	tweens.model_scale.tween_property(model, "scale", model.scale + change, 0.05)
-
-func _mouse_to_prop(prop: String, change: Vector2) -> void:
-	model[prop] += change
-
-func _move_eyes(event: InputEvent, is_pressed: bool) -> void:
-	# TODO: rewrite to accomodate position inside the model viewport
-	if is_pressed:
-		var local_pos: Vector2 = model.to_local(event.position)
-		var render_size: Vector2 = Vector2(
-			float(user_model.size.x) * model.scale.x,
-			float(user_model.size.y) * model.scale.y * -1.0
-		) * 0.5
-		local_pos /= render_size
-		model_target_point.set_target(local_pos)
-	else:
-		model_target_point.set_target(Vector2.ZERO)
+					model.move_eyes(event, false)
 
 func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 	Globals.update_backend_stats.emit(stats)
@@ -339,24 +325,22 @@ func _on_change_position(new_position: String) -> void:
 		return
 
 	var positions: Dictionary = Globals.positions[new_position]
+
+	# "model" positions are handled in the model script
 	match new_position:
 		"intro":
-			model.play_emerge_animation()
+			return
 
 		_:
-			for p in positions:
-				var node = get(p)
+			var pos = positions.lower_third
 
-				var position_prop = "model_position" if p == "model" else "position"
-				var scale_prop = "model_scale" if p == "model" else "scale"
+			if tweens.has("lower_third"):
+				tweens.lower_third.kill()
 
-				if tweens.has(p):
-					tweens[p].kill()
-
-				tweens[p] = create_tween().set_trans(Tween.TRANS_QUINT)
-				tweens[p].set_parallel()
-				tweens[p].tween_property(node, position_prop, positions[p][0], 1)
-				tweens[p].tween_property(node, scale_prop, positions[p][1], 1)
+			tweens.lower_third = create_tween().set_trans(Tween.TRANS_QUINT)
+			tweens.lower_third.set_parallel()
+			tweens.lower_third.tween_property(lower_third, "position", pos[0], 1)
+			tweens.lower_third.tween_property(lower_third, "scale", pos[1], 1)
 
 func _reset_toggles() -> void:
 	for toggle in Globals.toggles:

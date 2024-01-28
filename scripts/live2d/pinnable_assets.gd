@@ -10,7 +10,7 @@ var custom_point: int
 var second_point: int
 
 var node: Node
-var initial_points := [0.0, 0.0]
+var initial_points: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 
 func _init(
 	p_node_name: String,

@@ -441,7 +441,9 @@ func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
 func change_filter_state(data: Dictionary) -> void:
 	var filter_name: String = Templates.filter_node_name % [data.sourceName, data.filterName]
 	var button := %ObsFilters.get_node(filter_name)
-	assert(button is Button, "Filter button `%s` was not found, returned %s" % [filter_name, button])
+	if not button is Button:
+		printerr("Filter button `%s` was not found, returned %s" % [filter_name, button])
+		return
 
 	button.button_pressed = data.filterEnabled
 	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.RED)
