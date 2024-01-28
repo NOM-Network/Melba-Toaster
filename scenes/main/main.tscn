@@ -684,6 +684,7 @@ visible_characters_behavior = 1
 wait_time = 5.0
 
 [node name="PrintTimer" type="Timer" parent="LowerThird"]
+one_shot = true
 
 [node name="BeatsCounter" type="Label" parent="."]
 anchors_preset = 2

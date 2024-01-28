@@ -584,8 +584,12 @@ func _on_speech_text_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 				%CurrentSpeech/TextCopied.show()
+
 				var text: String = %CurrentSpeech/Prompt.text
-				text += "\n\n" + %CurrentSpeech/Text.text.replace("\n", " ")
+				text += "\n\n" + %CurrentSpeech/Text.text \
+					.replace("\n", " ") \
+					.replace(" [END]", "")
+
 				DisplayServer.clipboard_set(text)
 				await get_tree().create_timer(2.0).timeout
 				%CurrentSpeech/TextCopied.hide()

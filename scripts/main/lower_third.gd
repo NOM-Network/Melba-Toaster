@@ -18,6 +18,7 @@ extends Control
 # Current prompt data
 var current_subtitle_text := []
 var current_duration := 0.0
+var time_per_symbol := 0.0
 
 func _ready() -> void:
 	# Signals
@@ -30,13 +31,12 @@ func _ready() -> void:
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
-	print_timer.one_shot = true
 
 	Globals.reset_subtitles.emit()
 
 func _process(delta: float) -> void:
 	if not print_timer.is_stopped():
-		var current_time: float = current_duration - print_timer.time_left
+		var current_time: float = current_duration + (time_per_symbol * 3) - print_timer.time_left
 		for token in current_subtitle_text:
 			var time_check := current_time + delta
 			if current_subtitle_text[0][1] == "STOP":
@@ -58,9 +58,8 @@ func _process(delta: float) -> void:
 				for c in unwanted_chars:
 					result = search_string.replace(c, "")
 
-				match result:
-					"toachan", "toa":
-						Globals.set_toggle.emit("toa", true)
+				if result.begins_with("toachan"):
+					Globals.set_toggle.emit("toa", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
 				while subtitles.get_line_count() > subtitles.get_visible_line_count():
@@ -120,7 +119,7 @@ func set_subtitles(text: String, duration := 0.0, continue_print := false) -> vo
 	if not text:
 		return
 
-	var time_per_symbol = (duration - 0.5) / text.length()
+	time_per_symbol = (duration - 0.5) / text.length()
 
 	current_duration = duration
 	current_subtitle_text = []
@@ -162,7 +161,6 @@ func clear_subtitles() -> void:
 func start_clear_subtitles_timer() -> void:
 	cleanout_timer.wait_time = Globals.time_before_cleanout
 	cleanout_timer.start()
-
 
 func _tween_visible_ratio(label: Label, tween_name: String, start_val: float, final_val: float, duration: float) -> void:
 	if tweens.has(tween_name):
