@@ -35,7 +35,6 @@ var assets_to_pin := {}
 		if model:
 			model.adjust_scale = value
 
-# TODO: fix animation player not being able to work with the target point
 @export var model_eyes_target: Vector2 = Vector2.ZERO:
 	get:
 		return target_point.get_target() if target_point else Vector2.ZERO
@@ -43,7 +42,6 @@ var assets_to_pin := {}
 	set(value):
 		if target_point:
 			target_point.set_target(value)
-			print(value, " ", target_point.get_target())
 #endregion
 
 #region DEBUG
@@ -306,21 +304,18 @@ func mouse_to_position(change: Vector2) -> void:
 	pinnable_assets.position = -pivot
 	model.adjust_position += change
 
-func move_eyes(event: InputEvent, is_pressed: bool) -> void:
-	if not is_pressed:
+func move_eyes(mouse_position: Vector2) -> void:
+	if mouse_position == Vector2.ZERO:
 		model_eyes_target = Vector2.ZERO
 		return
 
-	var mouse_pos := Vector2.ZERO
 	var viewport_size := get_viewport_rect().size
-
-	mouse_pos = event.position
-	var relative_x = (mouse_pos.x / viewport_size.x) * 2.0 - 1.0
-	var relative_y = (mouse_pos.y / viewport_size.y) * 2.0 - 1.0
+	var relative_x = (mouse_position.x / viewport_size.x) * 2.0 - 1.0
+	var relative_y = (mouse_position.y / viewport_size.y) * 2.0 - 1.0
 	model_eyes_target = Vector2(relative_x, -relative_y)
 
 	if debug_pins:
-		debug_draw.append([mouse_pos, "mouse"])
+		debug_draw.append([mouse_position, "mouse"])
 
 func _on_change_position(new_position: String) -> void:
 	new_position = new_position.to_snake_case()

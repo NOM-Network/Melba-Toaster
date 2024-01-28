@@ -140,13 +140,14 @@ func _input(event: InputEvent) -> void:
 			model.mouse_to_position(event.relative)
 
 		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
-			model.move_eyes(event, true)
+			model.move_eyes(event.position)
 
 	if event as InputEventMouseButton:
 		if event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_LEFT:
-					model.print_model_data()
+					if event.shift_pressed:
+						model.print_model_data()
 
 				MOUSE_BUTTON_WHEEL_UP:
 					if event.ctrl_pressed:
@@ -165,7 +166,7 @@ func _input(event: InputEvent) -> void:
 		else:
 			match event.button_index:
 				MOUSE_BUTTON_RIGHT:
-					model.move_eyes(event, false)
+					model.move_eyes(Vector2.ZERO)
 
 func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 	Globals.update_backend_stats.emit(stats)

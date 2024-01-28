@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=15 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
@@ -46,9 +46,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="Animation" id="Animation_07avk"]
-length = 0.001
-
 [sub_resource type="Animation" id="Animation_rc6ug"]
 resource_name = "emerge"
 length = 10.0
@@ -72,7 +69,7 @@ tracks/1/loop_wrap = true
 tracks/1/keys = {
 "handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0),
 "points": PackedFloat32Array(2080, -0.25, 0, 0.25, 0, 2080, -0.25, 0, 0.6, 0, 1700, -0.675, -1, 0.25, 0, 1700, -0.25, 0, 0.95, 1, 2080, -0.875, -1, 0.25, 0, 1160, -1.13, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1.5, 3.6, 6, 8, 10)
+"times": PackedFloat32Array(0, 1.5, 3.6, 6.1, 8, 10)
 }
 tracks/2/type = "bezier"
 tracks/2/imported = false
@@ -85,44 +82,36 @@ tracks/2/keys = {
 "points": PackedFloat32Array(0.33, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(0)
 }
-tracks/3/type = "bezier"
+tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".:model_eyes_target:x")
+tracks/3/path = NodePath(".:model_eyes_target")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, -1, -0.25, 0, 0.25, 0, -1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1.5, 2.6, 3.9, 4.8, 5.6, 6.5)
-}
-tracks/4/type = "bezier"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:model_eyes_target:y")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0.7, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 2.6)
+"times": PackedFloat32Array(0, 2.8, 3.6, 4.3, 5.5, 6.1, 6.9),
+"transitions": PackedFloat32Array(1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(-1, 0), Vector2(-1, 0), Vector2(1, 0), Vector2(1, 0), Vector2(0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_a8dkn"]
 _data = {
-"RESET": SubResource("Animation_07avk"),
 "emerge": SubResource("Animation_rc6ug")
 }
 
 [node name="Live2DMelba" type="Node2D"]
 script = ExtResource("1_gym56")
-model_position = Vector2(740, 1160)
-model_scale = 0.0
+model_position = Vector2(740, 1700)
+model_scale = 0.33
+model_eyes_target = Vector2(-1, 0)
 metadata/_edit_horizontal_guides_ = [-942.0, -560.0, 1100.0]
 metadata/_edit_vertical_guides_ = [1100.0]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+z_index = -1
+position = Vector2(1100, 1100)
 texture = SubResource("ViewportTexture_qkp5x")
 centered = false
 offset = Vector2(-1100, -1100)
@@ -131,19 +120,19 @@ offset = Vector2(-1100, -1100)
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
 auto_scale = false
 adjust_scale = 0.33
-adjust_position = Vector2(-200, 1600)
 anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamBodyAngleZ = -7.25992e-07
+ParamAngleX = -4.18993
+ParamAngleY = 3.54762
+ParamAngleZ = 7.6723
+ParamBodyAngleX = -1.38117
+ParamBodyAngleY = 0.381078
+ParamBodyAngleZ = -0.00205976
 Param3 = 0.0
-Param4 = -0.725519
-Param5 = 4.8874
-ParamBodyAngleZ = -0.00616784
-Param3 = 2.47907
-Param4 = 1.39557
-Param5 = 8.10426
+Param4 = 0.0
+Param5 = 6.73995
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -152,17 +141,13 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param7 = -0.0726582
-Param8 = -0.00733908
-Param10 = 0.265142
-Param11 = 0.056136
-Param6 = 0.138516
-Param7 = -0.0347522
-Param8 = 0.0130649
-Param10 = 0.514608
-Param11 = 0.00735841
-Param15 = 5.61991
-Param16 = 1.25488
+Param6 = 0.106944
+Param7 = 0.0497416
+Param8 = 0.0250659
+Param10 = 0.545913
+Param11 = 0.00883589
+Param15 = 0.0
+Param16 = 0.0
 Param17 = 0.0
 Param9 = 0.0
 Param14 = 0.0
@@ -171,6 +156,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
+Param24 = 0.00939881
+Param26 = 0.00939881
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -182,16 +169,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.302175
+ParamBreath = 0.267083
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
+Param = -3.57628e-07
 Param2 = 0.0
-Param12 = -0.00137474
-Param13 = -0.000370706
-Param23 = 0.000281545
-Param22 = 1.63042e-06
+Param12 = 0.00179338
+Param13 = -8.41318e-05
+Param23 = 0.000194977
+Param22 = 3.12372e-05
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
