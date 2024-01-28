@@ -275,7 +275,10 @@ func mouse_to_scale(change: float) -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	var pivot := model_pivot()
 
-	var new_pos := Vector2(0, (mouse_pos.y - pivot.y) * change)
+	var new_pos := Vector2(
+		-(mouse_pos.x - pivot.x) * change,
+		(mouse_pos.y - pivot.y) * change
+	)
 	var new_scale: float = model_scale + change
 
 	if tweens.has("scale"):
