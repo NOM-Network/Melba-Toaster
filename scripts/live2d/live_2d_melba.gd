@@ -272,14 +272,17 @@ func model_pivot() -> Vector2:
 	return Vector2(model.size) / 2.0 + model.adjust_position
 
 func mouse_to_scale(change: float) -> void:
+	var new_scale: float = model_scale + change
+	if new_scale < 0.1:
+		return
+
 	var mouse_pos := get_viewport().get_mouse_position()
 	var pivot := model_pivot()
 
-	var new_pos := Vector2(
+	var new_pos := model_position - Vector2(
 		-(mouse_pos.x - pivot.x) * change,
 		(mouse_pos.y - pivot.y) * change
-	)
-	var new_scale: float = model_scale + change
+	) / new_scale
 
 	if tweens.has("scale"):
 		tweens.scale.kill()
@@ -287,7 +290,7 @@ func mouse_to_scale(change: float) -> void:
 	tweens.scale = create_tween()
 	tweens.scale.set_parallel()
 	tweens.scale.tween_property(self, "model_scale", new_scale, 0.05)
-	tweens.scale.tween_property(self, "model_position", model_position - new_pos / new_scale, 0.05)
+	tweens.scale.tween_property(self, "model_position", new_pos, 0.05)
 
 func mouse_to_rotation(change: float) -> void:
 	var pivot = model_pivot()
@@ -295,18 +298,20 @@ func mouse_to_rotation(change: float) -> void:
 	sprite.position = pivot
 
 	var rot: float = sprite.rotation_degrees + change
+
+	if tweens.has("rotation"):
+		tweens.rotation.kill()
+
+	tweens.rotation = create_tween()
+	tweens.rotation.tween_property(sprite, "rotation_degrees", rot, 0.1)
+	await tweens.rotation.finished
+
 	if rot >= 360.0:
 		rot -= 360.0
 		sprite.rotation_degrees = rot
 	elif rot <= -360.0:
 		rot += 360.0 + change
 		sprite.rotation_degrees = rot
-	else:
-		if tweens.has("rotation"):
-			tweens.rotation.kill()
-
-		tweens.rotation = create_tween()
-		tweens.rotation.tween_property(sprite, "rotation_degrees", rot, 0.05)
 
 func mouse_to_position(change: Vector2) -> void:
 	var pivot = model_pivot()
