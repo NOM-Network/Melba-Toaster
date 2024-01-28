@@ -38,15 +38,15 @@ func _process(_delta: float) -> void:
 
 		"EndSpeech":
 			print("EndSpeech: ", message.id)
-			Globals.is_speaking = true
 			current_speech_id = 0
-			Globals.end_speech_v2.emit(message)
+			Globals.end_speech_v2.emit()
 
 		_:
 			printerr("Unknown message type: ", message.type)
 			return
 
-	_process_emotions(message.emotions)
+	if message.has("emotions"):
+		_process_emotions(message.emotions)
 
 func push_message(message: Dictionary) -> void:
 	if not primed:
@@ -74,7 +74,7 @@ func push_message(message: Dictionary) -> void:
 		"EndSpeech":
 			current_speech_id = 0
 			primed = false
-			current_speech_text += "\n" + message.response
+			current_speech_text += " [END]"
 
 	messages.append(message)
 	Globals.push_speech_from_queue.emit(current_speech_text)

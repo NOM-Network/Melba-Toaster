@@ -43,7 +43,7 @@ Contains the initial prompt and the first response chuck from LLM (including aud
 
 ### Continue speech
 
-Contains the subsequence responses from LLM (including audio). Must include the initial prompt.
+Contains the subsequence responses from LLM (including audio). Must include the initial prompt for tracking purposes.
 
 ```json
     {
@@ -57,15 +57,12 @@ Contains the subsequence responses from LLM (including audio). Must include the 
 
 ### End speech
 
-Contains the last response chunk from LLM (including audio). Must include the initial prompt.
+Signals the end of the response from LLM. Must include the initial prompt for tracking purposes.
 
 ```json
     {
         "type": "EndSpeech",
-        "prompt": "<prompt_text>",
-        "response": "<response_text>",
-        "emotions": ["<array_of_emotions>"],
-        "audio": "<binary data>"
+        "prompt": "<prompt_text>"
     }
 ```
 

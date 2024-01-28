@@ -336,7 +336,7 @@ func _on_new_speech_v2(data: Dictionary) -> void:
 	%CurrentSpeech/Prompt.text = "%s (%s)" % [data.prompt, data.id]
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(data.emotions)
 
-func _on_end_speech_v2(_data: Dictionary) -> void:
+func _on_end_speech_v2() -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 
 func _on_push_speech_from_queue(response: String) -> void:

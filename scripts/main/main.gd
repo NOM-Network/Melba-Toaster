@@ -178,6 +178,10 @@ func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 
 	match data.result.type:
 		"NewSpeech", "ContinueSpeech", "EndSpeech":
+			if Globals.is_singing:
+				printerr("New speech while singing, skipping")
+				return
+
 			data.result.id = hash(data.result.prompt if data.result.prompt else "MelBuh")
 			SpeechManager.push_message(data.result)
 
@@ -231,9 +235,7 @@ func _on_new_speech_v2(data: Dictionary) -> void:
 func _on_continue_speech_v2(data: Dictionary) -> void:
 	await _on_subsequent_speech_v2(data)
 
-func _on_end_speech_v2(data: Dictionary) -> void:
-	await _on_subsequent_speech_v2(data)
-	# Globals.end_speech_v2.emit()
+func _on_end_speech_v2() -> void:
 	get_ready_for_next_speech()
 
 func _on_subsequent_speech_v2(data: Dictionary) -> void:
