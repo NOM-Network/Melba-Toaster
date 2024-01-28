@@ -272,11 +272,19 @@ func model_pivot() -> Vector2:
 	return Vector2(model.size) / 2.0 + model.adjust_position
 
 func mouse_to_scale(change: float) -> void:
+	var mouse_pos := get_viewport().get_mouse_position()
+	var pivot := model_pivot()
+
+	var new_pos := Vector2(0, (mouse_pos.y - pivot.y) * change)
+	var new_scale: float = model_scale + change
+
 	if tweens.has("scale"):
 		tweens.scale.kill()
 
 	tweens.scale = create_tween()
-	tweens.scale.tween_property(model, "adjust_scale", model.adjust_scale + change, 0.05)
+	tweens.scale.set_parallel()
+	tweens.scale.tween_property(self, "model_scale", new_scale, 0.05)
+	tweens.scale.tween_property(self, "model_position", model_position - new_pos / new_scale, 0.05)
 
 func mouse_to_rotation(change: float) -> void:
 	var pivot = model_pivot()
