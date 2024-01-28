@@ -29,7 +29,7 @@ Tells server that the Toaster is ready to receive a new audio message. Doesn't r
 
 ### New speech
 
-Contains the initial prompt and the first response chuck from LLM (including audio).
+Contains the initial prompt and the first response chuck from LLM (including audio). Possible `emotions` are listed [here](https://huggingface.co/SamLowe/roberta-base-go_emotions/blob/main/config.json#L14).
 
 ```json
     {

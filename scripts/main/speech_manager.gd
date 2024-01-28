@@ -112,8 +112,8 @@ func _process_emotions(emotions: Array) -> void:
 		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
 
 	match max_emotion[0]:
-		"fear", "sadness":
+		"disappointment", "fear", "grief", "sadness":
 			Globals.set_toggle.emit("tears", true)
 
-		"anger":
+		"anger", "disgust", "grief":
 			Globals.set_toggle.emit("void", true)

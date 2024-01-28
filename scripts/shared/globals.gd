@@ -138,16 +138,40 @@ static var expressions := {
 static var last_expression := ""
 
 static var emotions_modifiers := {
-	"fear": -0.3,
-	"anger": -0.5,
+    # Negative
+	"anger": -1.0,
+    "disappointment": -0.5,
+    "disgust": -0.5,
+    "embarrassment": -0.3,
+    "fear": -0.3,
+    "grief": -0.3,
+    "annoyance": -0.1,
+    "confusion": -0.1,
+    "sadness": -0.1,
+
+	# Neutral
+    "admiration": 0.0,
+    "approval": 0.0,
+    "caring": 0.0,
+    "curiosity": 0.0,
+    "desire": 0.0,
+    "disapproval": 0.0,
+    "gratitude": 0.0,
+    "nervousness": 0.0,
+    "pride": 0.0,
+    "realization": 0.0,
+    "relief": 0.0,
+    "remorse": 0.0,
+    "neutral": 0.0,
 	"anticipation": 0.0,
-	"trust": 0.0,
-	"surprise": 0.5,
-	"positive": 0.5,
-	"negative": -0.5,
-	"sadness": -0.1,
-	"disgust": -0.5,
-	"joy": 0.0
+
+	# Positive
+    "amusement": 0.5,
+    "excitement": 0.5,
+    "joy": 0.5,
+    "love": 0.5,
+    "surprise": 0.5,
+    "optimism": 0.1,
 }
 static var current_emotion_modifier = 0.0
 
