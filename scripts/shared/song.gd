@@ -27,7 +27,7 @@ func _init(
 	if p_data.has("feat"):
 		self.full_name += " %s" % p_data.feat
 
-	self.path = FOLDER_PATH % [p_data.id, "%s.mp3"]
+	self.path = FOLDER_PATH % [p_data.id, "%s.ogg"]
 
 	assert(
 		FileAccess.file_exists(self.path % "song") and FileAccess.file_exists(self.path % "voice"),
@@ -57,11 +57,9 @@ func load_subtitles_file() -> Variant:
 	return sub
 
 # TODO: Move to OGG
-func load(type: String) -> AudioStreamMP3:
+func load(type: String) -> AudioStreamOggVorbis:
 	var p: String = self.path % type
 	assert(FileAccess.file_exists(p), "No audio file found in %s" % p)
 
 	var file := FileAccess.open(p, FileAccess.READ)
-	var stream := AudioStreamMP3.new()
-	stream.data = file.get_buffer(file.get_length())
-	return stream
+	return AudioStreamOggVorbis.load_from_buffer(file.get_buffer(file.get_length()))

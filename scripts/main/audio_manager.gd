@@ -22,9 +22,8 @@ func play_cancel_sound() -> void:
 	Globals.is_speaking = false
 
 func prepare_speech(message: PackedByteArray) -> void:
-	var stream = AudioStreamOggVorbis.load_from_buffer(message)
-	speech_player.stream = stream
-	speech_duration = stream.get_length()
+	speech_player.stream = AudioStreamOggVorbis.load_from_buffer(message)
+	speech_duration = speech_player.stream.get_length()
 
 func play_speech() -> void:
 	assert(speech_player.stream, "There is no stream in speech_player")
@@ -108,6 +107,5 @@ func finish_song() -> void:
 
 	AudioServer.set_bus_mute(voice_bus, false)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, false)
-
 
 # endregion
