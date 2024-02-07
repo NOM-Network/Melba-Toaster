@@ -28,8 +28,7 @@ func play_cancel_sound() -> void:
 	Globals.is_speaking = false
 
 func prepare_speech(message: PackedByteArray) -> void:
-	var stream = AudioStreamMP3.new()
-	stream.data = message
+	var stream = AudioStreamOggVorbis.load_from_buffer(message)
 	speech_player.stream = stream
 	speech_duration = stream.get_length()
 

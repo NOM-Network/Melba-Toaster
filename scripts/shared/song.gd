@@ -56,6 +56,7 @@ func load_subtitles_file() -> Variant:
 
 	return sub
 
+# TODO: Move to OGG
 func load(type: String) -> AudioStreamMP3:
 	var p: String = self.path % type
 	assert(FileAccess.file_exists(p), "No audio file found in %s" % p)

@@ -2,7 +2,6 @@ import asyncio
 import websockets
 import json
 import random
-import time
 import msgpack
 
 
@@ -17,7 +16,7 @@ async def hello(websocket):
             case "ReadyForSpeech":
                 print("Acknowledged")
 
-                filename = "chunks/twister_{}.mp3"
+                filename = "chunks/twister_{}.ogg"
                 prompt1 = "Hey, Melba! Tell us a tongue twister"
                 prompt2 = prompt1 + " but backwards"
                 response = [
