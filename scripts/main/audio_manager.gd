@@ -13,12 +13,6 @@ func _ready() -> void:
 	Globals.start_speech.connect(_on_start_speech)
 	Globals.stop_singing.connect(_on_stop_singing)
 
-static func is_valid_mp3(data: PackedByteArray) -> bool:
-	return data.slice(0, 2) as Array in [
-		[255, 251],
-		[73, 68]
-	]
-
 # region PUBLIC FUNCTIONS
 
 func play_cancel_sound() -> void:
