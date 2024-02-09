@@ -22,7 +22,7 @@ func _on_cubism_init(model: GDCubismUserModel):
 			break
 
 func _process(_delta: float) -> void:
-	if squint_value != 0.0:
+	if active && squint_value != 0.0:
 		param_eye.value = squint_value
 
 func _on_timer_timeout() -> void:
