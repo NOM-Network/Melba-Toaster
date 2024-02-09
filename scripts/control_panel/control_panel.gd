@@ -125,6 +125,7 @@ func _connect_signals() -> void:
 	Globals.start_speech.connect(_on_start_speech)
 
 	Globals.start_singing.connect(_on_start_singing.unbind(2))
+	Globals.stop_singing.connect(_on_stop_singing)
 
 	Globals.change_position.connect(_on_change_position)
 	Globals.change_scene.connect(_on_change_scene)
@@ -303,12 +304,25 @@ func _on_message_queue_stats_timer_timeout() -> void:
 
 func _on_start_singing() -> void:
 	Globals.is_paused = true
+	%SingingMenu.disabled = true
+	%ReloadSongList.disabled = true
+	%DancingToggle.disabled = true
+	%DancingBpm.editable = false
+	gui_release_focus()
+
+func _on_stop_singing() -> void:
+	%SingingMenu.disabled = false
+	%ReloadSongList.disabled = false
+	%DancingToggle.disabled = false
+	%DancingBpm.editable = true
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 	var song: Song = Globals.config.songs[%SingingMenu.selected]
 	var seek_time: float = %SingingSeekTime.value
 
 	if button_pressed:
+		var old_text: String = %SingingMenu.get_popup().get_item_text(%SingingMenu.selected)
+		%SingingMenu.get_popup().set_item_text(%SingingMenu.selected, "♫ %s" % old_text)
 		Globals.start_singing.emit(song, seek_time)
 	else:
 		Globals.stop_singing.emit()
@@ -318,6 +332,7 @@ func _on_dancing_toggle_toggled(button_pressed: bool) -> void:
 		Globals.start_dancing_motion.emit(%DancingBpm.value)
 	else:
 		Globals.end_dancing_motion.emit()
+	gui_release_focus()
 
 func _on_model_toggle_pressed(toggle: CheckButton) -> void:
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
