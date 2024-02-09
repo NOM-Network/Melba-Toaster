@@ -1,50 +1,13 @@
-[gd_scene load_steps=15 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=9 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
-[ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="6_sqvm7"]
-[ext_resource type="Texture2D" uid="uid://cym7l00g0fswe" path="res://assets/live2d/pinnable_assets/glasses.png" id="7_lkcnv"]
+[ext_resource type="PackedScene" uid="uid://ds3cr7lote6cs" path="res://scenes/live2d/pinnable_assets.tscn" id="5_rx2gh"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_qkp5x"]
 viewport_path = NodePath("Sprite2D/GDCubismUserModel")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f53nl"]
-atlas = ExtResource("6_sqvm7")
-region = Rect2(0, 0, 814, 242)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4icgb"]
-atlas = ExtResource("6_sqvm7")
-region = Rect2(814, 0, 814, 242)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0jsom"]
-atlas = ExtResource("6_sqvm7")
-region = Rect2(1628, 0, 814, 242)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hove7"]
-atlas = ExtResource("6_sqvm7")
-region = Rect2(2442, 0, 814, 242)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_uup0d"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f53nl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4icgb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0jsom")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_hove7")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [sub_resource type="Animation" id="Animation_rc6ug"]
 resource_name = "emerge"
@@ -102,15 +65,15 @@ _data = {
 
 [node name="Live2DMelba" type="Node2D"]
 script = ExtResource("1_gym56")
-model_position = Vector2(740, 1700)
+model_position = Vector2(740, 2080)
 model_scale = 0.33
-model_eyes_target = Vector2(-1, 0)
 metadata/_edit_horizontal_guides_ = [-942.0, -560.0, 1100.0]
 metadata/_edit_vertical_guides_ = [1100.0]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 z_index = -1
+texture_filter = 6
 position = Vector2(1100, 1100)
 texture = SubResource("ViewportTexture_qkp5x")
 centered = false
@@ -124,15 +87,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -4.18993
-ParamAngleY = 3.54762
-ParamAngleZ = 7.6723
-ParamBodyAngleX = -1.38117
-ParamBodyAngleY = 0.381078
-ParamBodyAngleZ = -0.00205976
-Param3 = 0.0
-Param4 = 0.0
-Param5 = 6.73995
+ParamAngleX = -5.4514
+ParamAngleY = -1.22316
+ParamAngleZ = -1.85507
+ParamBodyAngleX = 0.56741
+ParamBodyAngleY = 0.345852
+ParamBodyAngleZ = -6.89829e-07
+Param3 = -1.35487
+Param4 = -0.374964
+Param5 = -1.60667
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -141,11 +104,11 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = 0.106944
-Param7 = 0.0497416
-Param8 = 0.0250659
-Param10 = 0.545913
-Param11 = 0.00883589
+Param6 = -0.0465214
+Param7 = -0.00205332
+Param8 = 0.0233483
+Param10 = -0.210634
+Param11 = 0.01724
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
@@ -156,8 +119,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.00939881
-Param26 = 0.00939881
+Param24 = 0.0
+Param26 = 0.0
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -169,16 +132,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.267083
+ParamBreath = 0.0173513
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = -3.57628e-07
+Param = 2.38419e-07
 Param2 = 0.0
-Param12 = 0.00179338
-Param13 = -8.41318e-05
-Param23 = 0.000194977
-Param22 = 3.12372e-05
+Param12 = -0.000927402
+Param13 = 0.000462413
+Param23 = -0.00051262
+Param22 = -0.00084251
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -269,18 +232,8 @@ wait_time = 3.0
 one_shot = true
 autostart = true
 
-[node name="PinnableAssets" type="Node2D" parent="Sprite2D"]
+[node name="PinnableAssets" parent="Sprite2D" instance=ExtResource("5_rx2gh")]
 unique_name_in_owner = true
-position = Vector2(-1100, -1100)
-
-[node name="GlassSprites" type="Sprite2D" parent="Sprite2D/PinnableAssets"]
-texture = ExtResource("7_lkcnv")
-
-[node name="CensorAnimation" type="AnimatedSprite2D" parent="Sprite2D/PinnableAssets"]
-modulate = Color(1, 1, 1, 0)
-sprite_frames = SubResource("SpriteFrames_uup0d")
-autoplay = "default"
-frame_progress = 0.928116
 
 [node name="AnimTimer" type="Timer" parent="."]
 

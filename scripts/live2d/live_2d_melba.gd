@@ -8,6 +8,7 @@ extends Node2D
 @onready var anim_timer = $AnimTimer
 
 #region ASSETS
+@onready var dict_mesh: Dictionary = model.get_meshes()
 var assets_to_pin := {}
 #endregion
 
@@ -87,8 +88,6 @@ func intialize_toggles() -> void:
 				toggle.param = param
 
 func initialize_pinnable_assets() -> void:
-	var dict_mesh = model.get_meshes()
-
 	pinnable_assets.position = model_pivot()
 
 	for asset in Globals.pinnable_assets.values():
@@ -103,7 +102,7 @@ func initialize_pinnable_assets() -> void:
 		var ary_surface = ary_mesh.surface_get_arrays(0)
 
 		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
-		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
+		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
 
 func _process(_delta: float) -> void:
 	for toggle in Globals.toggles.values():
@@ -152,11 +151,10 @@ func _tween_pinned_asset(asset: PinnableAsset, enabled: bool) -> void:
 		assets_to_pin.erase(node_name)
 
 func pin(asset: PinnableAsset) -> void:
-	var dict_mesh: Dictionary= model.get_meshes()
 	var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 	var ary_surface: Array = ary_mesh.surface_get_arrays(0)
 	var pos: Vector2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
-	var pos2: Vector2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point + asset.second_point]
+	var pos2: Vector2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
 
 	asset.node.position = pos + (model.adjust_scale * asset.position_offset)
 	asset.node.scale = Vector2(model.adjust_scale, model.adjust_scale) * asset.scale_offset
@@ -193,9 +191,8 @@ func get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) -> 
 
 	var angle1 = pos[0].angle_to_point(trans_point_b)
 	var angle2 = pos[0].angle_to_point(pos[1])
-	var delta_angle = angle2 - angle1
 
-	return delta_angle
+	return angle2 - angle1
 
 func reset_overrides():
 	eye_blink.active = true

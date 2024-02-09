@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=3 uid="uid://ds3cr7lote6cs"]
+
+[ext_resource type="Texture2D" uid="uid://cym7l00g0fswe" path="res://assets/live2d/pinnable_assets/glasses.png" id="1_fj5nk"]
+[ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="2_glko1"]
+[ext_resource type="Texture2D" uid="uid://q7sygse7kwg5" path="res://assets/live2d/pinnable_assets/hatTop.png" id="3_pc45b"]
+[ext_resource type="Texture2D" uid="uid://cyg5rr7kbpiaq" path="res://assets/live2d/pinnable_assets/hatBottom.png" id="4_0yagu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f53nl"]
+atlas = ExtResource("2_glko1")
+region = Rect2(0, 0, 814, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4icgb"]
+atlas = ExtResource("2_glko1")
+region = Rect2(814, 0, 814, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0jsom"]
+atlas = ExtResource("2_glko1")
+region = Rect2(1628, 0, 814, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hove7"]
+atlas = ExtResource("2_glko1")
+region = Rect2(2442, 0, 814, 242)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uup0d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f53nl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4icgb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0jsom")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hove7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="PinnableAssets" type="Node2D"]
+
+[node name="GlassSprites" type="Sprite2D" parent="."]
+texture = ExtResource("1_fj5nk")
+
+[node name="CensorAnimation" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+sprite_frames = SubResource("SpriteFrames_uup0d")
+autoplay = "default"
+frame_progress = 0.928116
+
+[node name="Hat" type="Node2D" parent="."]
+
+[node name="HatTop" type="Sprite2D" parent="Hat"]
+texture = ExtResource("3_pc45b")
+
+[node name="HatBottom" type="Sprite2D" parent="Hat"]
+z_index = -1
+texture = ExtResource("4_0yagu")
