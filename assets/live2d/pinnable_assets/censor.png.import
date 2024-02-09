@@ -15,13 +15,13 @@ dest_files=["res://.godot/imported/censor.png-f74c734ef0cf6eacf4da98c07c98467e.c
 
 [params]
 
-compress/mode=0
+compress/mode=3
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=0
-mipmaps/generate=false
+compress/channel_pack=1
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
