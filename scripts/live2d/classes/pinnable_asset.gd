@@ -18,11 +18,11 @@ func _init(
 	p_position_offset: Vector2 = Vector2.ZERO,
 	p_scale_offset: float = 0.0,
 	p_custom_point: int = 0,
-	p_second_point: int = 4
+	p_second_point: int = -1
 ) -> void:
 	self.node_name = p_node_name
 	self.mesh = p_mesh
 	self.position_offset = p_position_offset
 	self.scale_offset = p_scale_offset
 	self.custom_point = p_custom_point
-	self.second_point = p_second_point
+	self.second_point = p_custom_point + p_second_point
