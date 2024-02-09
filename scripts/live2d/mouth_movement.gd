@@ -61,34 +61,38 @@ func _on_cubism_init(model: GDCubismUserModel):
 	test_array.fill(0.0)
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
-	var overall_magnitude: float = spectrum.get_magnitude_for_frequency_range(
-		min_voice_freq,
-		max_voice_freq
-	).length()
-	var overall_energy = clamp((min_db + linear_to_db(overall_magnitude)) / min_db, 0.0, 1.0)
-
-	var max_vowel_enegry := 0.0
-	var selected_vowel := 0
-	if overall_magnitude > 0.0:
-		for i in range(0, vowel_freqs.size()):
-			var magnitude = spectrum.get_magnitude_for_frequency_range(
-				vowel_freqs[i][0],
-				vowel_freqs[i][1]
-			).length()
-			var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
-
-			if energy != 0.0 and energy >= max_vowel_enegry:
-				max_vowel_enegry = energy
-				selected_vowel = i
-
-	var selected_mouth_form = 0.0
-	if selected_vowel > 0:
-		selected_mouth_form = _map_to_log_range(selected_vowel)
-
-	var unaltered_mouth_value = overall_energy * max_mouth_value
-	var unaltered_mouth_form = Globals.current_emotion_modifier + clamp(selected_mouth_form * overall_energy, 0.0, 0.8)
+	var overall_magnitude: float = 0.0
+	var unaltered_mouth_value: float = 0.0
+	var unaltered_mouth_form: float = 0.0
 
 	if Globals.is_singing or Globals.is_speaking:
+		overall_magnitude = spectrum.get_magnitude_for_frequency_range(
+			min_voice_freq,
+			max_voice_freq
+		).length()
+		var overall_energy = clamp((min_db + linear_to_db(overall_magnitude)) / min_db, 0.0, 1.0)
+
+		var selected_mouth_form = 0.0
+		if overall_energy && overall_magnitude:
+			var max_vowel_enegry := 0.0
+			var selected_vowel := 0
+			for i in range(0, vowel_freqs.size()):
+				var magnitude = spectrum.get_magnitude_for_frequency_range(
+					vowel_freqs[i][0],
+					vowel_freqs[i][1]
+				).length()
+				var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
+
+				if energy != 0.0 and energy >= max_vowel_enegry:
+					max_vowel_enegry = energy
+					selected_vowel = i
+
+			if selected_vowel > 0:
+				selected_mouth_form = _map_to_log_range(selected_vowel)
+
+		unaltered_mouth_value = overall_energy * max_mouth_value
+		unaltered_mouth_form = Globals.current_emotion_modifier + clamp(selected_mouth_form * overall_energy, 0.0, 0.8)
+
 		manage_speaking()
 	else:
 		param_mouth.value = 0.0

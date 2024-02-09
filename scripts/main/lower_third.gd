@@ -138,7 +138,7 @@ func set_subtitles(text: String, duration := 0.0, continue_print := false) -> vo
 	print_timer.start(duration)
 
 func set_subtitles_fast(text: String) -> void:
-	subtitles.text = text
+	subtitles.text = text.strip_edges()
 	subtitles.label_settings.font_size = default_font_size["Subtitles"]
 
 func clear_subtitles() -> void:

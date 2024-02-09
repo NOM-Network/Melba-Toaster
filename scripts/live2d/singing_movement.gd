@@ -4,18 +4,15 @@ class_name SingingMovement
 @onready var sprite_2d = %Sprite2D
 @onready var gd_cubism_user_model = %GDCubismUserModel
 
-@export var param_angle_y_name = "ParamAngleY"
-@export var param_body_angle_y_name = "ParamBodyAngleY"
-@export var bob_interval = 0.5
-@export var audio_bus_name := "Control"
+var bob_interval = 0.5
+var motion_range: float = 30.0
 
 # Parameters
-var param_angle_y
-var param_body_angle_y
+var param_angle_y: GDCubismParameter
+var param_body_angle_y: GDCubismParameter
 
 # Tweens
-var angle_y_tween: Tween
-var body_angle_y_tween: Tween
+var tween: Tween
 
 func _ready():
 	self.cubism_init.connect(_on_cubism_init)
@@ -24,40 +21,41 @@ func _on_cubism_init(model: GDCubismUserModel):
 	Globals.start_dancing_motion.connect(_start_motion)
 	Globals.end_dancing_motion.connect(_end_motion)
 
-	var any_param = model.get_parameters()
-
-	for param in any_param:
-		if param.id == param_angle_y_name:
+	for param in model.get_parameters():
+		if param.id == "ParamAngleY":
 			param_angle_y = param
-		if param.id == param_body_angle_y_name:
+		if param.id == "ParamBodyAngleY":
 			param_body_angle_y = param
+
+		if param_angle_y && param_body_angle_y:
+			break
 
 func _start_motion(bpm: float) -> void:
 	Globals.dancing_bpm = bpm
-	bob_interval = 60.0 / bpm
+	bob_interval = motion_range / bpm
+
 	start_tween()
 
 func _end_motion() -> void:
 	Globals.dancing_bpm = 0
 
+	if tween:
+		tween.kill()
+
+	tween = create_tween()
+	tween.tween_property(param_angle_y, "value", 0, bob_interval)
+	tween.set_parallel().tween_property(param_body_angle_y, "value", 0, bob_interval)
+
 func start_tween() -> void:
-	if angle_y_tween: angle_y_tween.kill()
-	if body_angle_y_tween: body_angle_y_tween.kill()
-	angle_y_tween = create_tween()
-	body_angle_y_tween = create_tween()
+	if tween:
+		tween.kill()
 
-	angle_y_tween.finished.connect(_on_tween_finished)
-	angle_y_tween.tween_property(param_angle_y, "value", 30.0, bob_interval / 2.0)
-	body_angle_y_tween.tween_property(param_body_angle_y, "value", 30.0, bob_interval / 2.0)
+	tween = create_tween().set_loops()
 
-func _on_tween_finished() -> void:
-	if angle_y_tween: angle_y_tween.kill()
-	if body_angle_y_tween: body_angle_y_tween.kill()
-	body_angle_y_tween = create_tween()
-	angle_y_tween = create_tween()
+	# Positive
+	tween.tween_property(param_angle_y, "value", -motion_range, bob_interval)
+	tween.set_parallel().tween_property(param_body_angle_y, "value", -motion_range, bob_interval)
 
-	body_angle_y_tween.tween_property(param_body_angle_y, "value", -30.0, bob_interval / 2.0)
-	await angle_y_tween.tween_property(param_angle_y, "value", -30.0, bob_interval / 2.0).finished
-
-	if Globals.dancing_bpm:
-		start_tween()
+	# Negative
+	tween.chain().tween_property(param_angle_y, "value", motion_range, bob_interval)
+	tween.set_parallel().tween_property(param_body_angle_y, "value", motion_range, bob_interval)

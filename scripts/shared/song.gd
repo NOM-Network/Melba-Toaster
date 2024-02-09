@@ -51,12 +51,11 @@ func load_subtitles_file() -> Variant:
 
 		sub.push_back([
 			line[0] as float,
-			line[2].strip_edges()
+			line[2]
 		])
 
 	return sub
 
-# TODO: Move to OGG
 func load(type: String) -> AudioStreamOggVorbis:
 	var p: String = self.path % type
 	assert(FileAccess.file_exists(p), "No audio file found in %s" % p)
