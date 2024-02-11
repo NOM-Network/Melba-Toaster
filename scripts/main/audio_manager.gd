@@ -23,10 +23,16 @@ func play_cancel_sound() -> void:
 
 func prepare_speech(message: PackedByteArray) -> void:
 	speech_player.stream = AudioStreamOggVorbis.load_from_buffer(message)
+
+	if not speech_player.stream:
+		return
+
 	speech_duration = speech_player.stream.get_length()
 
 func play_speech() -> void:
-	assert(speech_player.stream, "There is no stream in speech_player")
+	if not speech_player.stream:
+		printerr("No speech stream")
+		return
 
 	Globals.is_speaking = true
 	speech_player.play()
@@ -84,6 +90,10 @@ func _on_start_speech() -> void:
 	play_speech()
 
 func _on_speech_player_finished() -> void:
+	var random_wait := randf_range(0.05, 0.69)
+	print_debug("Waiting for %f seconds" % random_wait)
+	await get_tree().create_timer(random_wait).timeout
+
 	Globals.is_speaking = false
 	reset_speech_player()
 
