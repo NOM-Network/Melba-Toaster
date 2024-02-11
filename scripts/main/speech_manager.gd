@@ -64,6 +64,7 @@ func push_message(message: Dictionary) -> void:
 
 	match message.type:
 		"NewSpeech":
+			messages = []
 			skip_message_id = 0
 			primed = true
 			current_speech_text = message.response
@@ -89,7 +90,7 @@ func _on_ready_for_speech() -> void:
 
 func _on_cancel_speech() -> void:
 	skip_message_id = current_speech_id
-	messages = messages.filter(func (d): return d.id != current_speech_id)
+	messages = []
 	primed = false
 
 func _process_emotions(emotions: Array) -> void:
