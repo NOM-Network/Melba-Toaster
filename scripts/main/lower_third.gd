@@ -24,15 +24,18 @@ func _ready() -> void:
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_speech.connect(_on_start_speech)
-	Globals.start_singing.connect(_on_start_singing.unbind(2))
 	Globals.cancel_speech.connect(_on_cancel_speech)
-	Globals.speech_done.connect(_on_speech_done)
 
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
 
 	Globals.reset_subtitles.emit()
+
+	Globals.change_position.connect(_on_change_position)
+
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
 
 func _process(delta: float) -> void:
 	if not print_timer.is_stopped():
@@ -73,16 +76,15 @@ func _on_reset_subtitles() -> void:
 func _on_start_speech() -> void:
 	cleanout_timer.stop()
 
-func _on_start_singing() -> void:
+func _on_start_singing(song: Song, seek_time := 0.0) -> void:
 	clear_subtitles()
 	cleanout_timer.stop()
+
+	set_prompt(song.full_name, 0.0 if seek_time else song.wait_time)
 
 func _on_cancel_speech() -> void:
 	if not Globals.is_speaking:
 		start_clear_subtitles_timer()
-
-func _on_speech_done() -> void:
-	start_clear_subtitles_timer()
 
 func _on_clear_subtitles_timer_timeout() -> void:
 	clear_subtitles()
@@ -171,4 +173,32 @@ func _tween_visible_ratio(label: Label, tween_name: String, start_val: float, fi
 	tweens[tween_name] = create_tween()
 	tweens[tween_name].tween_property(label, "visible_ratio", final_val, duration - duration * 0.01)
 
+func _on_change_position(new_position: String) -> void:
+	new_position = new_position.to_snake_case()
+
+	if not Globals.positions.has(new_position):
+		printerr("Position %s does not exist" % new_position)
+		return
+
+	var positions: Dictionary = Globals.positions[new_position]
+
+	# "model" positions are handled in the model script
+	match new_position:
+		"intro":
+			return
+
+		_:
+			var pos = positions.lower_third
+
+			if tweens.has("lower_third"):
+				tweens.lower_third.kill()
+
+			tweens.lower_third = create_tween().set_trans(Tween.TRANS_QUINT)
+			tweens.lower_third.set_parallel()
+			tweens.lower_third.tween_property(self, "position", pos[0], 1)
+			tweens.lower_third.tween_property(self, "scale", pos[1], 1)
+
 # endregion
+
+func _on_stop_singing() -> void:
+	clear_subtitles()

@@ -19,23 +19,16 @@ signal nudge_model()
 signal change_position(name: String)
 signal change_scene(scene: String)
 
+# Speech Manager
 signal ready_for_speech()
-signal new_speech()
-signal continue_speech()
+signal new_speech(data: Dictionary)
 signal start_speech()
+signal push_speech_from_queue(response: String)
+signal continue_speech(data: Dictionary)
+signal end_speech(data: Dictionary)
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
-
-# Speech Manager
-signal ready_for_speech_v2()
-signal new_speech_v2(data: Dictionary)
-signal speech_player_free_v2()
-signal continue_speech_v2(data: Dictionary)
-signal end_speech_v2(data: Dictionary)
-signal push_speech_from_queue(response: String)
-signal stop_speech_v2()
-signal cancel_speech_v2()
 
 signal update_backend_stats(data: Array)
 
@@ -208,7 +201,7 @@ func _debug_event(arg1, arg2 = null, arg3 = null, arg4 = null, arg5 = null) -> v
 
 	# remove audio buffer from debug
 	if args.size() > 0:
-		if eventName in ["new_speech_v2", "continue_speech_v2", "end_speech_v2"]:
+		if eventName in ["new_speech", "continue_speech", "end_speech"]:
 			args[0] = CpHelpers.remove_audio_buffer(args[0].duplicate())
 
 	print_debug(

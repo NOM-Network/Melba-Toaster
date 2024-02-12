@@ -11,17 +11,7 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var mic := $Microphone
 @onready var audio_manager := $AudioManager
 
-# Tweens
-@onready var tweens := {}
-
-# Song-related
-var current_song: Song
-var current_subtitles: Array
-var song_playback: AudioStreamPlayback
-
-var pending_speech: Dictionary
-var pressed: bool
-
+# region PROCESS
 func _ready() -> void:
 	# Makes bg transparent
 	get_tree().get_root().set_transparent_background(true)
@@ -30,22 +20,14 @@ func _ready() -> void:
 	# Timers
 	%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
 
-	# Signals
 	_connect_signals()
-
-	# Add model
 	_add_model()
 
-	# Waiting for the backend
 	await connect_backend()
 
-	# Ready for speech
-	Globals.ready_for_speech.connect(_on_ready_for_speech)
-
 func _process(_delta: float) -> void:
-	if Globals.is_singing and current_song:
+	if Globals.is_singing:
 		var full_position: Array[float] = audio_manager.get_position()
-		var pos: float = full_position[0]
 
 		if Globals.show_beats:
 			$BeatsCounter.text = \
@@ -53,29 +35,8 @@ func _process(_delta: float) -> void:
 				% audio_manager.beats_counter_data(full_position)
 
 		$BeatsCounter.visible = Globals.show_beats
-
-		if current_subtitles:
-			if pos > current_subtitles[0][0]:
-				var line: Array = current_subtitles.pop_front()
-
-				if line[1].begins_with("&"):
-					_match_command(line[1])
-				else:
-					lower_third.set_subtitles_fast(line[1])
 	else:
 		$BeatsCounter.visible = false
-
-func _connect_signals() -> void:
-	Globals.new_speech.connect(_on_new_speech)
-	Globals.cancel_speech.connect(_on_cancel_speech)
-	# Globals.speech_done.connect(_on_speech_done)
-	Globals.start_singing.connect(_on_start_singing)
-	Globals.stop_singing.connect(_on_stop_singing)
-	Globals.change_position.connect(_on_change_position)
-
-	Globals.new_speech_v2.connect(_on_new_speech_v2)
-	Globals.continue_speech_v2.connect(_on_continue_speech_v2)
-	Globals.end_speech_v2.connect(_on_end_speech_v2)
 
 func _add_model() -> void:
 	add_child(model, true)
@@ -87,86 +48,22 @@ func _add_model() -> void:
 
 	Globals.change_position.emit(Globals.default_position)
 
-func connect_backend() -> void:
-	client.connect_client()
-	await client.connection_established
-	control_panel.backend_connected()
+# endregion
 
-	if not client.data_received.is_connected(_on_data_received):
-		client.data_received.connect(_on_data_received)
+# region SIGNALS
 
-	if not client.connection_closed.is_connected(_on_connection_closed):
-		client.connection_closed.connect(_on_connection_closed)
+func _connect_signals() -> void:
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.continue_speech.connect(_on_continue_speech)
+	Globals.cancel_speech.connect(_on_cancel_speech)
+	Globals.end_speech.connect(_on_end_speech)
 
-func disconnect_backend() -> void:
-	client.break_connection("from control panel")
-	await client.connection_closed
+	Globals.start_singing.connect(_on_start_singing)
+	Globals.stop_singing.connect(_on_stop_singing)
 
-func _on_connection_closed() -> void:
-	Globals.is_paused = true
-	control_panel.backend_disconnected()
-
-func _match_command(line: String) -> void:
-	var command: Array = line.split(" ")
-
-	match command:
-		["&CLEAR"]:
-			lower_third.set_subtitles_fast("")
-
-		["&START", var bpm]:
-			Globals.start_dancing_motion.emit(bpm as float)
-
-		["&STOP"]:
-			Globals.end_dancing_motion.emit()
-
-		["&PIN", var asset_name, var enabled]:
-			Globals.pin_asset.emit(asset_name, enabled == "1")
-
-		["&POSITION", var model_position]:
-			Globals.change_position.emit(model_position)
-
-		["&TOGGLE", var toggle_name, var enabled]:
-			Globals.set_toggle.emit(toggle_name, enabled == "1")
-
-		["&ANIM", var anim_name]:
-			Globals.play_animation.emit(anim_name)
-
-		_:
-			printerr("SONG: `%s` is not a valid command" % line)
-
-func _input(event: InputEvent) -> void:
-	if event as InputEventMouseMotion:
-		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
-			model.mouse_to_position(event.relative)
-
-		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
-			model.move_eyes(event.position)
-
-	if event as InputEventMouseButton:
-		if event.is_pressed():
-			match event.button_index:
-				MOUSE_BUTTON_LEFT:
-					if event.shift_pressed:
-						model.print_model_data()
-
-				MOUSE_BUTTON_WHEEL_UP:
-					if event.ctrl_pressed:
-						model.mouse_to_rotation(Globals.rotation_change)
-					else:
-						model.mouse_to_scale(Globals.scale_change)
-
-				MOUSE_BUTTON_WHEEL_DOWN:
-					if event.ctrl_pressed:
-						model.mouse_to_rotation(-Globals.rotation_change)
-					else:
-						model.mouse_to_scale(-Globals.scale_change)
-
-				MOUSE_BUTTON_MIDDLE:
-					Globals.change_position.emit(Globals.last_position)
-		else:
-			match event.button_index:
-				MOUSE_BUTTON_RIGHT:
-					model.move_eyes(Vector2.ZERO)
+func _on_ready_for_speech() -> void:
+	if not Globals.is_paused:
+		client.send_message({"type": "ReadyForSpeech"})
 
 func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 	Globals.update_backend_stats.emit(stats)
@@ -197,31 +94,7 @@ func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 		_:
 			print("Unhandled data type: ", data)
 
-func _on_speech_done() -> void:
-	get_ready_for_next_speech()
-
-func _on_ready_for_speech() -> void:
-	if not Globals.is_paused:
-		client.send_message({"type": "ReadyForSpeech"})
-
-func _on_new_speech(p_prompt: String, p_text: String, p_emotions: Array) -> void:
-	# This variable might be cleared from control panel
-	pending_speech = {
-		"prompt": p_prompt,
-		"response": p_text,
-		"emotions": p_emotions,
-	}
-
-func _speak() -> void:
-	Globals.play_animation.emit("random")
-
-	lower_third.set_prompt(pending_speech.prompt, 1.0)
-	lower_third.set_subtitles(pending_speech.response, audio_manager.speech_duration)
-
-	Globals.start_speech.emit()
-	pending_speech = {}
-
-func _on_new_speech_v2(data: Dictionary) -> void:
+func _on_new_speech(data: Dictionary) -> void:
 	%BeforeNextResponseTimer.stop()
 	Globals.play_animation.emit("random")
 
@@ -232,13 +105,7 @@ func _on_new_speech_v2(data: Dictionary) -> void:
 
 	audio_manager.play_speech()
 
-func _on_continue_speech_v2(data: Dictionary) -> void:
-	await _on_subsequent_speech_v2(data)
-
-func _on_end_speech_v2() -> void:
-	get_ready_for_next_speech()
-
-func _on_subsequent_speech_v2(data: Dictionary) -> void:
+func _on_continue_speech(data: Dictionary) -> void:
 	%BeforeNextResponseTimer.stop()
 
 	Globals.play_animation.emit("random")
@@ -251,18 +118,87 @@ func _on_cancel_speech() -> void:
 	if Globals.is_singing:
 		return
 
-	pending_speech = {}
 	lower_third.clear_subtitles()
 
 	audio_manager.reset_speech_player()
 	lower_third.set_subtitles_fast("[TOASTED]")
+
 	Globals.set_toggle.emit("void", true)
 	await audio_manager.play_cancel_sound()
 	Globals.set_toggle.emit("void", false)
 
-	get_ready_for_next_speech()
+	_get_ready_for_next_speech()
 
-func get_ready_for_next_speech() -> void:
+func _on_end_speech() -> void:
+	_get_ready_for_next_speech()
+
+func _on_start_singing(song: Song, _seek_time := 0.0) -> void:
+	Globals.current_emotion_modifier = 0.0
+
+	# Reset toggles
+	for toggle in Globals.toggles:
+		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
+
+	Globals.is_paused = true
+
+	mic.animation = "in"
+	mic.play()
+
+	var command := {
+		"sourceName": "Song",
+		"filterName": "hiyori",
+		"filterEnabled": false
+	}
+	if song.id == "hiyori":
+		command["filterEnabled"] = true
+	control_panel.obs.send_command("SetSourceFilterEnabled", command)
+
+	if not Globals.fixed_scene:
+		Globals.change_scene.emit("Song")
+
+func _on_stop_singing() -> void:
+	mic.animation = "out"
+	mic.play()
+
+	$BeatsCounter.visible = false
+
+	Globals.end_dancing_motion.emit()
+	Globals.end_singing_mouth_movement.emit()
+
+	if not Globals.fixed_scene:
+		Globals.change_scene.emit("Main")
+
+func _on_connection_closed() -> void:
+	Globals.is_paused = true
+	control_panel.backend_disconnected()
+
+# endregion
+
+# region PUBLIC FUNCTIONS
+
+func connect_backend() -> void:
+	client.connect_client()
+	await client.connection_established
+	control_panel.backend_connected()
+
+	if not client.data_received.is_connected(_on_data_received):
+		client.data_received.connect(_on_data_received)
+
+	if not client.connection_closed.is_connected(_on_connection_closed):
+		client.connection_closed.connect(_on_connection_closed)
+
+	if not Globals.ready_for_speech.is_connected(_on_ready_for_speech):
+		Globals.ready_for_speech.connect(_on_ready_for_speech)
+
+func disconnect_backend() -> void:
+	client.break_connection("from control panel")
+	await client.connection_closed
+
+# endregion
+
+# region PRIVATE FUNCTIONS
+
+func _get_ready_for_next_speech() -> void:
 	%BeforeNextResponseTimer.start()
 
 func _on_before_next_response_timer_timeout() -> void:
@@ -274,77 +210,4 @@ func _on_before_next_response_timer_timeout() -> void:
 	if not Globals.is_paused:
 		Globals.ready_for_speech.emit()
 
-func _on_start_singing(song: Song, seek_time := 0.0) -> void:
-	Globals.current_emotion_modifier = 0.0
-
-	_reset_toggles()
-	Globals.is_paused = true
-
-	mic.animation = "in"
-	mic.play()
-
-	current_song = song
-	current_subtitles = song.load_subtitles_file()
-	lower_third.set_prompt(song.full_name, 0.0 if seek_time else song.wait_time)
-
-	audio_manager.prepare_song(current_song)
-
-	var command := {
-		"sourceName": "Song",
-		"filterName": "hiyori",
-		"filterEnabled": false
-	}
-	if song.id == "hiyori":
-		command["filterEnabled"] = true
-	# TODO: decouple
-	control_panel.obs.send_command("SetSourceFilterEnabled", command)
-
-	if not Globals.fixed_scene:
-		Globals.change_scene.emit("Song")
-
-	audio_manager.play_song(seek_time)
-
-func _on_stop_singing() -> void:
-	mic.animation = "out"
-	mic.play()
-
-	current_song = null
-	current_subtitles = []
-	$BeatsCounter.visible = false
-
-	Globals.end_dancing_motion.emit()
-	Globals.end_singing_mouth_movement.emit()
-
-	lower_third.clear_subtitles()
-
-	if not Globals.fixed_scene:
-		Globals.change_scene.emit("Main")
-
-func _on_change_position(new_position: String) -> void:
-	new_position = new_position.to_snake_case()
-
-	if not Globals.positions.has(new_position):
-		printerr("Position %s does not exist" % new_position)
-		return
-
-	var positions: Dictionary = Globals.positions[new_position]
-
-	# "model" positions are handled in the model script
-	match new_position:
-		"intro":
-			return
-
-		_:
-			var pos = positions.lower_third
-
-			if tweens.has("lower_third"):
-				tweens.lower_third.kill()
-
-			tweens.lower_third = create_tween().set_trans(Tween.TRANS_QUINT)
-			tweens.lower_third.set_parallel()
-			tweens.lower_third.tween_property(lower_third, "position", pos[0], 1)
-			tweens.lower_third.tween_property(lower_third, "scale", pos[1], 1)
-
-func _reset_toggles() -> void:
-	for toggle in Globals.toggles:
-		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
+# endregion

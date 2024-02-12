@@ -121,7 +121,6 @@ func _connect_signals() -> void:
 	Globals.set_toggle.connect(_on_set_toggle)
 	Globals.pin_asset.connect(_on_pin_asset)
 
-	Globals.new_speech.connect(_on_new_speech)
 	Globals.start_speech.connect(_on_start_speech)
 
 	Globals.start_singing.connect(_on_start_singing.unbind(2))
@@ -132,8 +131,8 @@ func _connect_signals() -> void:
 
 	Globals.update_backend_stats.connect(_on_update_backend_stats)
 
-	Globals.new_speech_v2.connect(_on_new_speech_v2)
-	Globals.end_speech_v2.connect(_on_end_speech_v2)
+	Globals.new_speech.connect(_on_new_speech)
+	Globals.end_speech.connect(_on_end_speech)
 	Globals.push_speech_from_queue.connect(_on_push_speech_from_queue)
 
 	print_debug("Control Panel: connected signals")
@@ -340,18 +339,12 @@ func _on_model_toggle_pressed(toggle: CheckButton) -> void:
 func _on_asset_toggle_pressed(toggle: CheckButton) -> void:
 	Globals.pin_asset.emit(toggle.text, toggle.button_pressed)
 
-func _on_new_speech(prompt: String, text: String, emotions: Array) -> void:
-	%CurrentSpeech/Text.remove_theme_color_override("font_color")
-	%CurrentSpeech/Prompt.text = prompt
-	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
-	%CurrentSpeech/Text.text = text
-
-func _on_new_speech_v2(data: Dictionary) -> void:
+func _on_new_speech(data: Dictionary) -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")
 	%CurrentSpeech/Prompt.text = "%s (%s)" % [data.prompt, data.id]
 	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(data.emotions)
 
-func _on_end_speech_v2() -> void:
+func _on_end_speech() -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 
 func _on_push_speech_from_queue(response: String) -> void:

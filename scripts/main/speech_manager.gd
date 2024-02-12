@@ -30,16 +30,16 @@ func _process(_delta: float) -> void:
 		"NewSpeech":
 			print("NewSpeech: ", message.id)
 			skip_message_id = 0
-			Globals.new_speech_v2.emit(message)
+			Globals.new_speech.emit(message)
 
 		"ContinueSpeech":
 			print("ContinueSpeech: ", message.id)
-			Globals.continue_speech_v2.emit(message)
+			Globals.continue_speech.emit(message)
 
 		"EndSpeech":
 			print("EndSpeech: ", message.id)
 			current_speech_id = 0
-			Globals.end_speech_v2.emit()
+			Globals.end_speech.emit()
 
 		_:
 			printerr("Unknown message type: ", message.type)

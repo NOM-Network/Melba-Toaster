@@ -118,6 +118,40 @@ func _process(_delta: float) -> void:
 		debug_draw = []
 		queue_redraw()
 
+func _input(event: InputEvent) -> void:
+	if event as InputEventMouseMotion:
+		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
+			mouse_to_position(event.relative)
+
+		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
+			move_eyes(event.position)
+
+	if event as InputEventMouseButton:
+		if event.is_pressed():
+			match event.button_index:
+				MOUSE_BUTTON_LEFT:
+					if event.shift_pressed:
+						print_model_data()
+
+				MOUSE_BUTTON_WHEEL_UP:
+					if event.ctrl_pressed:
+						mouse_to_rotation(Globals.rotation_change)
+					else:
+						mouse_to_scale(Globals.scale_change)
+
+				MOUSE_BUTTON_WHEEL_DOWN:
+					if event.ctrl_pressed:
+						mouse_to_rotation(-Globals.rotation_change)
+					else:
+						mouse_to_scale(-Globals.scale_change)
+
+				MOUSE_BUTTON_MIDDLE:
+					Globals.change_position.emit(Globals.last_position)
+		else:
+			match event.button_index:
+				MOUSE_BUTTON_RIGHT:
+					move_eyes(Vector2.ZERO)
+
 func nudge_model() -> void:
 	play_random_idle_animation()
 
