@@ -36,6 +36,8 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 > The project can run without OBS and/or the backend, but nothing will actually happen. You can find a [mock backend server](backend/README.md) in the `backend` folder.
 
+> When pushing changes to the repository, ignore or revert any `Param` changes in `scenes\live2d\live_2d_melba.tscn` - they are control parameters for the model and are changed in the runtime. If you use GitHub Desktop, you can ignore these lines from commit by clicking on the line block.
+
 ### Song support
 
 Melba can sing! Song support is outlined in a [separate document](dist/songs/README.md).
