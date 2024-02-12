@@ -10,11 +10,11 @@ All the songs live in the `songs/` folder.
 Each song lives in its own folder, the name of the folder is its ID. Song consists of 4 files, all the files are required:
 
 - `config.cfg` - config file for the song
-- `song.mp3` - fully mixed song (or just instrumental)
-- `voice.mp3` - only Melba's voice (for the mouth movement)
+- `song.ogg` - fully mixed song (or just the instrumental)
+- `voice.ogg` - only Melba's voice (for the mouth movement)
 - `subtitles.txt` - subtitles and actions for the song
 
-`song` and `voice` files must be identical in duration.
+`song` and `voice` files must be identical in duration. We prefer fully mixed songs.
 
 ## Config file
 
