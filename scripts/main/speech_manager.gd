@@ -84,6 +84,9 @@ func ready_for_new_message() -> bool:
 	return current_speech_id == 0 and messages.size() == 0
 
 func _on_ready_for_speech() -> void:
+	reset_speech()
+
+func reset_speech() -> void:
 	current_speech_id = 0
 	current_speech_text = ""
 	skip_message_id = 0

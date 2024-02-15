@@ -558,8 +558,9 @@ func _on_debug_mode_button_toggled(button_pressed: bool) -> void:
 func _on_cancel_speech_pressed() -> void:
 	Globals.cancel_speech.emit()
 
-func _on_reset_subtitles_pressed() -> void:
+func _on_reset_state_pressed() -> void:
 	Globals.reset_subtitles.emit()
+	SpeechManager.reset_speech()
 
 func _on_show_beats_toggled(toggled_on: bool) -> void:
 	Globals.show_beats = toggled_on

@@ -223,11 +223,11 @@ update_on_text_changed = true
 suffix = "s"
 select_all_on_focus = true
 
-[node name="ResetSubtitles" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc"]
+[node name="ResetState" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-text = "Reset Subtitles"
+text = "Reset State"
 
 [node name="SceneController" type="PanelContainer" parent="Margins/HSplitContainer/LeftPanel"]
 layout_mode = 2
@@ -811,7 +811,7 @@ wait_time = 0.5
 [connection signal="gui_input" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer/CurrentSpeech/Text" to="." method="_on_speech_text_gui_input"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeCleanout" to="." method="_on_time_before_cleanout_value_changed"]
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeNextResponse" to="." method="_on_time_before_next_response_value_changed"]
-[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/ResetSubtitles" to="." method="_on_reset_subtitles_pressed"]
+[connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/ResetState" to="." method="_on_reset_state_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel/MarginContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer2/ReloadSongList" to="." method="_on_reload_song_list_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/SingingToggle" to="." method="_on_singing_toggle_toggled"]
