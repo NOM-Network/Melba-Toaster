@@ -304,7 +304,7 @@ func model_pivot() -> Vector2:
 
 func mouse_to_scale(change: float) -> void:
 	var new_scale: float = model_scale + change
-	if new_scale < 0.1:
+	if new_scale < 0.01:
 		return
 
 	var mouse_pos := get_viewport().get_mouse_position()
