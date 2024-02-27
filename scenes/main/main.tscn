@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://d31jgtyln1dig" path="res://assets/main/mic/mic_in.png" id="4_ajw6o"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
-[ext_resource type="FontFile" uid="uid://c6j4af040h110" path="res://assets/main/New Bread.ttf" id="5_pnxoy"]
 [ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
+[ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="7_6nuhl"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
@@ -603,7 +603,7 @@ animations = [{
 }]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8wgd5"]
-font = ExtResource("5_pnxoy")
+font = ExtResource("7_6nuhl")
 font_size = 30
 outline_size = 5
 outline_color = Color(0.556863, 0.384314, 0.117647, 1)
@@ -612,7 +612,7 @@ shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
 [sub_resource type="LabelSettings" id="LabelSettings_rpyvj"]
-font = ExtResource("5_pnxoy")
+font = ExtResource("7_6nuhl")
 font_size = 40
 outline_size = 5
 outline_color = Color(0.556863, 0.384314, 0.117647, 1)

@@ -79,7 +79,7 @@ func _match_command(line: Array) -> void:
 	var text: String = line[1]
 
 	if not text.begins_with("&"):
-		lower_third.set_subtitles_fast(text)
+		lower_third.set_subtitles_fast(text.c_unescape())
 		return
 
 	var command: Array = text.split(" ")

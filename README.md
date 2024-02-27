@@ -13,7 +13,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 1. Install the latest minor version of Godot 4.2:
 
-    - atandalone: <https://godotengine.org/download/windows/>
+    - standalone: <https://godotengine.org/download/windows/>
     - via winget:
 
     ```powershell
@@ -120,6 +120,14 @@ Project codebase is licensed under a [AGPL 3.0 (and later) license](LICENSE.md).
 
 Art assets are licensed under a [CC BY-SA 4.0 license](LICENSE-ASSETS.md).
 
-This project uses [New Bread font](https://www.dafont.com/new-bread.font) by Syafrizal a.k.a. Khurasan.
+## Acknowledgements
 
-This project uses [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism) by MizunagiKB, as well as [Live2D Cubism SDK](https://github.com/Live2D/CubismNativeFramework/blob/develop/LICENSE.md).
+This project uses the following 3rd party libraries and assets:
+
+- [Godot Engine](https://godotengine.org), licensed under the [MIT license](https://godotengine.org/license).
+
+- [Cubism for GDScript](https://github.com/MizunagiKB/gd_cubism) by MizunagiKB, licensed under the [MIT license](https://github.com/MizunagiKB/gd_cubism?tab=License-1-ov-file#gdcubism).
+
+- [Live2D Cubism SDK](https://github.com/Live2D/CubismNativeFramework) by Live2D, licensed under the [Cubism SDK Release License](https://www.live2d.com/en/sdk/license).
+
+- [Shantell Sans font](https://shantellsans.com), licensed under the [SIL Open Font License, Version 1.1](https://github.com/arrowtype/shantell-sans/blob/main/OFL.txt).
