@@ -54,15 +54,18 @@ func _start_motion(bpm: float) -> void:
 
 func _end_motion() -> void:
 	Globals.dancing_bpm = 0
+	Globals.play_animation.emit("end")
 
 	_stop_timer()
 	for axis in ["x", "y", "z"]:
 		if tween.has(axis) and tween[axis].is_running():
 			_stop(axis)
 
+	await get_tree().create_timer(1.0).timeout
+	Globals.play_animation.emit("random")
+
 func _start_tween() -> void:
-	var new_motion = _random_motion()
-	for axis in new_motion:
+	for axis in _random_motion():
 		_dance(axis)
 
 func _wait_time() -> float:
@@ -113,14 +116,8 @@ func _dance(axis: String) -> void:
 	tween[axis].tween_property(get(body_param), "value", motion_range * motion_modifier, bob_interval * time_modifier)
 
 func _stop(axis: String) -> void:
-	var time_modifier := _time_modifier(axis) * 2.0
-
 	if tween.has(axis):
 		tween[axis].kill()
-
-	tween[axis] = create_tween()
-	tween[axis].tween_property(get("param_angle_" + axis), "value", 0, bob_interval * time_modifier)
-	tween[axis].tween_property(get("param_body_angle_" + axis), "value", 0, bob_interval * time_modifier)
 
 func _time_modifier(axis: String) -> float:
 	var time_modifier := 1.0
@@ -135,9 +132,15 @@ func _time_modifier(axis: String) -> float:
 	return time_modifier
 
 func _random_motion() -> Array:
-	return [
-		["x", "y", "z"],
-		["x", "y"],
-		["y", "z"],
-		["y"],
-	].pick_random()
+	if Globals.dancing_bpm <= 100.0:
+		return [
+			["y", "z"],
+			["y", "x"],
+			["y"],
+		].pick_random()
+	else:
+		return [
+			["x", "y", "z"],
+			["x", "y"],
+			["y", "z"],
+		].pick_random()
