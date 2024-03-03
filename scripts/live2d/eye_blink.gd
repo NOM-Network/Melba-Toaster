@@ -3,8 +3,9 @@ extends GDCubismEffectCustom
 @onready var blink_timer := $BlinkTimer
 @export var chance_to_squint := 3.0
 
-var param_eye: GDCubismParameter
-var param_smile: GDCubismParameter
+var param_eye_l_open: GDCubismParameter
+var param_eye_ball_y: GDCubismParameter
+
 var squint_value := 0.0
 var tween: Tween
 
@@ -14,20 +15,26 @@ func _ready():
 func _on_cubism_init(model: GDCubismUserModel):
 	blink_timer.timeout.connect(_on_timer_timeout)
 
-	var any_param = model.get_parameters()
+	var param_names = [
+		"ParamEyeLOpen",
+		"ParamEyeBallY",
+	]
 
-	for param in any_param:
-		if param.id == "ParamEyeLOpen":
-			param_eye = param
-			break
+	for param in model.get_parameters():
+		if param_names.has(param.id):
+			set(param.id.to_snake_case(), param)
 
 func _process(_delta: float) -> void:
-	if active && squint_value != 0.0:
-		param_eye.value = squint_value
+	if Globals.is_singing or not active:
+		param_eye_l_open.value = 1.0
+		param_eye_ball_y.value = 0.0
+	else:
+		param_eye_l_open.value = squint_value if squint_value > 0.0 else 1.0
+		param_eye_ball_y.value = -squint_value if squint_value < 0.8 else 0.0
 
 func _on_timer_timeout() -> void:
 	if active:
-		if randf_range(0, chance_to_squint) > 1.0:
+		if randf_range(0, chance_to_squint) > 1.0 and not Globals.is_singing:
 			await _squint_tween()
 		else:
 			await _blink_tween()
@@ -41,18 +48,20 @@ func _blink_tween() -> void:
 	if tween:
 		tween.kill()
 
-	squint_value = 0.0
 	tween = create_tween()
-	tween.tween_property(param_eye, "value", 0.0, 0.05)
-	tween.tween_property(param_eye, "value", 0.0, randf_range(0.01, 0.1))
-	tween.tween_property(param_eye, "value", 1.0, 0.05)
+	tween.tween_property(self, "squint_value", 0.0, 0.05)
+	tween.tween_property(param_eye_l_open, "value", 0.0, 0.05)
+	tween.tween_property(param_eye_l_open, "value", 0.0, randf_range(0.01, 0.1))
+	tween.tween_property(param_eye_l_open, "value", 1.0, 0.05)
 	await tween.finished
 
 func _squint_tween() -> void:
 	if tween:
 		tween.kill()
 
-	squint_value = randf_range(0.7, 1.0)
-	tween = create_tween().set_trans(Tween.TRANS_SINE)
-	tween.tween_property(param_eye, "value", squint_value, randf_range(0.1, 0.5))
+	squint_value = randf_range(0.5, 1.0)
+	var time := randf_range(0.1, 0.5)
+	tween = create_tween().set_parallel().set_trans(Tween.TRANS_SINE)
+	tween.tween_property(param_eye_l_open, "value", squint_value, time)
+	tween.tween_property(param_eye_ball_y, "value", -squint_value if squint_value < 0.8 else 0.0, time)
 	await tween.finished
