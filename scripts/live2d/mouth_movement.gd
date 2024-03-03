@@ -9,48 +9,27 @@ class_name MouthMovement
 @export var freq_steps := 10
 @export var vowel_freqs: Array
 
-# Parameter Names
-@export_category("Param Names")
-@export var param_mouth_name: String = "ParamMouthOpenY"
-@export var param_mouth_form_name: String = "ParamMouthForm"
-
 # Parameter Values
 @export_category("Param Values")
 @export_range(-1.0, 1.0) var max_mouth_value := 0.8
 
 # Parameters
-var param_mouth: GDCubismParameter
+var param_mouth_open_y: GDCubismParameter
 var param_mouth_form: GDCubismParameter
-var param_eye_ball_x: GDCubismParameter
-var param_eye_ball_y: GDCubismParameter
 
 # For voice analysis
-var spectrum: AudioEffectSpectrumAnalyzerInstance
+@onready var bus := AudioServer.get_bus_index(audio_bus_name)
+@onready var spectrum := AudioServer.get_bus_effect_instance(bus, 0)
 var prev_values_amount := 10
 var prev_mouth_values := []
 var prev_mouth_form_values := []
 var test_array := []
+var allow_nudge := true
 
 func _init() -> void:
 	for i in freq_steps:
 		vowel_freqs.append([min_voice_freq + i * freq_steps, min_voice_freq + (i + 1) * freq_steps])
-	vowel_freqs.reverse()
 
-func _ready():
-	cubism_init.connect(_on_cubism_init)
-	cubism_process.connect(_on_cubism_process)
-
-func _on_cubism_init(model: GDCubismUserModel):
-	var any_param = model.get_parameters()
-
-	for param in any_param:
-		if param.id == param_mouth_name:
-			param_mouth = param
-		if param.id == param_mouth_form_name:
-			param_mouth_form = param
-
-	var bus = AudioServer.get_bus_index(audio_bus_name)
-	spectrum = AudioServer.get_bus_effect_instance(bus, 0)
 	prev_mouth_values.resize(prev_values_amount)
 	prev_mouth_values.fill(0.0)
 
@@ -59,6 +38,20 @@ func _on_cubism_init(model: GDCubismUserModel):
 
 	test_array.resize(prev_values_amount - 1)
 	test_array.fill(0.0)
+
+func _ready():
+	cubism_init.connect(_on_cubism_init)
+	cubism_process.connect(_on_cubism_process)
+
+func _on_cubism_init(model: GDCubismUserModel):
+	var param_names = [
+		"ParamMouthOpenY",
+		"ParamMouthForm",
+	]
+
+	for param in model.get_parameters():
+		if param_names.has(param.id):
+			set(param.id.to_snake_case(), param)
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	var overall_magnitude: float = 0.0
@@ -73,7 +66,7 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 		var overall_energy = clamp((min_db + linear_to_db(overall_magnitude)) / min_db, 0.0, 1.0)
 
 		var selected_mouth_form = 0.0
-		if overall_energy && overall_magnitude:
+		if overall_energy and overall_magnitude:
 			var max_vowel_enegry := 0.0
 			var selected_vowel := 0
 			for i in range(0, vowel_freqs.size()):
@@ -91,11 +84,11 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 				selected_mouth_form = _map_to_log_range(selected_vowel)
 
 		unaltered_mouth_value = overall_energy * max_mouth_value
-		unaltered_mouth_form = Globals.current_emotion_modifier + clamp(selected_mouth_form * overall_energy, 0.0, 0.8)
+		unaltered_mouth_form = Globals.current_emotion_modifier + clamp(selected_mouth_form * overall_energy, 0.0, 1.0)
 
 		manage_speaking()
 	else:
-		param_mouth.value = 0.0
+		param_mouth_open_y.value = 0.0
 		param_mouth_form.value = lerp(param_mouth_form.value, Globals.current_emotion_modifier, 0.01)
 
 	prev_mouth_values.remove_at(0)
@@ -105,8 +98,14 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	prev_mouth_form_values.append(unaltered_mouth_form)
 
 func manage_speaking() -> void:
-	param_mouth.value = _find_avg(prev_mouth_values.slice(-3))
-	param_mouth_form.value = _find_avg(prev_mouth_form_values.slice(-3))
+	var limit := - 3 if Globals.is_singing else - 5
+
+	# Mouth amplitude
+	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice(limit))
+
+	# Mouth form
+	var mouth_form = _find_avg(prev_mouth_form_values.slice(limit))
+	param_mouth_form.value = _clamp_to_log_scale(mouth_form)
 
 	if prev_mouth_values[prev_values_amount - 1] != 0.0 \
 		and prev_mouth_values.slice(0, prev_values_amount - 1) == test_array \
@@ -119,6 +118,9 @@ func _find_avg(numbers: Array) -> float:
 		total += num
 	var avg: float = total / float(numbers.size())
 	return avg
+
+func _clamp_to_log_scale(value):
+	return 1.0 - (log(1.0 - value + 1.0) / log(1.0 + 1.0))
 
 func _map_to_log_range(value: float) -> float:
 	var old_max = clamp(freq_steps - 1, 0, freq_steps - 1)
