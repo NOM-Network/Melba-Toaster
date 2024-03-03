@@ -88,6 +88,7 @@ static var positions := {
 
 	"fullsreen": {
 		"model": [ Vector2(920, 3265), 1.35 ],
+	"fullscreen": {
 		"lower_third": default_lower_third_position,
 	},
 
