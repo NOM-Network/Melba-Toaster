@@ -35,7 +35,7 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 5. Hit F5 in Godot editor. Live2D and Control Panel scenes should start automatically.
 
 > The project can run without OBS and/or the backend, but nothing will actually happen. You can find a [mock backend server](backend/README.md) in the `backend` folder.
-
+>
 > When pushing changes to the repository, ignore or revert any `Param` changes in `scenes\live2d\live_2d_melba.tscn` - they are control parameters for the model and are changed in the runtime. If you use GitHub Desktop, you can ignore these lines from commit by clicking on the line block.
 
 ### Song support
@@ -72,41 +72,41 @@ This is required to build GDCubism plugin for Windows. You won't need it to use 
 
 1. Install Git, Python and SCons:
 
-```ps
-winget install Git.Git
-winget install Python.Python.3.12
-```
+    ```ps
+    winget install Git.Git
+    winget install Python.Python.3.12
+    ```
 
 2. Install SCons:
 
-```ps
-pip install SCons
-```
+    ```ps
+    pip install SCons
+    ```
 
 3. Get the plugin:
 
-```ps
-git clone https://github.com/MizunagiKB/gd_cubism.git
-cd gd_cubism
-git submodule update --init
-```
+    ```ps
+    git clone https://github.com/MizunagiKB/gd_cubism.git
+    cd gd_cubism
+    git submodule update --init
+    ```
 
 4. Get the SDK from the Live2D website (latest beta version), put to `thirdparty` folder: <https://www.live2d.com/en/sdk/download/native/>
 
 5. Get the Cubism Native Framework:
 
-```ps
-pushd thirdparty
-git clone https://github.com/Live2D/CubismNativeFramework.git
-popd
-```
+    ```ps
+    pushd thirdparty
+    git clone https://github.com/Live2D/CubismNativeFramework.git
+    popd
+    ```
 
 6. Build the plugin:
 
-```ps
-scons platform=windows arch=x86_64 target=template_debug
-scons platform=windows arch=x86_64 target=template_release
-```
+    ```ps
+    scons platform=windows arch=x86_64 target=template_debug
+    scons platform=windows arch=x86_64 target=template_release
+    ```
 
 7. Retrieve the `gd_cubism` folder from`gd_cubism\demo\addons` and put it into `addons` folder.
 
