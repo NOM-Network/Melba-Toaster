@@ -30,7 +30,11 @@ func _process(_delta: float) -> void:
 		"NewSpeech":
 			print("NewSpeech: ", message.id)
 			skip_message_id = 0
-			Globals.new_speech.emit(message)
+
+			if message.response == '<filtered>':
+				Globals.end_speech.emit()
+			else:
+				Globals.new_speech.emit(message)
 
 		"ContinueSpeech":
 			print("ContinueSpeech: ", message.id)
@@ -100,7 +104,7 @@ func _process_emotions(emotions: Array) -> void:
 	if not emotions:
 		return
 
-	var max_emotion = ["anger", -1.0]
+	var max_emotion = ["anger", - 1.0]
 
 	for emotion in emotions:
 		if not Globals.emotions_modifiers.has(emotion):
