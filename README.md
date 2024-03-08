@@ -62,7 +62,7 @@ Due to issues with Live2D plugin (memory leaks in the editor), it is recommended
 
 ### Note for Mac/Linux users
 
-This project is built for use on Windows and uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the extension first](https://github.com/MizunagiKB/gd_cubism/blob/main/doc/BUILD.en.adoc#build-for-macos), then put the files in `addons/gd_cubism/bin` folder.
+This project is built for use on Windows and uses Windows libraries for Cubism extension. If you need to use Toaster on Mac or Linux, you have to [build the extension first](https://github.com/MizunagiKB/gd_cubism/blob/main/docs/BUILD.en.adoc), then put the files in `addons/gd_cubism/bin` folder.
 
 ### Build machine perparations
 
