@@ -710,4 +710,14 @@ unique_name_in_owner = true
 wait_time = 5.0
 one_shot = true
 
+[node name="GreenScreen" type="ColorRect" parent="."]
+visible = false
+z_index = -5
+z_as_relative = false
+offset_left = -57.0
+offset_top = -62.0
+offset_right = 1966.0
+offset_bottom = 1124.0
+color = Color(0, 1, 0, 1)
+
 [connection signal="timeout" from="BeforeNextResponseTimer" to="." method="_on_before_next_response_timer_timeout"]
