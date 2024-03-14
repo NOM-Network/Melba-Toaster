@@ -51,8 +51,8 @@ func _apply_defaults() -> void:
 	pause_button.button_pressed = Globals.is_paused
 	%ShowBeats.button_pressed = Globals.show_beats
 
-	obs_client_status.text = "OBS\n%s:%s" % [ Globals.config.get_obs("host"), Globals.config.get_obs("port") ]
-	backend_status.text = "Backend\n%s:%s" % [ Globals.config.get_backend("host"), Globals.config.get_backend("port") ]
+	obs_client_status.text = "OBS\n%s:%s" % [Globals.config.get_obs("host"), Globals.config.get_obs("port")]
+	backend_status.text = "Backend\n%s:%s" % [Globals.config.get_backend("host"), Globals.config.get_backend("port")]
 
 	%TimeBeforeCleanout.value = Globals.time_before_cleanout
 	%TimeBeforeNextResponse.value = Globals.time_before_next_response
@@ -117,7 +117,7 @@ func _stop_obs_processing() -> void:
 	obs.break_connection()
 	CpHelpers.change_status_color(obs_client_status, false)
 
-	CpHelpers.clear_nodes([%ObsScenes, %ObsInputs, %ObsFilters])
+	CpHelpers.clear_nodes([ %ObsScenes, %ObsInputs, %ObsFilters])
 
 func _connect_signals() -> void:
 	Globals.set_toggle.connect(_on_set_toggle)
@@ -179,7 +179,7 @@ func _generate_singing_controls() -> void:
 
 func _generate_model_controls() -> void:
 	for type in ["animations", "pinnable_assets", "expressions", "toggles"]:
-		var parent = get_node("%%%s" % type.to_pascal_case())
+		var parent = get_node("%%%s"% type.to_pascal_case())
 		CpHelpers.clear_nodes(parent)
 
 		var callable: Callable
@@ -254,7 +254,7 @@ func _handle_request(data: Dictionary) -> void:
 
 	match data.requestType:
 		"GetStats":
-			CpHelpers.insert_data(%StreamStats, Templates.format_obs_stats(data.responseData))
+			CpHelpers.insert_data( %StreamStats, Templates.format_obs_stats(data.responseData))
 
 		"GetSceneList":
 			_generate_scene_buttons(data.responseData)
@@ -295,13 +295,13 @@ func _handle_request(data: Dictionary) -> void:
 				print("-------------")
 
 func _on_godot_stats_timer_timeout() -> void:
-	CpHelpers.insert_data(%GodotStats, Templates.format_godot_stats())
+	CpHelpers.insert_data( %GodotStats, Templates.format_godot_stats())
 
 func _on_obs_stats_timer_timeout() -> void:
 	obs.send_command("GetStats")
 
 func _on_message_queue_stats_timer_timeout() -> void:
-	CpHelpers.insert_data(%MessageQueueStats, Templates.format_message_queue_stats())
+	CpHelpers.insert_data( %MessageQueueStats, Templates.format_message_queue_stats())
 
 func _on_start_singing() -> void:
 	Globals.is_paused = true
@@ -322,15 +322,15 @@ func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 	var seek_time: float = %SingingSeekTime.value
 
 	if button_pressed:
-		var old_text: String = %SingingMenu.get_popup().get_item_text(%SingingMenu.selected)
-		%SingingMenu.get_popup().set_item_text(%SingingMenu.selected, "♫ %s" % old_text)
+		var old_text: String = %SingingMenu.get_popup().get_item_text( %SingingMenu.selected)
+		%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
 		Globals.start_singing.emit(song, seek_time)
 	else:
 		Globals.stop_singing.emit()
 
 func _on_dancing_toggle_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		Globals.start_dancing_motion.emit(%DancingBpm.value)
+		Globals.start_dancing_motion.emit( %DancingBpm.value)
 	else:
 		Globals.end_dancing_motion.emit()
 	gui_release_focus()
@@ -357,11 +357,11 @@ func _on_start_speech() -> void:
 
 func _on_set_toggle(toggle_name: String, enabled: bool) -> void:
 	var ui_name := "Toggles_%s" % toggle_name.to_pascal_case()
-	_change_checkbutton_state(%Toggles, ui_name, enabled)
+	_change_checkbutton_state( %Toggles, ui_name, enabled)
 
 func _on_pin_asset(asset_name: String, enabled: bool) -> void:
 	var ui_name := "PinnableAssets_%s" % asset_name.to_pascal_case()
-	_change_checkbutton_state(%PinnableAssets, ui_name, enabled)
+	_change_checkbutton_state( %PinnableAssets, ui_name, enabled)
 
 func _change_checkbutton_state(node: Node, ui_name: String, enabled: bool) -> void:
 	var asset: CheckButton = node.get_node(ui_name)
@@ -373,11 +373,11 @@ func _on_obs_stream_control_pressed() -> void:
 	obs.send_command("ToggleStream")
 
 func _on_change_scene(scene_name: String) -> void:
-	obs.send_command("SetCurrentProgramScene", { "sceneName": scene_name })
+	obs.send_command("SetCurrentProgramScene", {"sceneName": scene_name})
 
 	var next_position: String
 	var selected_override: int = %NextPositionMenu.selected - 1
-	if selected_override != -1:
+	if selected_override != - 1:
 		next_position = Globals.positions.keys()[selected_override]
 
 	if not next_position:
@@ -412,7 +412,7 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 	var scenes = data.scenes
 	scenes.reverse()
 
-	CpHelpers.clear_nodes(%ObsScenes)
+	CpHelpers.clear_nodes( %ObsScenes)
 
 	for scene in scenes:
 		var button = Button.new()
@@ -433,7 +433,7 @@ func _change_active_scene(data: Dictionary) -> void:
 		CpHelpers.apply_color_override(button, button.name == scene_name, Color.GREEN)
 
 func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
-	CpHelpers.clear_nodes(%ObsFilters)
+	CpHelpers.clear_nodes( %ObsFilters)
 
 	for filter in filters:
 		var button = Button.new()
@@ -459,19 +459,19 @@ func change_filter_state(data: Dictionary) -> void:
 	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.RED)
 
 func _generate_input_request(inputs: Array) -> void:
-	CpHelpers.clear_nodes(%ObsInputs)
+	CpHelpers.clear_nodes( %ObsInputs)
 
 	var request = []
 	for i in inputs:
 		request.push_back([
-			"GetInputMute", { "inputName": i.inputName }, i.inputName
+			"GetInputMute", {"inputName": i.inputName}, i.inputName
 		])
 
 	obs.send_command_batch(request)
 
 func _generate_input_button(data: Dictionary) -> void:
 	# Only inputs we need
-	if data.inputName not in ["Melba Speaking", "MUSIC"]:
+	if data.inputName not in ["Mebla Capture", "MUSIC"]:
 		return
 
 	var button = Button.new()
@@ -499,7 +499,7 @@ func _change_input_state(data: Dictionary) -> void:
 		CpHelpers.apply_color_override(button, data.inputMuted, Color.RED, Color.GREEN)
 
 func _on_input_button_pressed(button: Button) -> void:
-	obs.send_command("ToggleInputMute", { "inputName": button.text }, button.text)
+	obs.send_command("ToggleInputMute", {"inputName": button.text}, button.text)
 
 func _on_filter_button_toggled(button_pressed: bool, button: Button) -> void:
 	var data = button.name.split("_")
@@ -519,7 +519,7 @@ func _on_time_before_next_response_value_changed(value: float) -> void:
 	Globals.time_before_next_response = value
 
 func _on_update_backend_stats(data: Array) -> void:
-	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats(data))
+	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats(data))
 
 func _input(event) -> void:
 	if event.is_action_pressed("cancel_speech"):
@@ -530,8 +530,8 @@ func _input(event) -> void:
 			pause_button.button_pressed = not pause_button.button_pressed
 
 	if event.is_action_pressed("toggle_mute"):
-		var input = "Melba Speaking"
-		obs.send_command("ToggleInputMute", { "inputName": input }, input)
+		var input = "Mebla Capture"
+		obs.send_command("ToggleInputMute", {"inputName": input}, input)
 
 func backend_connected() -> void:
 	pause_button.disabled = false
@@ -587,7 +587,7 @@ func _on_backend_status_pressed() -> void:
 	Globals.is_paused = true
 	Globals.play_animation.emit("sleep")
 	main.disconnect_backend()
-	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats([0, 0]))
+	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats([0, 0]))
 	await get_tree().create_timer(1.0).timeout
 	main.connect_backend()
 

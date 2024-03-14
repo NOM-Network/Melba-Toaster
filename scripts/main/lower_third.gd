@@ -30,7 +30,7 @@ func _ready() -> void:
 
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
 
-	Globals.reset_subtitles.emit()
+	# Globals.reset_subtitles.emit()
 
 	Globals.change_position.connect(_on_change_position)
 
@@ -62,7 +62,8 @@ func _process(delta: float) -> void:
 					result = search_string.replace(c, "")
 
 				if result.begins_with("toachan"):
-					Globals.set_toggle.emit("toa", true)
+					if randf() < 0.33:
+						Globals.set_toggle.emit("toa", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
 				while subtitles.get_line_count() > subtitles.get_visible_line_count():
@@ -76,7 +77,7 @@ func _on_reset_subtitles() -> void:
 func _on_start_speech() -> void:
 	cleanout_timer.stop()
 
-func _on_start_singing(song: Song, seek_time := 0.0) -> void:
+func _on_start_singing(song: Song, seek_time:=0.0) -> void:
 	clear_subtitles()
 	cleanout_timer.stop()
 
@@ -96,7 +97,7 @@ func _on_ready_for_speech() -> void:
 
 # region PUBLIC FUNCTIONS
 
-func set_prompt(text: String, duration := 0.0) -> void:
+func set_prompt(text: String, duration:=0.0) -> void:
 	prompt.text = ""
 	text = text.strip_edges()
 	if not text:
@@ -112,12 +113,12 @@ func set_prompt(text: String, duration := 0.0) -> void:
 
 	_tween_visible_ratio(prompt, prompt.name, 0.0, 1.0, duration)
 
-func set_subtitles(text: String, duration := 0.0, continue_print := false) -> void:
+func set_subtitles(text: String, duration:=0.0, continue_print:=false) -> void:
 	if not continue_print:
 		subtitles.text = ""
 	print_timer.stop()
 
-	text = text.strip_edges()
+	text = text.strip_edges(true)
 	if not text:
 		return
 
@@ -140,7 +141,7 @@ func set_subtitles(text: String, duration := 0.0, continue_print := false) -> vo
 	print_timer.start(duration)
 
 func set_subtitles_fast(text: String) -> void:
-	subtitles.text = text.strip_edges()
+	subtitles.text = text.strip_edges(false, true)
 	subtitles.label_settings.font_size = default_font_size["Subtitles"]
 
 func clear_subtitles() -> void:

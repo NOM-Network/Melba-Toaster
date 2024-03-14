@@ -26,6 +26,9 @@ func init_songs(debug_mode: bool):
 	var song_folders := dir.get_directories()
 
 	for id in song_folders:
+		if id.begins_with("_"):
+			continue
+
 		var config_path := "%s/%s/config.cfg" % [SONG_FOLDER_PATH, id]
 		assert(FileAccess.file_exists(config_path), "No config file for %s" % id)
 		var config_file = _load_config_file(config_path)
@@ -57,4 +60,3 @@ func get_obs(key: String) -> Variant:
 
 func get_backend(key: String) -> Variant:
 	return config.get_value("backend", key)
-

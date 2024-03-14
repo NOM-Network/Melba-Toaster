@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
+@onready var model := preload ("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
@@ -45,7 +45,6 @@ func _process(_delta: float) -> void:
 
 func _add_model() -> void:
 	add_child(model, true)
-	move_child(model, 0)
 
 	model_sprite = model.get_node("%Sprite2D")
 	user_model = model.get_node("%GDCubismUserModel")
@@ -137,7 +136,7 @@ func _on_cancel_speech() -> void:
 func _on_end_speech() -> void:
 	_get_ready_for_next_speech()
 
-func _on_start_singing(song: Song, _seek_time := 0.0) -> void:
+func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
 	# Reset toggles
