@@ -618,7 +618,7 @@ text = "Don't change automatically"
 [node name="GreenScreenToggle" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 focus_mode = 0
-text = "Greenscreen"
+text = "Greenscreen Window"
 
 [node name="InputsLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2

@@ -50,6 +50,8 @@ signal update_backend_stats(data: Array)
 @export var time_before_cleanout := 20.0
 @export var time_before_next_response := 1.0
 
+@export var green_screen := false
+
 func is_ready() -> bool:
 	return not (is_speaking or is_singing)
 
@@ -95,6 +97,11 @@ static var positions := {
 	"full_height": {
 		"model": [ Vector2(740, 520), 0.15 ],
 		"lower_third": default_lower_third_position,
+	},
+
+	"collab": {
+		"model": [default_model_position - Vector2(300, 0), default_model_scale],
+		"lower_third": [Vector2(35, 800), Vector2(0.777, 0.777)],
 	}
 }
 

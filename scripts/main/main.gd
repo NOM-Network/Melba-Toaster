@@ -11,6 +11,9 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var mic := $Microphone
 @onready var audio_manager := $AudioManager
 
+@onready var greenscreen_window := $GreenScreenWindow
+@onready var greenscreen_texture := $GreenScreenWindow/TextureRect
+
 # region PROCESS
 func _ready() -> void:
 	# Makes bg transparent
@@ -22,6 +25,8 @@ func _ready() -> void:
 
 	_connect_signals()
 	_add_model()
+
+	greenscreen_texture.texture = get_viewport().get_texture()
 
 	await connect_backend()
 

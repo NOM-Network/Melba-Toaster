@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=95 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
 [ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="7_6nuhl"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_ehotg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
 atlas = ExtResource("4_ajw6o")
@@ -626,6 +628,26 @@ script = ExtResource("1_bldvu")
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
 
+[node name="GreenScreenWindow" type="Window" parent="."]
+title = "Greenscreen Melba"
+size = Vector2i(1920, 1080)
+visible = false
+borderless = true
+
+[node name="TextureRect" type="TextureRect" parent="GreenScreenWindow"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ImageTexture_ehotg")
+
+[node name="GreenScreen" type="ColorRect" parent="GreenScreenWindow"]
+z_index = -5
+z_as_relative = false
+offset_left = -57.0
+offset_top = -62.0
+offset_right = 1966.0
+offset_bottom = 1124.0
+color = Color(0, 1, 0, 1)
+
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
 current_screen = 0
@@ -677,7 +699,6 @@ label_settings = SubResource("LabelSettings_rpyvj")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-text_overrun_behavior = 4
 visible_characters_behavior = 1
 
 [node name="ClearSubtitlesTimer" type="Timer" parent="LowerThird"]
@@ -709,15 +730,5 @@ text = "420"
 unique_name_in_owner = true
 wait_time = 5.0
 one_shot = true
-
-[node name="GreenScreen" type="ColorRect" parent="."]
-visible = false
-z_index = -5
-z_as_relative = false
-offset_left = -57.0
-offset_top = -62.0
-offset_right = 1966.0
-offset_bottom = 1124.0
-color = Color(0, 1, 0, 1)
 
 [connection signal="timeout" from="BeforeNextResponseTimer" to="." method="_on_before_next_response_timer_timeout"]
