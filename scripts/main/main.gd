@@ -66,6 +66,7 @@ func _connect_signals() -> void:
 	Globals.stop_singing.connect(_on_stop_singing)
 
 func _on_ready_for_speech() -> void:
+	client.send_message({"type": "DoneSpeaking"})
 	if not Globals.is_paused:
 		client.send_message({"type": "ReadyForSpeech"})
 

@@ -15,9 +15,19 @@ Default port is 9876.
 
 ## Client -> server
 
+### Done speaking
+
+Tells server that the Toaster is done speaking, although doesn't ready for a new message yet. Doesn't require asknowledgment.
+
+```json
+    {
+        "type": "DoneSpeaking"
+    }
+```
+
 ### Ready for speech
 
-Tells server that the Toaster is ready to receive a new audio message. Doesn't require asknowledgment.
+Tells server that the Toaster is ready to receive a new message. Doesn't require asknowledgment.
 
 ```json
     {
