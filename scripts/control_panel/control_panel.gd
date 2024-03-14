@@ -13,6 +13,7 @@ extends Window
 @onready var godot_stats_timer := $Timers/GodotStatsTimer
 @onready var obs_stats_timer := $Timers/ObsStatsTimer
 @onready var message_queue_stats_timer := $Timers/MessageQueueStatsTimer
+@onready var sound_output := %SoundOutput
 
 # OBS info
 var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
@@ -37,6 +38,7 @@ func _ready() -> void:
 	_generate_position_controls()
 	_generate_model_controls()
 	_generate_singing_controls()
+	_generate_sound_controls()
 
 	_connect_signals()
 	_start_obs_processing()
@@ -610,3 +612,16 @@ func _on_close_confirm_confirmed() -> void:
 	_stop_obs_processing()
 	main.disconnect_backend()
 	get_tree().quit()
+
+func _on_green_screen_toggle_toggled(enabled: bool) -> void:
+	Globals.green_screen = enabled
+	main.greenscreen_window.visible = enabled
+
+func _generate_sound_controls() -> void:
+	var outputs := AudioServer.get_output_device_list()
+
+	for output in outputs:
+		sound_output.add_item(output)
+
+func _on_sound_output_item_selected(index: int) -> void:
+	AudioServer.set_output_device(sound_output.get_popup().get_item_text(index))
