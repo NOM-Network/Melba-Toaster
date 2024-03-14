@@ -106,7 +106,8 @@ static var rotation_change := 5.0
 static var pinnable_assets := {
 	"censor": PinnableAsset.new("CensorAnimation", "Nose", Vector2(0, -120), 1.5),
 	"glasses": PinnableAsset.new("GlassSprites", "Nose", Vector2(10, -110), 1.1),
-	"hat": PinnableAsset.new("Hat", "ArtMesh67", Vector2(150, 100), 1.1)
+	"hat": PinnableAsset.new("Hat", "ArtMesh67", Vector2(150, 100), 1.1),
+	"band": PinnableAsset.new("TetoBand", "ArtMesh30", Vector2( - 75, 70), 1.0)
 }
 
 static var toggles := {
