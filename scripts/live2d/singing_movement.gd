@@ -8,9 +8,11 @@ var bob_interval = 0.5
 var motion_range: float = 30.0
 
 # Parameters
+## Head
 var param_angle_x: GDCubismParameter
 var param_angle_y: GDCubismParameter
 var param_angle_z: GDCubismParameter
+## Body
 var param_body_angle_x: GDCubismParameter
 var param_body_angle_y: GDCubismParameter
 var param_body_angle_z: GDCubismParameter
@@ -47,26 +49,31 @@ func _on_cubism_init(model: GDCubismUserModel):
 
 func _start_motion(bpm: float) -> void:
 	Globals.dancing_bpm = bpm
+	var old_bob_interval = bob_interval
 	bob_interval = motion_range / bpm
+
+	if old_bob_interval != bob_interval:
+		_stop_motion()
 
 	_start_tween()
 	_start_timer()
 
 func _end_motion() -> void:
 	Globals.dancing_bpm = 0
-	Globals.play_animation.emit("end")
+	Globals.play_animation.emit("idle2")
 
+	_stop_motion()
+
+func _stop_motion():
 	_stop_timer()
 	for axis in ["x", "y", "z"]:
-		if tween.has(axis) and tween[axis].is_running():
-			_stop(axis)
-
-	await get_tree().create_timer(1.0).timeout
-	Globals.play_animation.emit("random")
+		_stop(axis)
 
 func _start_tween() -> void:
-	for axis in _random_motion():
-		_dance(axis)
+	current_motion = _random_motion()
+
+	for axis in ["x", "y", "z"]:
+		_dance(axis) if axis in current_motion else _stop(axis)
 
 func _wait_time() -> float:
 	return ((60.0 / Globals.dancing_bpm) * 8.0) + Globals.get_audio_compensation()
@@ -81,42 +88,43 @@ func _stop_timer() -> void:
 func _on_beats_timer_timeout() -> void:
 	beats_timer.wait_time = _wait_time()
 
-	if randf() < 0.33:
-		var new_motion = _random_motion()
-		if current_motion == new_motion:
+	var chance := 1.0 if Globals.debug_mode else randf_range(0.0, 1.0)
+	if randf() < chance:
+		current_motion = _random_motion()
+
+	if Globals.debug_mode: print("---\n", current_motion)
+	for axis in ["x", "y", "z"]:
+		_dance(axis) if axis in current_motion else _stop(axis)
+
+func _dance(axis: String, new_tween=false) -> void:
+	if tween.has(axis):
+		if not new_tween and tween[axis].is_running():
+			if Globals.debug_mode: print("Skipping: ", axis)
 			return
 
-		current_motion = new_motion
-		for axis in ["x", "y", "z"]:
-			if axis in new_motion:
-				if not tween.has(axis) or not tween[axis].is_running():
-					_dance(axis)
-			else:
-				if tween.has(axis) and tween[axis].is_running():
-					_stop(axis)
+		if Globals.debug_mode: print("Running:  ", axis)
+		tween[axis].kill()
 
-func _dance(axis: String) -> void:
 	var param := "param_angle_" + axis
 	var body_param := "param_body_angle_" + axis
 
-	var time_modifier := _time_modifier(axis)
-	var motion_modifier := 1.0
+	var time: float = bob_interval * _time_modifier(axis)
+	tween[axis] = create_tween().set_ease(Tween.EASE_IN_OUT).set_parallel().set_loops()
 
-	if tween.has(axis):
-		tween[axis].kill()
+	var random_swing := 1 if randi_range(0, 1) else - 1
+	if Globals.debug_mode: print(axis, ": swing ", random_swing)
 
-	tween[axis] = create_tween().set_parallel().set_loops()
+	# Swing back
+	tween[axis].tween_property(get(param), "value", motion_range * random_swing, time)
+	tween[axis].tween_property(get(body_param), "value", motion_range, time)
 
-	# Positive
-	tween[axis].tween_property(get(param), "value", -motion_range * motion_modifier, bob_interval * time_modifier)
-	tween[axis].tween_property(get(body_param), "value", -motion_range * motion_modifier, bob_interval * time_modifier)
-
-	# Negative
-	tween[axis].chain().tween_property(get(param), "value", motion_range * motion_modifier, bob_interval * time_modifier)
-	tween[axis].tween_property(get(body_param), "value", motion_range * motion_modifier, bob_interval * time_modifier)
+	# Swing forth
+	tween[axis].chain().tween_property(get(param), "value", -motion_range * random_swing, time)
+	tween[axis].tween_property(get(body_param), "value", -motion_range, time)
 
 func _stop(axis: String) -> void:
 	if tween.has(axis):
+		if Globals.debug_mode: print("Stopping: ", axis)
 		tween[axis].kill()
 
 func _time_modifier(axis: String) -> float:
