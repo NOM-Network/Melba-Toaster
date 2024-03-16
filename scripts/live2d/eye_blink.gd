@@ -25,6 +25,9 @@ func _on_cubism_init(model: GDCubismUserModel):
 			set(param.id.to_snake_case(), param)
 
 func _process(_delta: float) -> void:
+	if Globals.last_animation == "sleep":
+		return
+
 	if Globals.is_singing or not active:
 		param_eye_l_open.value = 1.0
 		param_eye_ball_y.value = 0.0
@@ -33,7 +36,7 @@ func _process(_delta: float) -> void:
 		param_eye_ball_y.value = -squint_value if squint_value < 0.8 else 0.0
 
 func _on_timer_timeout() -> void:
-	if active:
+	if active and Globals.last_animation != "sleep":
 		if randf_range(0, chance_to_squint) > 1.0 and not Globals.is_singing:
 			await _squint_tween()
 		else:
