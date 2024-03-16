@@ -349,8 +349,9 @@ func _on_new_speech(data: Dictionary) -> void:
 func _on_end_speech() -> void:
 	%CurrentSpeech/Text.add_theme_color_override("font_color", Color.YELLOW)
 
-func _on_push_speech_from_queue(response: String) -> void:
+func _on_push_speech_from_queue(response: String, emotions: Array[String]) -> void:
 	%CurrentSpeech/Text.text = response
+	%CurrentSpeech/Emotions.text = CpHelpers.array_to_string(emotions)
 
 func _on_start_speech() -> void:
 	%CurrentSpeech/Text.remove_theme_color_override("font_color")

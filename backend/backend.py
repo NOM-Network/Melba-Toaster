@@ -28,42 +28,6 @@ async def hello(websocket):
                     ],
                     ["Peace out! Try saying that three times fast.", 4],
                 ]
-                emotions = []
-                emotions.append(
-                    random.choice(
-                        [
-                            "admiration",
-                            "amusement",
-                            "anger",
-                            "annoyance",
-                            "approval",
-                            "caring",
-                            "confusion",
-                            "curiosity",
-                            "desire",
-                            "disappointment",
-                            "disapproval",
-                            "disgust",
-                            "embarrassment",
-                            "excitement",
-                            "fear",
-                            "gratitude",
-                            "grief",
-                            "joy",
-                            "love",
-                            "nervousness",
-                            "optimism",
-                            "pride",
-                            "realization",
-                            "relief",
-                            "remorse",
-                            "sadness",
-                            "surprise",
-                            "neutral",
-                            "anticipation",
-                        ]
-                    )
-                )
 
                 another = not another
                 if another:
@@ -84,7 +48,11 @@ async def hello(websocket):
                         "type": type,
                         "prompt": prompt2 if another else prompt1,
                         "response": current_chunk[0],
-                        "emotions": emotions,
+                        "emotions": [
+                            random_emotion(),
+                            random_emotion(),
+                            random_emotion(),
+                        ],
                         "audio": f.read(),
                     }
                     f.close()
@@ -118,6 +86,42 @@ async def main():
 
     async with websockets.serve(hello, "", 9876):
         await asyncio.Future()  # run forever
+
+
+def random_emotion():
+    return random.choice(
+        [
+            "admiration",
+            "amusement",
+            "anger",
+            "annoyance",
+            "approval",
+            "caring",
+            "confusion",
+            "curiosity",
+            "desire",
+            "disappointment",
+            "disapproval",
+            "disgust",
+            "embarrassment",
+            "excitement",
+            "fear",
+            "gratitude",
+            "grief",
+            "joy",
+            "love",
+            "nervousness",
+            "optimism",
+            "pride",
+            "realization",
+            "relief",
+            "remorse",
+            "sadness",
+            "surprise",
+            "neutral",
+            "anticipation",
+        ]
+    )
 
 
 if __name__ == "__main__":

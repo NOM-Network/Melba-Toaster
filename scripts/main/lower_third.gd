@@ -24,13 +24,15 @@ func _ready() -> void:
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 	Globals.start_speech.connect(_on_start_speech)
+	Globals.continue_speech.connect(_on_continue_speech)
+	Globals.speech_done.connect(_on_speech_done)
 	Globals.cancel_speech.connect(_on_cancel_speech)
 
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 	cleanout_timer.timeout.connect(_on_clear_subtitles_timer_timeout)
 
-	# Globals.reset_subtitles.emit()
+	Globals.reset_subtitles.emit()
 
 	Globals.change_position.connect(_on_change_position)
 
@@ -77,6 +79,12 @@ func _on_reset_subtitles() -> void:
 func _on_start_speech() -> void:
 	cleanout_timer.stop()
 
+func _on_continue_speech(_data: Dictionary) -> void:
+	cleanout_timer.stop()
+
+func _on_speech_done() -> void:
+	_start_clear_subtitles_timer()
+
 func _on_start_singing(song: Song, seek_time:=0.0) -> void:
 	clear_subtitles()
 	cleanout_timer.stop()
@@ -85,7 +93,7 @@ func _on_start_singing(song: Song, seek_time:=0.0) -> void:
 
 func _on_cancel_speech() -> void:
 	if not Globals.is_speaking:
-		start_clear_subtitles_timer()
+		_start_clear_subtitles_timer()
 
 func _on_clear_subtitles_timer_timeout() -> void:
 	clear_subtitles()
@@ -136,6 +144,9 @@ func set_subtitles(text: String, duration:=0.0, continue_print:=false) -> void:
 		if i != tokenized_text.size():
 			time += time_per_symbol
 			current_subtitle_text.push_back([time, ""])
+
+	# Fix last token not appearing at the end
+	current_subtitle_text[- 1] = [duration - time_per_symbol, current_subtitle_text[- 1][1]]
 	current_subtitle_text.push_back([duration, "STOP"])
 
 	print_timer.start(duration)
@@ -161,7 +172,7 @@ func clear_subtitles() -> void:
 
 # region PRIVATE FUNCTIONS
 
-func start_clear_subtitles_timer() -> void:
+func _start_clear_subtitles_timer() -> void:
 	cleanout_timer.wait_time = Globals.time_before_cleanout
 	cleanout_timer.start()
 

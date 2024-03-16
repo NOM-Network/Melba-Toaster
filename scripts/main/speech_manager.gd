@@ -1,11 +1,12 @@
 extends Node
 
-@export var messages := []
+@export var messages: Array[Dictionary] = []
 var primed := false
 var skip_message_id := 0
 
 var current_speech_id := 0
 var current_speech_text := ""
+var emotions_array: Array[String] = []
 
 func _ready() -> void:
 	Globals.ready_for_speech.connect(_on_ready_for_speech)
@@ -26,6 +27,11 @@ func _process(_delta: float) -> void:
 
 	print("Message ID: ", message.id)
 	current_speech_id = message.id
+
+	if message.has("emotions"):
+		_process_emotions(message.emotions)
+		message.emotions = emotions_array
+
 	match message.type:
 		"NewSpeech":
 			print("NewSpeech: ", message.id)
@@ -48,9 +54,6 @@ func _process(_delta: float) -> void:
 		_:
 			printerr("Unknown message type: ", message.type)
 			return
-
-	if message.has("emotions"):
-		_process_emotions(message.emotions)
 
 func push_message(message: Dictionary) -> void:
 	if not primed:
@@ -82,7 +85,7 @@ func push_message(message: Dictionary) -> void:
 			current_speech_text += " [END]"
 
 	messages.append(message)
-	Globals.push_speech_from_queue.emit(current_speech_text)
+	Globals.push_speech_from_queue.emit(current_speech_text, emotions_array)
 
 func ready_for_new_message() -> bool:
 	return current_speech_id == 0 and messages.size() == 0
@@ -93,6 +96,7 @@ func _on_ready_for_speech() -> void:
 func reset_speech() -> void:
 	current_speech_id = 0
 	current_speech_text = ""
+	emotions_array = []
 	skip_message_id = 0
 
 func _on_cancel_speech() -> void:
@@ -115,6 +119,7 @@ func _process_emotions(emotions: Array) -> void:
 			max_emotion = [emotion, Globals.emotions_modifiers[emotion]]
 
 	Globals.current_emotion_modifier = max_emotion[1]
+	emotions_array.push_back(max_emotion[0])
 
 	for toggle in ["tears", "void"]:
 		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
