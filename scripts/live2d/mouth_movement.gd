@@ -30,18 +30,13 @@ func _init() -> void:
 	for i in freq_steps:
 		vowel_freqs.append([min_voice_freq + i * freq_steps, min_voice_freq + (i + 1) * freq_steps])
 
-	prev_mouth_values.resize(prev_values_amount)
-	prev_mouth_values.fill(0.0)
-
-	prev_mouth_form_values.resize(prev_values_amount)
-	prev_mouth_form_values.fill(0.0)
-
-	test_array.resize(prev_values_amount - 1)
-	test_array.fill(0.0)
+	_reset_values()
 
 func _ready():
 	cubism_init.connect(_on_cubism_init)
 	cubism_process.connect(_on_cubism_process)
+
+	Globals.reset_subtitles.connect(_on_reset_subtitles)
 
 func _on_cubism_init(model: GDCubismUserModel):
 	var param_names = [
@@ -52,6 +47,19 @@ func _on_cubism_init(model: GDCubismUserModel):
 	for param in model.get_parameters():
 		if param_names.has(param.id):
 			set(param.id.to_snake_case(), param)
+
+func _on_reset_subtitles() -> void:
+	_reset_values()
+
+func _reset_values() -> void:
+	prev_mouth_values.resize(prev_values_amount)
+	prev_mouth_values.fill(0.0)
+
+	prev_mouth_form_values.resize(prev_values_amount)
+	prev_mouth_form_values.fill(0.0)
+
+	test_array.resize(prev_values_amount - 1)
+	test_array.fill(0.0)
 
 func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 	var overall_magnitude: float = 0.0
@@ -99,10 +107,10 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 
 func manage_speaking() -> void:
 	# Mouth amplitude
-	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( -5))
+	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( - 4))
 
 	# Mouth form
-	var mouth_form = _find_avg(prev_mouth_form_values.slice( - 5))
+	var mouth_form = _find_avg(prev_mouth_form_values.slice( - 3))
 	param_mouth_form.value = _clamp_to_log_scale(mouth_form)
 
 	if prev_mouth_values[prev_values_amount - 1] != 0.0 \
