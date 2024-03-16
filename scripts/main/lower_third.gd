@@ -114,6 +114,9 @@ func set_prompt(text: String, duration:=0.0) -> void:
 	if text == "random":
 		return
 
+	if text.contains("streamlabs:"):
+		return
+
 	prompt.text = text
 	prompt.label_settings.font_size = default_font_size[prompt.name]
 	while prompt.get_line_count() > prompt.get_visible_line_count():
