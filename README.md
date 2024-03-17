@@ -7,7 +7,7 @@ Written using [Godot](https://godotengine.org/) and GDScript, this program allow
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 **Control panel interface**
-![Interface](readme_assets/interface.png)
+![Interface](readme_assets/interface.png?1)
 
 ## Development
 
@@ -40,11 +40,11 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
 ### Song support
 
-Melba can sing! Song support is outlined in [Wiki](wiki/Song-support).
+Melba can sing! Song support is outlined in [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Song-support).
 
 ### Going live
 
-Moved to [Wiki](wiki/Going-live)
+Moved to [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Going-live)
 
 ### Note for Mac/Linux users
 
@@ -52,7 +52,7 @@ This project is built for use on Windows and uses Windows libraries for Cubism e
 
 ### Build machine perparations
 
-Moved to [Wiki](wiki/Build-machine-perparations)
+Moved to [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Build-machine-perparations)
 
 ## License
 
