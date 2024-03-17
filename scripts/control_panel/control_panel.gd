@@ -22,7 +22,8 @@ var is_streaming := false
 # Last state globals
 var last_pause_status := not Globals.is_paused
 var last_singing_status := not Globals.is_singing
-var last_animation := "random"
+var last_position := ""
+var last_animation := ""
 var last_dancing_bpm := 0.1
 
 func _ready() -> void:
@@ -92,6 +93,10 @@ func _update_control_status() -> void:
 	if last_animation != Globals.last_animation:
 		last_animation = Globals.last_animation
 		_update_animation_buttons(Globals.last_animation)
+
+	if last_position != Globals.last_position:
+		last_position = Globals.last_position
+		_update_position_buttons(Globals.last_position)
 
 func _start_obs_processing() -> void:
 	obs.establish_connection()
@@ -384,10 +389,10 @@ func _on_change_scene(scene_name: String) -> void:
 	if not next_position:
 		match scene_name:
 			"Main", "Song":
-				next_position = "Default"
+				next_position = "default"
 
 			"Gaming":
-				next_position = "Gaming"
+				next_position = "gaming"
 
 	%NextPositionMenu.selected = 0
 	if next_position:
@@ -405,6 +410,10 @@ func _on_change_position(new_position: String) -> void:
 func _update_animation_buttons(new_animation: String) -> void:
 	for p in %Animations.get_children():
 		p.set_pressed_no_signal(p.text == new_animation)
+
+func _update_position_buttons(new_position: String) -> void:
+	for p in %Positions.get_children():
+		p.set_pressed_no_signal(p.get_meta("position_name") == new_position)
 
 func _generate_scene_buttons(data: Dictionary) -> void:
 	var active_scene: String
