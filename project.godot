@@ -14,6 +14,7 @@ config/name="Melba Toaster"
 config/version="1.0.0.0"
 run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
+boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 0)
 boot_splash/show_image=false
 
 [autoload]

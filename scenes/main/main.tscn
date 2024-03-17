@@ -629,24 +629,30 @@ script = ExtResource("1_bldvu")
 script = ExtResource("4_bxfqh")
 
 [node name="GreenScreenWindow" type="Window" parent="."]
-title = "Greenscreen Melba"
+title = "Greenscreen Melba - Toaster"
 size = Vector2i(1920, 1080)
 visible = false
+unresizable = true
 borderless = true
 
-[node name="TextureRect" type="TextureRect" parent="GreenScreenWindow"]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("ImageTexture_ehotg")
-
 [node name="GreenScreen" type="ColorRect" parent="GreenScreenWindow"]
-z_index = -5
-z_as_relative = false
 offset_left = -57.0
 offset_top = -62.0
 offset_right = 1966.0
 offset_bottom = 1124.0
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
 color = Color(0, 1, 0, 1)
+
+[node name="TextureRect" type="TextureRect" parent="GreenScreenWindow"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_ehotg")
 
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3

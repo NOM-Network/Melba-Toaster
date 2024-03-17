@@ -16,10 +16,6 @@ var model_target_point: GDCubismEffectTargetPoint
 
 # region PROCESS
 func _ready() -> void:
-	# Makes bg transparent
-	get_tree().get_root().set_transparent_background(true)
-	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_TRANSPARENT, true, 0)
-
 	# Timers
 	%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
 

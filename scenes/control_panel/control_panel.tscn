@@ -66,6 +66,7 @@ backend_status = NodePath("Margins/HSplitContainer/RightPanel/ObsControlsPanel/M
 script = ExtResource("2_1sf50")
 
 [node name="BackgroundColor" type="ColorRect" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -793,6 +794,7 @@ transient = false
 unresizable = true
 always_on_top = true
 transparent = true
+popup_window = true
 ok_button_text = "Yes"
 dialog_hide_on_ok = false
 cancel_button_text = "No"
