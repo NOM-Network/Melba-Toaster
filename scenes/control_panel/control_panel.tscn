@@ -48,7 +48,7 @@ MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
 
-[node name="ControlPanel" type="Window" node_paths=PackedStringArray("debug_button", "cancel_button", "pause_button", "obs_client_status", "backend_status")]
+[node name="ControlPanel" type="Window"]
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
@@ -56,11 +56,6 @@ size = Vector2i(1366, 768)
 min_size = Vector2i(1024, 650)
 auto_translate = false
 script = ExtResource("1_rhl0v")
-debug_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/DebugMode")
-cancel_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/CancelSpeech")
-pause_button = NodePath("Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons/PauseSpeech")
-obs_client_status = NodePath("Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/ObsClientStatus")
-backend_status = NodePath("Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/BackendStatus")
 
 [node name="ObsWebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")
@@ -121,6 +116,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="DebugMode" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
@@ -137,6 +133,7 @@ toggle_mode = true
 text = "Pause (F9)"
 
 [node name="CancelSpeech" type="Button" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0

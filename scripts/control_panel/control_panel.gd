@@ -4,11 +4,11 @@ extends Window
 @onready var obs := $ObsWebSocketClient
 
 @export_category("UI")
-@export var debug_button: Button
-@export var cancel_button: Button
-@export var pause_button: Button
-@export var obs_client_status: Button
-@export var backend_status: Button
+@onready var debug_button := %DebugMode
+@onready var cancel_button := %CancelSpeech
+@onready var pause_button := %PauseSpeech
+@onready var obs_client_status := %ObsClientStatus
+@onready var backend_status := %BackendStatus
 
 @onready var godot_stats_timer := $Timers/GodotStatsTimer
 @onready var obs_stats_timer := $Timers/ObsStatsTimer
@@ -16,7 +16,7 @@ extends Window
 @onready var sound_output := %SoundOutput
 
 # OBS info
-var OpCodes := ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
+var OpCodes: Dictionary = ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
 
 # Last state globals
@@ -44,7 +44,7 @@ func _ready() -> void:
 	_connect_signals()
 	_start_obs_processing()
 
-func _process(_delta) -> void:
+func _process(_delta: float) -> void:
 	_update_control_status()
 
 func _apply_defaults() -> void:
@@ -150,11 +150,11 @@ func _generate_position_controls() -> void:
 		if n.get_class() == "Button":
 			n.queue_free()
 
-	var button_group = ButtonGroup.new()
+	var button_group := ButtonGroup.new()
 	button_group.pressed.connect(_on_position_button_pressed)
 
-	for p in Globals.positions:
-		var button = Button.new()
+	for p: String in Globals.positions:
+		var button := Button.new()
 		button.text = p.capitalize()
 		button.toggle_mode = true
 		button.button_pressed = p == Globals.default_position
@@ -166,7 +166,7 @@ func _generate_position_controls() -> void:
 		positions.add_child(button)
 
 	var menu := %NextPositionMenu
-	for p in Globals.positions:
+	for p: String in Globals.positions:
 		menu.add_item(p)
 
 func _on_position_button_pressed(button: BaseButton) -> void:
@@ -183,8 +183,8 @@ func _generate_singing_controls() -> void:
 		i += 1
 
 func _generate_model_controls() -> void:
-	for type in ["animations", "pinnable_assets", "expressions", "toggles"]:
-		var parent = get_node("%%%s"% type.to_pascal_case())
+	for type: String in ["animations", "pinnable_assets", "expressions", "toggles"]:
+		var parent := get_node("%%%s"% type.to_pascal_case())
 		CpHelpers.clear_nodes(parent)
 
 		var callable: Callable
@@ -206,7 +206,7 @@ func _on_data_received(data: Object) -> void:
 			_handle_request(data.d)
 
 		OpCodes.RequestBatchResponse.IDENTIFIER_VALUE:
-			for i in data.d.results:
+			for i: Dictionary in data.d.results:
 				_handle_request(i)
 
 		_:
@@ -265,7 +265,7 @@ func _handle_request(data: Dictionary) -> void:
 			_generate_scene_buttons(data.responseData)
 
 			var request := []
-			for scene in data.responseData.scenes:
+			for scene: Dictionary in data.responseData.scenes:
 				request.push_front([
 					"GetSourceFilterList", {"sourceName": scene.sceneName}, scene.sceneName
 				])
@@ -391,6 +391,9 @@ func _on_change_scene(scene_name: String) -> void:
 			"Main", "Song":
 				next_position = "default"
 
+			"Collab":
+				next_position = "collab"
+
 			"Gaming":
 				next_position = "gaming"
 
@@ -419,13 +422,13 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 	var active_scene: String
 	if data.has("currentProgramSceneName"):
 		active_scene = data.currentProgramSceneName
-	var scenes = data.scenes
+	var scenes: Array = data.scenes
 	scenes.reverse()
 
 	CpHelpers.clear_nodes( %ObsScenes)
 
-	for scene in scenes:
-		var button = Button.new()
+	for scene: Dictionary in scenes:
+		var button := Button.new()
 		button.text = scene.sceneName
 		button.toggle_mode = true
 		button.name = Templates.scene_node_name % scene.sceneName.to_pascal_case()
@@ -438,15 +441,15 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 
 func _change_active_scene(data: Dictionary) -> void:
 	for button in %ObsScenes.get_children():
-		var scene_name = Templates.scene_node_name % data.sceneName.to_pascal_case()
+		var scene_name: String = Templates.scene_node_name % data.sceneName.to_pascal_case()
 		button.button_pressed = button.text == data.sceneName
 		CpHelpers.apply_color_override(button, button.name == scene_name, Color.GREEN)
 
 func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
 	CpHelpers.clear_nodes( %ObsFilters)
 
-	for filter in filters:
-		var button = Button.new()
+	for filter: Dictionary in filters:
+		var button := Button.new()
 		button.text = "%s: %s" % [scene_name, filter.filterName]
 		button.name = Templates.filter_node_name % [scene_name, filter.filterName]
 		button.toggle_mode = true
@@ -471,8 +474,8 @@ func change_filter_state(data: Dictionary) -> void:
 func _generate_input_request(inputs: Array) -> void:
 	CpHelpers.clear_nodes( %ObsInputs)
 
-	var request = []
-	for i in inputs:
+	var request := []
+	for i: Dictionary in inputs:
 		request.push_back([
 			"GetInputMute", {"inputName": i.inputName}, i.inputName
 		])
@@ -484,7 +487,7 @@ func _generate_input_button(data: Dictionary) -> void:
 	if data.inputName not in ["Mebla Capture", "MUSIC"]:
 		return
 
-	var button = Button.new()
+	var button := Button.new()
 	button.name = data.inputName.to_pascal_case()
 	button.text = data.inputName
 	button.toggle_mode = true
@@ -495,14 +498,14 @@ func _generate_input_button(data: Dictionary) -> void:
 	_change_input_state(data)
 
 func _change_input_name(data: Dictionary) -> void:
-	var button = %ObsInputs.get_node(data.oldInputName.to_pascal_case())
+	var button := %ObsInputs.get_node(data.oldInputName.to_pascal_case())
 
 	if button:
 		button.name = data.inputName.to_pascal_case()
 		button.text = data.inputName
 
 func _change_input_state(data: Dictionary) -> void:
-	var button = %ObsInputs.get_node(data.inputName.to_pascal_case())
+	var button := %ObsInputs.get_node(data.inputName.to_pascal_case())
 
 	if button:
 		button.button_pressed = data.inputMuted
@@ -512,7 +515,7 @@ func _on_input_button_pressed(button: Button) -> void:
 	obs.send_command("ToggleInputMute", {"inputName": button.text}, button.text)
 
 func _on_filter_button_toggled(button_pressed: bool, button: Button) -> void:
-	var data = button.name.split("_")
+	var data := button.name.split("_")
 
 	obs.send_command("SetSourceFilterEnabled", {
 		"sourceName": data[1],
@@ -531,7 +534,7 @@ func _on_time_before_next_response_value_changed(value: float) -> void:
 func _on_update_backend_stats(data: Array) -> void:
 	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats(data))
 
-func _input(event) -> void:
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("cancel_speech"):
 		cancel_button.pressed.emit()
 
@@ -540,8 +543,7 @@ func _input(event) -> void:
 			pause_button.button_pressed = not pause_button.button_pressed
 
 	if event.is_action_pressed("toggle_mute"):
-		var input = "Mebla Capture"
-		obs.send_command("ToggleInputMute", {"inputName": input}, input)
+		obs.send_command("ToggleInputMute", {"inputName": "Mebla Capture"}, "Mebla Capture")
 
 func backend_connected() -> void:
 	pause_button.disabled = false

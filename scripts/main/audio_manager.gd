@@ -43,7 +43,7 @@ func _on_start_speech() -> void:
 	Globals.is_speaking = true
 	speech_player.play()
 
-func _on_start_singing(song: Song, seek_time := 0.0) -> void:
+func _on_start_singing(song: Song, seek_time:=0.0) -> void:
 	prepare_song(song)
 	subtitles = song.load_subtitles_file()
 
@@ -88,7 +88,7 @@ func _match_command(line: Array) -> void:
 			lower_third.set_subtitles_fast("")
 
 		["&START", var bpm]:
-			Globals.start_dancing_motion.emit(bpm as float)
+			Globals.start_dancing_motion.emit(bpm)
 
 		["&STOP"]:
 			Globals.end_dancing_motion.emit()
@@ -137,7 +137,7 @@ func reset_speech_player() -> void:
 	speech_player.stream = null
 	speech_duration = 0.0
 
-func prepare_song(song) -> void:
+func prepare_song(song: Song) -> void:
 	AudioServer.set_bus_mute(voice_bus, song.mute_voice)
 	AudioServer.set_bus_effect_enabled(voice_bus, 1, song.reverb)
 
@@ -146,7 +146,7 @@ func prepare_song(song) -> void:
 
 	song_duration = song_player.stream.get_length()
 
-func play_song(seek_time := 0.0) -> void:
+func play_song(seek_time:=0.0) -> void:
 	Globals.is_singing = true
 	song_player.play(seek_time)
 	speech_player.play(seek_time)

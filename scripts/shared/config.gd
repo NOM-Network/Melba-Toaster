@@ -7,17 +7,17 @@ var songs: Array[Song]
 var SONG_FOLDER_PATH: String
 
 func _init(debug_mode: bool) -> void:
-	SONG_FOLDER_PATH = "./dist/songs/" if debug_mode else "./songs/"
+	SONG_FOLDER_PATH = "./dist/songs" if debug_mode else "./songs"
 
 	_init_config()
 
 	init_songs(debug_mode)
 
-func _init_config():
+func _init_config() -> void:
 	config = _load_config_file("./config/prod.cfg")
 	assert(config is ConfigFile, "No config present!")
 
-func init_songs(debug_mode: bool):
+func init_songs(debug_mode: bool) -> void:
 	songs = []
 
 	var dir := DirAccess.open(SONG_FOLDER_PATH)
@@ -31,7 +31,9 @@ func init_songs(debug_mode: bool):
 
 		var config_path := "%s/%s/config.cfg" % [SONG_FOLDER_PATH, id]
 		assert(FileAccess.file_exists(config_path), "No config file for %s" % id)
-		var config_file = _load_config_file(config_path)
+
+		var config_file: ConfigFile = _load_config_file(config_path)
+		assert(config_file is ConfigFile, "Config file for %s is corrupted" % id)
 
 		for section in config_file.get_sections():
 			var song := {}

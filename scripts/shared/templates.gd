@@ -3,7 +3,7 @@ class_name Templates
 
 # region STATS
 
-static var obs_stats_template = "" \
+static var obs_stats_template: String = "" \
 	+ "Active FPS: [b]{activeFps}[/b]\n" \
 	+ "CPU Usage: [b]{cpuUsage}%[/b]\n" \
 	+ "Memory Usage: [b]{memoryUsage} MB[/b]\n" \
@@ -13,17 +13,17 @@ static var obs_stats_template = "" \
 	+ "Total Skipped: [b]{outputSkippedFrames}[/b]\n" \
 	+ "WS In/Out: [b]{webSocketSessionIncomingMessages}[/b]/[b]{webSocketSessionOutgoingMessages}[/b]"
 
-static var godot_stats_template = "" \
+static var godot_stats_template: String = "" \
 	+ "Active FPS: [b]{fps}[/b]\n" \
 	+ "Frame Time: [b]{frameTime} s[/b]\n" \
 	+ "VRAM Used: [b]{videoMemoryUsed} MB[/b]\n" \
 	+ "Audio Latency: [b]{audioLatency} ms[/b]\n" \
 	+ "Audio Comp: [b]{audioCompensation} ms[/b]"
 
-static var backend_stats_template = "" \
+static var backend_stats_template: String = "" \
 	+ "Messages In/Out: [b]{0}[/b]/[b]{1}[/b]"
 
-static var message_queue_stats_template = "" \
+static var message_queue_stats_template: String = "" \
 	+ "Queue length: [b]%s[/b]"
 
 static func format_obs_stats(res: Dictionary) -> String:
@@ -53,7 +53,6 @@ static func format_godot_stats() -> String:
 	}
 
 	return godot_stats_template.format(stats)
-
 
 static func format_backend_stats(res: Array) -> String:
 	return backend_stats_template.format(res)

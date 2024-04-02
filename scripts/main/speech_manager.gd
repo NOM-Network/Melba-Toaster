@@ -16,8 +16,8 @@ func _process(_delta: float) -> void:
 	if not messages.size() or not Globals.is_ready():
 		return
 
-	var message = messages.pop_front()
-	if message == null:
+	var message: Dictionary = messages.pop_front()
+	if not message:
 		printerr("Message is empty on process")
 		return
 
@@ -108,9 +108,9 @@ func _process_emotions(emotions: Array) -> void:
 	if not emotions:
 		return
 
-	var max_emotion = ["anger", - 1.0]
+	var max_emotion: Array = ["anger", - 1.0]
 
-	for emotion in emotions:
+	for emotion: String in emotions:
 		if not Globals.emotions_modifiers.has(emotion):
 			printerr("Unknown emotion: %s" % emotion)
 			return
@@ -121,7 +121,7 @@ func _process_emotions(emotions: Array) -> void:
 	Globals.current_emotion_modifier = max_emotion[1]
 	emotions_array.push_back(max_emotion[0])
 
-	for toggle in ["tears", "void"]:
+	for toggle: String in ["tears", "void"]:
 		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
 
 	match max_emotion[0]:

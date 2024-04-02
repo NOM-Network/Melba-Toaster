@@ -14,7 +14,7 @@ var reverb: bool
 func _init(
 	p_data: Dictionary,
 	debug_mode: bool
-):
+) -> void:
 	FOLDER_PATH = './dist/songs/%s/%s' if debug_mode else './songs/%s/%s'
 
 	self.id = p_data.id
@@ -35,7 +35,7 @@ func _init(
 	)
 
 func load_subtitles_file() -> Variant:
-	var p = FOLDER_PATH % [id, "subtitles.txt"]
+	var p: String = FOLDER_PATH % [id, "subtitles.txt"]
 	if not FileAccess.file_exists(p):
 		printerr("No subtitles found in %s" % p)
 		return []

@@ -32,19 +32,19 @@ func _init() -> void:
 
 	_reset_values()
 
-func _ready():
+func _ready() -> void:
 	cubism_init.connect(_on_cubism_init)
 	cubism_process.connect(_on_cubism_process)
 
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 
-func _on_cubism_init(model: GDCubismUserModel):
-	var param_names = [
+func _on_cubism_init(model: GDCubismUserModel) -> void:
+	var param_names: Array = [
 		"ParamMouthOpenY",
 		"ParamMouthForm",
 	]
 
-	for param in model.get_parameters():
+	for param: GDCubismParameter in model.get_parameters():
 		if param_names.has(param.id):
 			set(param.id.to_snake_case(), param)
 
@@ -61,7 +61,7 @@ func _reset_values() -> void:
 	test_array.resize(prev_values_amount - 1)
 	test_array.fill(0.0)
 
-func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
+func _on_cubism_process(_model: GDCubismUserModel, _delta: float) -> void:
 	var overall_magnitude: float = 0.0
 	var unaltered_mouth_value: float = 0.0
 	var unaltered_mouth_form: float = 0.0
@@ -71,18 +71,18 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float):
 			min_voice_freq,
 			max_voice_freq
 		).length()
-		var overall_energy = clamp((min_db + linear_to_db(overall_magnitude)) / min_db, 0.0, 1.0)
+		var overall_energy: float = clamp((min_db + linear_to_db(overall_magnitude)) / min_db, 0.0, 1.0)
 
-		var selected_mouth_form = 0.0
+		var selected_mouth_form: float = 0.0
 		if overall_energy and overall_magnitude:
 			var max_vowel_enegry := 0.0
 			var selected_vowel := 0
 			for i in range(0, vowel_freqs.size()):
-				var magnitude = spectrum.get_magnitude_for_frequency_range(
+				var magnitude: float = spectrum.get_magnitude_for_frequency_range(
 					vowel_freqs[i][0],
 					vowel_freqs[i][1]
 				).length()
-				var energy = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
+				var energy: float = clamp((min_db + linear_to_db(magnitude)) / min_db, 0.0, 1.0)
 
 				if energy != 0.0 and energy >= max_vowel_enegry:
 					max_vowel_enegry = energy
@@ -110,7 +110,7 @@ func manage_speaking() -> void:
 	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( - 4))
 
 	# Mouth form
-	var mouth_form = _find_avg(prev_mouth_form_values.slice( - 3))
+	var mouth_form: float = _find_avg(prev_mouth_form_values.slice( - 3))
 	param_mouth_form.value = _clamp_to_log_scale(mouth_form)
 
 	if prev_mouth_values[prev_values_amount - 1] != 0.0 \
@@ -120,24 +120,24 @@ func manage_speaking() -> void:
 
 func _find_avg(numbers: Array) -> float:
 	var total := 0.0
-	for num in numbers:
+	for num: float in numbers:
 		total += num
 	var avg: float = total / float(numbers.size())
 	return avg
 
-func _clamp_to_log_scale(value):
+func _clamp_to_log_scale(value: float) -> float:
 	return 1.0 - (log(1.0 - value + 1.0) / log(1.0 + 1.0))
 
 func _map_to_log_range(value: float) -> float:
-	var old_max = clamp(freq_steps - 1, 0, freq_steps - 1)
-	var new_min = 0.0
-	var new_max = 1.0
-	var epsilon = 0.001
+	var old_max: float = clamp(freq_steps - 1, 0, freq_steps - 1)
+	var new_min: float = 0.0
+	var new_max: float = 1.0
+	var epsilon: float = 0.001
 
-	var log_max = log(old_max + epsilon)
-	var log_min = log(epsilon)
+	var log_max: float = log(old_max + epsilon)
+	var log_min: float = log(epsilon)
 
-	var log_value = log(value + epsilon)
-	var normalized_log_value = (log_max - log_value) / (log_max - log_min)
+	var log_value: float = log(value + epsilon)
+	var normalized_log_value: float = (log_max - log_value) / (log_max - log_min)
 
 	return (normalized_log_value * (new_max - new_min)) + new_min

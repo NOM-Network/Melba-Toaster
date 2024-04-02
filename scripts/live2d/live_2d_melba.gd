@@ -4,8 +4,8 @@ extends Node2D
 @onready var sprite := %Sprite2D
 @onready var pinnable_assets := %PinnableAssets
 @onready var target_point := %TargetPoint
-@onready var eye_blink = %EyeBlinking
-@onready var anim_timer = $AnimTimer
+@onready var eye_blink := %EyeBlinking
+@onready var anim_timer := $AnimTimer
 
 #region ASSETS
 @onready var dict_mesh: Dictionary = model.get_meshes()
@@ -22,7 +22,7 @@ var assets_to_pin := {}
 		if model:
 			return model.adjust_position + Vector2(model.size) / 2
 		else:
-			return Vector2(-200, 580)
+			return Vector2( - 200, 580)
 
 	set(value):
 		if model:
@@ -48,9 +48,9 @@ var assets_to_pin := {}
 #region DEBUG
 @export var debug_pins := false
 var debug_draw: Array
-var default_font = ThemeDB.fallback_font
-var default_font_size = 26
-var default_color = Color.WEB_PURPLE
+var default_font := ThemeDB.fallback_font
+var default_font_size := 26
+var default_color := Color.WEB_PURPLE
 #endregion
 
 # Called when the node enters the scene tree for the first time.
@@ -76,21 +76,21 @@ func connect_signals() -> void:
 	anim_timer.timeout.connect(_on_animation_finished)
 
 func initialize_animations() -> void:
-	for anim in Globals.animations.values():
+	for anim: Object in Globals.animations.values():
 		if anim.override_name != "":
 			anim.override = model.get_node(anim.override_name)
 
 func intialize_toggles() -> void:
-	var parameters = model.get_parameters()
-	for param in parameters:
-		for toggle in Globals.toggles.values():
+	var parameters: Array = model.get_parameters()
+	for param: GDCubismParameter in parameters:
+		for toggle: Object in Globals.toggles.values():
 			if param.get_id() == toggle["id"]:
 				toggle.param = param
 
 func initialize_pinnable_assets() -> void:
 	pinnable_assets.position = model_pivot()
 
-	for asset in Globals.pinnable_assets.values():
+	for asset: PinnableAsset in Globals.pinnable_assets.values():
 		asset.node = pinnable_assets.find_child(asset.node_name)
 		if not asset.node:
 			printerr("Cannot found `%s` asset node" % asset.node_name)
@@ -99,16 +99,16 @@ func initialize_pinnable_assets() -> void:
 		asset.node.modulate.a = 0
 
 		var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
-		var ary_surface = ary_mesh.surface_get_arrays(0)
+		var ary_surface: Array = ary_mesh.surface_get_arrays(0)
 
 		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
 		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
 
 func _process(_delta: float) -> void:
-	for toggle in Globals.toggles.values():
+	for toggle: Object in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
 
-	for asset in assets_to_pin.keys():
+	for asset: String in assets_to_pin.keys():
 		pin(assets_to_pin[asset])
 
 	if debug_pins:
@@ -120,10 +120,10 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event as InputEventMouseMotion:
-		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
+		if event.button_mask&MOUSE_BUTTON_MASK_LEFT != 0:
 			mouse_to_position(event.relative)
 
-		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
+		if event.button_mask&MOUSE_BUTTON_MASK_RIGHT != 0:
 			move_eyes(event.position)
 
 	if event as InputEventMouseButton:
@@ -141,9 +141,9 @@ func _input(event: InputEvent) -> void:
 
 				MOUSE_BUTTON_WHEEL_DOWN:
 					if event.ctrl_pressed:
-						mouse_to_rotation(-Globals.rotation_change)
+						mouse_to_rotation( - Globals.rotation_change)
 					else:
-						mouse_to_scale(-Globals.scale_change)
+						mouse_to_scale( - Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
 					Globals.change_position.emit(Globals.last_position)
@@ -163,6 +163,10 @@ func nudge_model() -> void:
 	tweens.nudge.tween_property(model, "speed_scale", 1.0, 2.0).set_ease(Tween.EASE_OUT)
 
 func pin_asset(node_name: String, enabled: bool) -> void:
+	if not Globals.pinnable_assets.has(node_name):
+		printerr("Cannot found `%s` asset node" % node_name)
+		return
+
 	var asset: PinnableAsset = Globals.pinnable_assets[node_name]
 	asset.enabled = enabled
 
@@ -203,13 +207,13 @@ func _draw() -> void:
 		return
 
 	# Model center
-	var pivot = model_pivot()
+	var pivot: Vector2 = model_pivot()
 	draw_circle(pivot, 10, Color.RED)
 	draw_string(default_font, pivot, "model_pivot", HORIZONTAL_ALIGNMENT_LEFT, -1, default_font_size, default_color)
 
 	if debug_draw:
 		while debug_draw.size() > 0:
-			var d = debug_draw.pop_front()
+			var d: Array = debug_draw.pop_front()
 
 			if d.size() == 3:
 				draw_line(d[0], d[1], Color.RED, 10)
@@ -223,12 +227,12 @@ func get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) -> 
 	var delta_p: Vector2 = pos[0] - initial_points[0]
 	var trans_point_b: Vector2 = delta_p + initial_points[1]
 
-	var angle1 = pos[0].angle_to_point(trans_point_b)
-	var angle2 = pos[0].angle_to_point(pos[1])
+	var angle1: float = pos[0].angle_to_point(trans_point_b)
+	var angle2: float = pos[0].angle_to_point(pos[1])
 
 	return angle2 - angle1
 
-func reset_overrides():
+func reset_overrides() -> void:
 	eye_blink.active = true
 
 func play_animation(anim_name: String) -> void:
@@ -247,12 +251,12 @@ func play_animation(anim_name: String) -> void:
 				printerr("Cannot found `%s` animation" % anim_name)
 				return
 
-			var anim = Globals.animations[anim_name]
+			var anim: Object = Globals.animations[anim_name]
 
 			anim_timer.wait_time = anim["duration"]
 			anim_timer.start()
-			var anim_id = anim.id
-			var override = anim.override
+			var anim_id: int = anim.id
+			var override: Node = anim.override
 
 			eye_blink.active = not anim.ignore_blinking
 
@@ -265,13 +269,13 @@ func set_expression(expression_name: String) -> void:
 	if expression_name == "end":
 		model.stop_expression()
 	elif Globals.expressions.has(expression_name):
-		var expr_id = Globals.expressions[expression_name].id
+		var expr_id: int = Globals.expressions[expression_name].id
 		model.start_expression(expr_id)
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
-		var value_tween = create_tween()
-		var toggle = Globals.toggles[toggle_name]
+		var value_tween: Tween = create_tween()
+		var toggle: Toggle = Globals.toggles[toggle_name]
 
 		if enabled:
 			toggle.enabled = true
@@ -311,7 +315,7 @@ func mouse_to_scale(change: float) -> void:
 	var pivot := model_pivot()
 
 	var new_pos := model_position - Vector2(
-		-(mouse_pos.x - pivot.x) * change,
+		- (mouse_pos.x - pivot.x) * change,
 		(mouse_pos.y - pivot.y) * change
 	) / new_scale
 
@@ -324,7 +328,7 @@ func mouse_to_scale(change: float) -> void:
 	tweens.scale.tween_property(self, "model_position", new_pos, 0.05)
 
 func mouse_to_rotation(change: float) -> void:
-	var pivot = model_pivot()
+	var pivot: Vector2 = model_pivot()
 	sprite.offset = -pivot
 	sprite.position = pivot
 
@@ -340,12 +344,12 @@ func mouse_to_rotation(change: float) -> void:
 	if rot >= 360.0:
 		rot -= 360.0
 		sprite.rotation_degrees = rot
-	elif rot <= -360.0:
+	elif rot <= - 360.0:
 		rot += 360.0 + change
 		sprite.rotation_degrees = rot
 
 func mouse_to_position(change: Vector2) -> void:
-	var pivot = model_pivot()
+	var pivot: Vector2 = model_pivot()
 	sprite.offset = -pivot
 	sprite.position = pivot
 	pinnable_assets.position = -pivot
@@ -357,8 +361,8 @@ func move_eyes(mouse_position: Vector2) -> void:
 		return
 
 	var viewport_size := get_viewport_rect().size
-	var relative_x = (mouse_position.x / viewport_size.x) * 2.0 - 1.0
-	var relative_y = (mouse_position.y / viewport_size.y) * 2.0 - 1.0
+	var relative_x: float = (mouse_position.x / viewport_size.x) * 2.0 - 1.0
+	var relative_y: float = (mouse_position.y / viewport_size.y) * 2.0 - 1.0
 	model_eyes_target = Vector2(relative_x, -relative_y)
 
 	if debug_pins:
@@ -379,8 +383,8 @@ func _on_change_position(new_position: String) -> void:
 			if tweens.has("trans"):
 				tweens.trans.kill()
 
-			var pos = positions.model
-			var pivot = model_pivot()
+			var pos: Array = positions.model
+			var pivot: Vector2 = model_pivot()
 
 			tweens.trans = create_tween().set_trans(Tween.TRANS_QUINT)
 			tweens.trans.set_parallel()

@@ -22,6 +22,11 @@ boot_splash/show_image=false
 Globals="*res://scripts/shared/globals.gd"
 SpeechManager="*res://scripts/main/speech_manager.gd"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unsafe_cast=1
+
 [display]
 
 window/size/viewport_width=1920
@@ -36,10 +41,6 @@ window/per_pixel_transparency/allowed=true
 [editor]
 
 movie_writer/disable_vsync=true
-
-[editor_plugins]
-
-enabled=PackedStringArray()
 
 [filesystem]
 

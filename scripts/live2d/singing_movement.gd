@@ -1,10 +1,10 @@
 extends GDCubismEffectCustom
 class_name SingingMovement
 
-@onready var sprite_2d = %Sprite2D
-@onready var gd_cubism_user_model = %GDCubismUserModel
+@onready var sprite_2d: Sprite2D = %Sprite2D
+@onready var gd_cubism_user_model: GDCubismUserModel = %GDCubismUserModel
 
-var bob_interval = 0.5
+var bob_interval: float = 0.5
 var motion_range: float = 30.0
 
 # Parameters
@@ -24,17 +24,17 @@ var current_motion: Array
 # Timer
 @onready var beats_timer := Timer.new()
 
-func _ready():
+func _ready() -> void:
 	self.cubism_init.connect(_on_cubism_init)
 
 	add_child(beats_timer)
 	beats_timer.timeout.connect(_on_beats_timer_timeout)
 
-func _on_cubism_init(model: GDCubismUserModel):
+func _on_cubism_init(model: GDCubismUserModel) -> void:
 	Globals.start_dancing_motion.connect(_start_motion)
 	Globals.end_dancing_motion.connect(_end_motion)
 
-	var param_names = [
+	var param_names: Array = [
 		"ParamAngleX",
 		"ParamAngleY",
 		"ParamAngleZ",
@@ -43,13 +43,14 @@ func _on_cubism_init(model: GDCubismUserModel):
 		"ParamBodyAngleZ"
 	]
 
-	for param in model.get_parameters():
+	for param: GDCubismParameter in model.get_parameters():
 		if param_names.has(param.id):
 			set(param.id.to_snake_case(), param)
 
-func _start_motion(bpm: float) -> void:
+func _start_motion(p_bpm: String) -> void:
+	var bpm: float = p_bpm as float
 	Globals.dancing_bpm = bpm
-	var old_bob_interval = bob_interval
+	var old_bob_interval: float = bob_interval
 	bob_interval = motion_range / bpm
 
 	if old_bob_interval != bob_interval:
@@ -64,15 +65,15 @@ func _end_motion() -> void:
 
 	_stop_motion()
 
-func _stop_motion():
+func _stop_motion() -> void:
 	_stop_timer()
-	for axis in ["x", "y", "z"]:
+	for axis: String in ["x", "y", "z"]:
 		_stop(axis)
 
 func _start_tween() -> void:
 	current_motion = _random_motion()
 
-	for axis in ["x", "y", "z"]:
+	for axis: String in ["x", "y", "z"]:
 		_dance(axis) if axis in current_motion else _stop(axis)
 
 func _wait_time() -> float:
@@ -93,10 +94,10 @@ func _on_beats_timer_timeout() -> void:
 		current_motion = _random_motion()
 
 	if Globals.debug_mode: print("---\n", current_motion)
-	for axis in ["x", "y", "z"]:
+	for axis: String in ["x", "y", "z"]:
 		_dance(axis) if axis in current_motion else _stop(axis)
 
-func _dance(axis: String, new_tween=false) -> void:
+func _dance(axis: String, new_tween:=false) -> void:
 	if tween.has(axis):
 		if not new_tween and tween[axis].is_running():
 			if Globals.debug_mode: print("Skipping: ", axis)

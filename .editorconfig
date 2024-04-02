@@ -17,3 +17,9 @@ indent_style = tab
 # Markdown
 [*.md]
 indent_size = 4
+
+# Song Subtitles
+[subtitles.txt]
+indent_size = 4
+indent_style = tab
+trim_trailing_whitespace = false

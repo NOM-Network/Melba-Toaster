@@ -9,18 +9,18 @@ var param_eye_ball_y: GDCubismParameter
 var squint_value := 0.0
 var tween: Tween
 
-func _ready():
+func _ready() -> void:
 	cubism_init.connect(_on_cubism_init)
 
-func _on_cubism_init(model: GDCubismUserModel):
+func _on_cubism_init(model: GDCubismUserModel) -> void:
 	blink_timer.timeout.connect(_on_timer_timeout)
 
-	var param_names = [
+	var param_names := [
 		"ParamEyeLOpen",
 		"ParamEyeBallY",
 	]
 
-	for param in model.get_parameters():
+	for param: GDCubismParameter in model.get_parameters():
 		if param_names.has(param.id):
 			set(param.id.to_snake_case(), param)
 

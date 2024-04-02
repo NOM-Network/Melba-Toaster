@@ -23,6 +23,7 @@ var time_per_symbol := 0.0
 func _ready() -> void:
 	# Signals
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
+	Globals.new_speech.connect(_on_new_speech)
 	Globals.start_speech.connect(_on_start_speech)
 	Globals.continue_speech.connect(_on_continue_speech)
 	Globals.speech_done.connect(_on_speech_done)
@@ -42,7 +43,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not print_timer.is_stopped():
 		var current_time: float = current_duration + (time_per_symbol * 3) - print_timer.time_left
-		for token in current_subtitle_text:
+		for token: Array in current_subtitle_text:
 			var time_check := current_time + delta
 			if current_subtitle_text[0][1] == "STOP":
 				print_timer.stop()
@@ -60,12 +61,16 @@ func _process(delta: float) -> void:
 				var unwanted_chars := [".", ",", ":", "?", "!", ";", "-"]
 
 				var result := ""
-				for c in unwanted_chars:
+				for c: String in unwanted_chars:
 					result = search_string.replace(c, "")
 
 				if result.begins_with("toachan"):
 					if randf() < 0.33:
 						Globals.set_toggle.emit("toa", true)
+
+				if result.begins_with("toast"):
+					if randf() < 0.33:
+						Globals.set_toggle.emit("toast", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
 				while subtitles.get_line_count() > subtitles.get_visible_line_count():
@@ -75,6 +80,9 @@ func _process(delta: float) -> void:
 
 func _on_reset_subtitles() -> void:
 	clear_subtitles()
+
+func _on_new_speech(_data: Dictionary) -> void:
+	cleanout_timer.stop()
 
 func _on_start_speech() -> void:
 	cleanout_timer.stop()
@@ -114,8 +122,11 @@ func set_prompt(text: String, duration:=0.0) -> void:
 	if text == "random":
 		return
 
-	if text.contains("streamlabs:"):
+	if text.begins_with("Burnt Melba"):
 		return
+
+	if text.contains("streamlabs:"):
+		text = text.replace("streamlabs: ", "")
 
 	prompt.text = text
 	prompt.label_settings.font_size = default_font_size[prompt.name]
@@ -138,7 +149,7 @@ func set_subtitles(text: String, duration:=0.0, continue_print:=false) -> void:
 	current_duration = duration
 	current_subtitle_text = []
 
-	var tokenized_text = text.split(" ")
+	var tokenized_text: Array = text.split(" ")
 	var time := 0.0
 	for i in tokenized_text.size():
 		time += time_per_symbol * tokenized_text[i].length()
@@ -159,6 +170,8 @@ func set_subtitles_fast(text: String) -> void:
 	subtitles.label_settings.font_size = default_font_size["Subtitles"]
 
 func clear_subtitles() -> void:
+	cleanout_timer.stop()
+
 	prompt.text = ""
 	subtitles.text = ""
 
@@ -203,7 +216,7 @@ func _on_change_position(new_position: String) -> void:
 			return
 
 		_:
-			var pos = positions.lower_third
+			var pos: Array = positions.lower_third
 
 			if tweens.has("lower_third"):
 				tweens.lower_third.kill()

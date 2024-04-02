@@ -69,7 +69,7 @@ func _on_ready_for_speech() -> void:
 func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 	Globals.update_backend_stats.emit(stats)
 
-	var data := MessagePack.decode(message)
+	var data: Dictionary = MessagePack.decode(message)
 	if data.error != OK:
 		printerr("MessagePack decode error: ", data.error)
 		return
@@ -116,6 +116,8 @@ func _on_continue_speech(data: Dictionary) -> void:
 	await Globals.speech_done
 
 func _on_cancel_speech() -> void:
+	%BeforeNextResponseTimer.stop()
+
 	if Globals.is_singing:
 		return
 
@@ -137,7 +139,7 @@ func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
 	# Reset toggles
-	for toggle in Globals.toggles:
+	for toggle: String in Globals.toggles:
 		Globals.set_toggle.emit(toggle, Globals.toggles[toggle].default_state)
 
 	Globals.is_paused = true
@@ -200,11 +202,16 @@ func disconnect_backend() -> void:
 # region PRIVATE FUNCTIONS
 
 func _get_ready_for_next_speech() -> void:
+	%BeforeNextResponseTimer.stop()
+	%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
 	%BeforeNextResponseTimer.start()
 
 func _on_before_next_response_timer_timeout() -> void:
+	%BeforeNextResponseTimer.stop()
+
 	# Starting the timer again if there are still chunks to skip
 	if not SpeechManager.ready_for_new_message():
+		%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
 		%BeforeNextResponseTimer.start()
 		return
 
