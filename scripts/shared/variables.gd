@@ -42,6 +42,11 @@ static var positions := {
 	"collab": {
 		"model": [Vector2(377, 1054), default_model_scale],
 		"lower_third": [Vector2(35, 700), Vector2(0.777, 0.777)],
+	},
+
+	"collab_song": {
+		"model": [Vector2(602, 1054), default_model_scale],
+		"lower_third": default_lower_third_position,
 	}
 }
 

@@ -234,6 +234,9 @@ func _handle_event(data: Dictionary) -> void:
 		"SourceFilterEnableStateChanged":
 			change_filter_state(data.eventData)
 
+		"SourceFilterNameChanged":
+			obs.send_command("GetSceneList")
+
 		# Ignored callbacks
 		"SceneNameChanged":
 			pass # handled by SceneListChanged
@@ -270,6 +273,7 @@ func _handle_request(data: Dictionary) -> void:
 					"GetSourceFilterList", {"sourceName": scene.sceneName}, scene.sceneName
 				])
 
+			CpHelpers.clear_nodes( %ObsFilters)
 			obs.send_command_batch(request)
 
 		"GetInputList":
@@ -435,6 +439,7 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
 		button.button_pressed = scene.sceneName == active_scene
+		button.custom_minimum_size = Vector2(100, 80)
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
@@ -446,8 +451,6 @@ func _change_active_scene(data: Dictionary) -> void:
 		CpHelpers.apply_color_override(button, button.name == scene_name, Color.GREEN)
 
 func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
-	CpHelpers.clear_nodes( %ObsFilters)
-
 	for filter: Dictionary in filters:
 		var button := Button.new()
 		button.text = "%s: %s" % [scene_name, filter.filterName]
@@ -457,7 +460,7 @@ func _generate_filter_buttons(scene_name: String, filters: Array) -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
 		button.button_pressed = filter.filterEnabled
-		CpHelpers.apply_color_override(button, filter.filterEnabled, Color.GREEN, Color.RED)
+		CpHelpers.apply_color_override(button, filter.filterEnabled, Color.GREEN, Color.GRAY)
 		button.toggled.connect(_on_filter_button_toggled.bind(button))
 		%ObsFilters.add_child(button)
 
@@ -469,7 +472,7 @@ func change_filter_state(data: Dictionary) -> void:
 		return
 
 	button.button_pressed = data.filterEnabled
-	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.RED)
+	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.GRAY)
 
 func _generate_input_request(inputs: Array) -> void:
 	CpHelpers.clear_nodes( %ObsInputs)
@@ -493,6 +496,7 @@ func _generate_input_button(data: Dictionary) -> void:
 	button.toggle_mode = true
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_NONE
+	button.custom_minimum_size = Vector2(60, 60)
 	button.pressed.connect(_on_input_button_pressed.bind(button))
 	%ObsInputs.add_child(button)
 	_change_input_state(data)

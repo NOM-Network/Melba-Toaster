@@ -320,7 +320,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="Animations" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+[node name="Animations" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -356,7 +356,7 @@ size_flags_horizontal = 3
 toggle_mode = true
 text = "Test"
 
-[node name="Expressions" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+[node name="Expressions" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -388,7 +388,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Test"
 
-[node name="PinnableAssets" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+[node name="PinnableAssets" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -414,7 +414,7 @@ text = "Test"
 layout_mode = 2
 text = "Test"
 
-[node name="Toggles" type="HBoxContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
+[node name="Toggles" type="HFlowContainer" parent="Margins/HSplitContainer/LeftPanel/ModelControlsPanel/MarginContainer/VBoxContainer/ModelControls"]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
@@ -583,13 +583,13 @@ size_flags_vertical = 10
 text = "Scenes"
 horizontal_alignment = 1
 
-[node name="ObsScenes" type="HBoxContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsScenes" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 alignment = 1
 
 [node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsScenes" groups=["_editor_only"]]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Test"
@@ -637,10 +637,9 @@ text = "Inputs
 (F5 to toggle Melba Speaking)"
 horizontal_alignment = 1
 
-[node name="ObsInputs" type="HBoxContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsInputs" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 alignment = 1
 
 [node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsInputs" groups=["_editor_only"]]
@@ -674,10 +673,9 @@ size_flags_vertical = 10
 text = "Filters"
 horizontal_alignment = 1
 
-[node name="ObsFilters" type="HBoxContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+[node name="ObsFilters" type="HFlowContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 alignment = 1
 
 [node name="Button" type="Button" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/ObsFilters" groups=["_editor_only"]]
