@@ -157,6 +157,7 @@ func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
 	if not Globals.fixed_scene:
+		Globals.change_scene.emit("Song")
 
 func _on_stop_singing() -> void:
 	mic.animation = "out"
@@ -169,6 +170,10 @@ func _on_stop_singing() -> void:
 
 	if not Globals.fixed_scene:
 		Globals.change_scene.emit("Main")
+
+	if client.is_open():
+		Globals.is_paused = false
+		Globals.ready_for_speech.emit()
 
 func _on_connection_closed() -> void:
 	Globals.is_paused = true

@@ -49,6 +49,9 @@ func _process(delta: float) -> void:
 			incoming_messages_count += 1
 			data_received.emit(socket.get_packet(), [incoming_messages_count, outgoing_messages_count])
 
+func is_open() -> bool:
+	return socket.get_ready_state() == socket.STATE_OPEN
+
 func connect_client() -> void:
 	print_debug("Toaster client: Establishing connection!")
 
