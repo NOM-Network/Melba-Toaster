@@ -39,15 +39,17 @@ static var positions := {
 		"lower_third": default_lower_third_position,
 	},
 
-	"collab": {
-		"model": [Vector2(377, 1054), default_model_scale],
-		"lower_third": [Vector2(35, 700), Vector2(0.777, 0.777)],
-	},
+	# Not needed for now
+	# "collab": {
+	# 	"model": [Vector2(377, 1054), default_model_scale],
+	# 	"lower_third": [Vector2(35, 700), Vector2(0.777, 0.777)],
+	# },
 
-	"collab_song": {
-		"model": [Vector2(377, 1054), default_model_scale],
-		"lower_third": default_lower_third_position,
-	}
+	# Not needed for now
+	# "collab_song": {
+	# 	"model": [Vector2(377, 1054), default_model_scale],
+	# 	"lower_third": default_lower_third_position,
+	# }
 }
 
 static var pinnable_assets := {
