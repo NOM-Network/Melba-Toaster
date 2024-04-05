@@ -68,8 +68,8 @@ func _process(delta: float) -> void:
 					if randf() < 0.33:
 						Globals.set_toggle.emit("toa", true)
 
-				if result.begins_with("toast"):
-					if randf() < 0.33:
+				if result.begins_with("toast "):
+					if randf() < 0.10:
 						Globals.set_toggle.emit("toast", true)
 
 				subtitles.label_settings.font_size = default_font_size[subtitles.name]
@@ -107,7 +107,11 @@ func _on_clear_subtitles_timer_timeout() -> void:
 	clear_subtitles()
 
 func _on_ready_for_speech() -> void:
-	Globals.set_toggle.emit("toa", false)
+	if randf() < 0.66:
+		Globals.set_toggle.emit("toa", false)
+
+	if randf() < 0.66:
+		Globals.set_toggle.emit("toast", false)
 
 # endregion
 

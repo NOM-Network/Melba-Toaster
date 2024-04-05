@@ -555,6 +555,7 @@ func backend_connected() -> void:
 
 func backend_disconnected() -> void:
 	pause_button.disabled = true
+	Globals.play_animation.emit("sleep")
 	CpHelpers.change_status_color(backend_status, false)
 
 func _on_pause_speech_toggled(button_pressed: bool) -> void:
@@ -601,7 +602,6 @@ func _on_obs_client_status_pressed() -> void:
 
 func _on_backend_status_pressed() -> void:
 	Globals.is_paused = true
-	Globals.play_animation.emit("sleep")
 	main.disconnect_backend()
 	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats([0, 0]))
 	await get_tree().create_timer(1.0).timeout

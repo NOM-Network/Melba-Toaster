@@ -157,7 +157,6 @@ func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
 	if not Globals.fixed_scene:
-		Globals.change_scene.emit("Song")
 
 func _on_stop_singing() -> void:
 	mic.animation = "out"
