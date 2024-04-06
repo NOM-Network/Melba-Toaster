@@ -1,4 +1,5 @@
 *
 !config/
 !songs/
+!run.ps1.example
 !.gitignore

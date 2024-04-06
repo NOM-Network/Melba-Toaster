@@ -52,8 +52,8 @@ MarginContainer/constants/margin_top = 10
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
-size = Vector2i(1366, 768)
-min_size = Vector2i(1024, 650)
+size = Vector2i(1366, 780)
+min_size = Vector2i(1366, 780)
 auto_translate = false
 script = ExtResource("1_rhl0v")
 
@@ -576,6 +576,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 text = "Backend"
+
+[node name="StreamTimecode" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 26
+text = "00:00:00.000"
+horizontal_alignment = 1
 
 [node name="ScenesLabel" type="Label" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2

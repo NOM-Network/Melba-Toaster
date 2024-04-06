@@ -1,0 +1,16 @@
+# Start up script
+# Use the actual path to your executables
+
+# Plane9 (visualiser)
+Start-Process "Plane9.exe" -ArgumentList "-w" -WorkingDirectory "C:\Program Files (x86)\Plane9\"
+
+# PotPlayer (audio player)
+Start-Process "PotPlayerMini.exe" -ArgumentList "/autoplay" -WorkingDirectory "C:\Program Files (x86)\PotPlayer\"
+Start-Sleep -Seconds 5
+
+# OBS (streaming)
+Start-Process "obs64.exe" -WorkingDirectory "C:\Program Files (x86)\obs-studio\bin\64bit\"
+Start-Sleep -Seconds 5
+
+# Toaster (toaster)
+Start-Process ".\toaster.console.exe" -WorkingDirectory "."

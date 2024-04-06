@@ -114,7 +114,8 @@ func _start_obs_processing() -> void:
 	obs.send_command_batch([
 		"GetSceneList",
 		"GetInputList",
-		"GetStats"
+		"GetStats",
+		"GetStreamStatus"
 	])
 
 	# OBS Stats timers
@@ -243,6 +244,9 @@ func _handle_event(data: Dictionary) -> void:
 		"SourceFilterNameChanged":
 			obs.send_command("GetSceneList")
 
+		"StreamStateChanged":
+			_change_stream_state(data.eventData)
+
 		# Ignored callbacks
 		"SceneNameChanged":
 			pass # handled by SceneListChanged
@@ -269,6 +273,9 @@ func _handle_request(data: Dictionary) -> void:
 	match data.requestType:
 		"GetStats":
 			CpHelpers.insert_data( %StreamStats, Templates.format_obs_stats(data.responseData))
+
+		"GetStreamStatus":
+			_update_stream_status(data.responseData)
 
 		"GetSceneList":
 			_generate_scene_buttons(data.responseData)
@@ -316,7 +323,10 @@ func _on_godot_stats_timer_timeout() -> void:
 	CpHelpers.insert_data( %GodotStats, Templates.format_godot_stats())
 
 func _on_obs_stats_timer_timeout() -> void:
-	obs.send_command("GetStats")
+	obs.send_command_batch([
+		"GetStats",
+		"GetStreamStatus"
+	])
 
 func _on_message_queue_stats_timer_timeout() -> void:
 	CpHelpers.insert_data( %MessageQueueStats, Templates.format_message_queue_stats())
@@ -678,3 +688,14 @@ func _set_input_volume(start: float, end: float, step: float, sleep: int=10) -> 
 
 	requests.push_back(["SetInputVolume", {"inputName": music_input_name, "inputVolumeDb": end}])
 	obs.send_command_batch(requests)
+
+func _update_stream_status(data: Dictionary) -> void:
+	if data.outputDuration > 2 * 60 * 60 * 1000:
+		if not %StreamTimecode.has_theme_color_override("font_color"):
+			%StreamTimecode.add_theme_color_override("font_color", Color.RED)
+
+	%StreamTimecode.text = data.outputTimecode.substr(0, 8)
+
+func _change_stream_state(data: Dictionary) -> void:
+	if data.outputState == "OBS_WEBSOCKET_OUTPUT_STOPPED":
+		%StreamTimecode.remove_theme_color_override("font_color")
