@@ -19,6 +19,9 @@ extends Window
 var OpCodes: Dictionary = ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
 
+var music_input_name: String = "MUSIC"
+var music_volume: float = -10.0
+
 # Last state globals
 var last_pause_status := not Globals.is_paused
 var last_singing_status := not Globals.is_singing
@@ -228,6 +231,9 @@ func _handle_event(data: Dictionary) -> void:
 		"InputNameChanged":
 			_change_input_name(data.eventData)
 
+		"InputSettingsChanged":
+			_change_input_settings(data.eventData)
+
 		"ExitStarted":
 			_stop_obs_processing()
 
@@ -242,7 +248,7 @@ func _handle_event(data: Dictionary) -> void:
 			pass # handled by SceneListChanged
 
 		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded", \
-		"MediaInputActionTriggered":
+		"MediaInputActionTriggered", "InputVolumeChanged":
 			pass # We don't need it
 
 		_:
@@ -297,6 +303,9 @@ func _handle_request(data: Dictionary) -> void:
 		"SetCurrentProgramScene", "ToggleStream", "SetSourceFilterEnabled":
 			pass # handled by StreamChateChanged event
 
+		"SetInputVolume", "Sleep":
+			pass # handled by InputVolumeChanged event
+
 		_:
 			if Globals.debug_mode:
 				print("Unhandled request: ", data.requestType)
@@ -313,6 +322,8 @@ func _on_message_queue_stats_timer_timeout() -> void:
 	CpHelpers.insert_data( %MessageQueueStats, Templates.format_message_queue_stats())
 
 func _on_start_singing() -> void:
+	_set_input_volume( - 10.0, -100.0, 10.0)
+
 	Globals.is_paused = true
 	%SingingMenu.disabled = true
 	%ReloadSongList.disabled = true
@@ -321,6 +332,8 @@ func _on_start_singing() -> void:
 	gui_release_focus()
 
 func _on_stop_singing() -> void:
+	_set_input_volume( - 100.0, -10.0, 10.0)
+
 	%SingingMenu.disabled = false
 	%ReloadSongList.disabled = false
 	%DancingToggle.disabled = false
@@ -641,3 +654,27 @@ func _generate_sound_controls() -> void:
 
 func _on_sound_output_item_selected(index: int) -> void:
 	AudioServer.set_output_device(sound_output.get_popup().get_item_text(index))
+
+func _change_input_settings(data: Dictionary) -> void:
+	if data.inputName != "Countdown":
+		return
+
+	if data.inputSettings.text == "0:05":
+		_set_input_volume(0.0, -10.0, 0.05)
+
+	if data.inputSettings.text == "0:00":
+		await get_tree().create_timer(1.0).timeout
+		Globals.change_position.emit("intro")
+		Globals.change_scene.emit("Main")
+
+func _set_input_volume(start: float, end: float, step: float, sleep: int=10) -> void:
+	if end < start:
+		step *= - 1.0
+
+	var requests: Array = []
+	for i: float in Vector3(start, end, step):
+		requests.push_back(["SetInputVolume", {"inputName": music_input_name, "inputVolumeDb": i}])
+		requests.push_back(["Sleep", {"sleepMillis": sleep}])
+
+	requests.push_back(["SetInputVolume", {"inputName": music_input_name, "inputVolumeDb": end}])
+	obs.send_command_batch(requests)

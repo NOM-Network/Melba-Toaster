@@ -399,6 +399,8 @@ func _play_emerge_animation() -> void:
 	$AnimationPlayer.play("emerge")
 	await $AnimationPlayer.animation_finished
 	Globals.change_position.emit("default")
+	Globals.is_paused = false
+	Globals.ready_for_speech.emit()
 
 func print_model_data() -> void:
 	print("Model data: %s, %.2f" % [
