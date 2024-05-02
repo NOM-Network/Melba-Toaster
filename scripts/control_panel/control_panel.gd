@@ -183,7 +183,7 @@ func _generate_singing_controls() -> void:
 	var songs := Globals.config.songs
 	var i := 1
 	for song in songs:
-		menu.add_item("%s - %s" % [i, song.song_name])
+		menu.add_item("%s - %s" % [i, song.get_song_ui_name()])
 		i += 1
 
 func _generate_model_controls() -> void:
@@ -353,16 +353,20 @@ func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 	var song: Song = Globals.config.songs[%SingingMenu.selected]
 	var seek_time: float = %SingingSeekTime.value
 
+	Globals.current_emotion_modifier = 0.0
+
 	if button_pressed:
 		var old_text: String = %SingingMenu.get_popup().get_item_text( %SingingMenu.selected)
-		%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
+		if not old_text.begins_with("♫"):
+			%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
 		Globals.start_singing.emit(song, seek_time)
 	else:
 		Globals.stop_singing.emit()
 
 func _on_dancing_toggle_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		Globals.start_dancing_motion.emit( %DancingBpm.value)
+		var bpm: float = %DancingBpm.value
+		Globals.start_dancing_motion.emit("%s" % bpm)
 	else:
 		Globals.end_dancing_motion.emit()
 	gui_release_focus()

@@ -10,7 +10,7 @@ signal pin_asset(asset_name: String, enabled: bool)
 signal start_singing(song: Song, seek_time: float)
 signal stop_singing()
 
-signal start_dancing_motion(bpm: float)
+signal start_dancing_motion(bpm: String)
 signal end_dancing_motion()
 signal start_singing_mouth_movement()
 signal end_singing_mouth_movement()

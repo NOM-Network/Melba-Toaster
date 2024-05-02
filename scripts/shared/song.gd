@@ -7,9 +7,10 @@ var id: String
 var path: String
 var song_name: String
 var full_name: String
+var short_name: String
 var wait_time: float
-var mute_voice: bool
-var reverb: bool
+var mute_voice: bool = true
+var reverb: bool = false
 
 func _init(
 	p_data: Dictionary,
@@ -20,12 +21,23 @@ func _init(
 	self.id = p_data.id
 	self.song_name = p_data.name
 	self.wait_time = p_data.wait_time
-	self.mute_voice = p_data.mute_voice
-	self.reverb = p_data.reverb
 
-	self.full_name = "%s - %s" % [p_data.artist, p_data.name]
+	if p_data.has("mute_voice"):
+		self.mute_voice = p_data.mute_voice
+
+	if p_data.has("reverb"):
+		self.reverb = p_data.reverb
+
+	if p_data.has("artist"):
+		self.full_name = "%s - %s" % [p_data.artist, p_data.name]
+	else:
+		self.full_name = p_data.name
+
 	if p_data.has("feat"):
 		self.full_name += " %s" % p_data.feat
+
+	if p_data.has("short_name"):
+		self.short_name = p_data.short_name
 
 	self.path = FOLDER_PATH % [p_data.id, "%s.ogg"]
 
@@ -62,3 +74,6 @@ func load(type: String) -> AudioStreamOggVorbis:
 
 	var file := FileAccess.open(p, FileAccess.READ)
 	return AudioStreamOggVorbis.load_from_buffer(file.get_buffer(file.get_length()))
+
+func get_song_ui_name() -> String:
+	return self.short_name if self.short_name else self.song_name
