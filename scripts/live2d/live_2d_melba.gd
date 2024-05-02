@@ -104,7 +104,7 @@ func initialize_pinnable_assets() -> void:
 		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
 		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	for toggle: Object in Globals.toggles.values():
 		toggle.param.set_value(toggle.value)
 

@@ -33,8 +33,9 @@ func _init() -> void:
 	_reset_values()
 
 func _ready() -> void:
+	set_physics_process(false)
+
 	cubism_init.connect(_on_cubism_init)
-	cubism_process.connect(_on_cubism_process)
 
 	Globals.reset_subtitles.connect(_on_reset_subtitles)
 
@@ -47,6 +48,8 @@ func _on_cubism_init(model: GDCubismUserModel) -> void:
 	for param: GDCubismParameter in model.get_parameters():
 		if param_names.has(param.id):
 			set(param.id.to_snake_case(), param)
+
+	set_physics_process(true)
 
 func _on_reset_subtitles() -> void:
 	_reset_values()
@@ -61,7 +64,7 @@ func _reset_values() -> void:
 	test_array.resize(prev_values_amount - 1)
 	test_array.fill(0.0)
 
-func _on_cubism_process(_model: GDCubismUserModel, _delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var overall_magnitude: float = 0.0
 	var unaltered_mouth_value: float = 0.0
 	var unaltered_mouth_form: float = 0.0
@@ -107,7 +110,7 @@ func _on_cubism_process(_model: GDCubismUserModel, _delta: float) -> void:
 
 func manage_speaking() -> void:
 	# Mouth amplitude
-	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( - 4))
+	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( - 5))
 
 	# Mouth form
 	var mouth_form: float = _find_avg(prev_mouth_form_values.slice( - 3))
