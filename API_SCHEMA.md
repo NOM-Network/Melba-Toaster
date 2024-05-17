@@ -98,3 +98,14 @@ Contains the name of the toggle needs to be applied to the Live2D model, and its
         "enabled": "<bool>"
     }
 ```
+
+### Send Command
+
+Contains the command from Twitch chat
+
+```json
+    {
+        "type": "Command",
+        "command": "<command>"
+    }
+```

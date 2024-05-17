@@ -134,7 +134,7 @@ func _connect_signals() -> void:
 
 	Globals.start_speech.connect(_on_start_speech)
 
-	Globals.start_singing.connect(_on_start_singing.unbind(2))
+	Globals.start_singing.connect(_on_start_singing.unbind(1))
 	Globals.stop_singing.connect(_on_stop_singing)
 
 	Globals.change_position.connect(_on_change_position)
@@ -331,8 +331,19 @@ func _on_obs_stats_timer_timeout() -> void:
 func _on_message_queue_stats_timer_timeout() -> void:
 	CpHelpers.insert_data( %MessageQueueStats, Templates.format_message_queue_stats())
 
-func _on_start_singing() -> void:
+func _on_start_singing(song: Song) -> void:
 	_set_input_volume( - 10.0, -100.0, 10.0)
+
+	Globals.current_emotion_modifier = 0.0
+
+	for i: int in %SingingMenu.get_popup().get_item_count():
+		if %SingingMenu.get_popup().get_item_text(i).ends_with(song.get_song_ui_name()):
+			%SingingMenu.select(i)
+			break
+
+	var old_text: String = %SingingMenu.get_popup().get_item_text( %SingingMenu.selected)
+	if not old_text.begins_with("♫"):
+		%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
 
 	Globals.is_paused = true
 	%SingingMenu.disabled = true
@@ -350,15 +361,10 @@ func _on_stop_singing() -> void:
 	%DancingBpm.editable = true
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
-	var song: Song = Globals.config.songs[%SingingMenu.selected]
-	var seek_time: float = %SingingSeekTime.value
-
-	Globals.current_emotion_modifier = 0.0
 
 	if button_pressed:
-		var old_text: String = %SingingMenu.get_popup().get_item_text( %SingingMenu.selected)
-		if not old_text.begins_with("♫"):
-			%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
+		var song: Song = Globals.config.songs[%SingingMenu.selected]
+		var seek_time: float = %SingingSeekTime.value
 		Globals.start_singing.emit(song, seek_time)
 	else:
 		Globals.stop_singing.emit()

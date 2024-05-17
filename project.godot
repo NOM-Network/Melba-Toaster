@@ -21,6 +21,7 @@ boot_splash/show_image=false
 
 Globals="*res://scripts/shared/globals.gd"
 SpeechManager="*res://scripts/main/speech_manager.gd"
+CommandManager="*res://scripts/main/command_manager.gd"
 
 [debug]
 

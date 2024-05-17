@@ -84,16 +84,20 @@ func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 			SpeechManager.push_message(data.result)
 
 		"PlayAnimation":
-			Globals.play_animation.emit(data.animationName)
+			Globals.play_animation.emit(data.result.animationName)
 
 		"SetExpression":
-			Globals.set_expression.emit(data.expressionName)
+			Globals.set_expression.emit(data.result.expressionName)
 
 		"SetToggle":
-			Globals.set_toggle.emit(data.toggleName, data.enabled)
+			Globals.set_toggle.emit(data.result.toggleName, data.result.enabled)
+
+		"Command":
+			print(data.result)
+			CommandManager.execute(data.result.command)
 
 		_:
-			print("Unhandled data type: ", data)
+			print(">>> Unhandled data type: ", data)
 
 func _on_new_speech(data: Dictionary) -> void:
 	%BeforeNextResponseTimer.stop()
@@ -173,6 +177,7 @@ func _on_stop_singing() -> void:
 
 	if client.is_open():
 		Globals.is_paused = false
+		await get_tree().create_timer(2.0).timeout
 		Globals.ready_for_speech.emit()
 
 func _on_connection_closed() -> void:

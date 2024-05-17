@@ -55,6 +55,14 @@ async def hello(websocket):
                     }
                 await websocket.send(msgpack.packb(message, use_bin_type=True))
 
+                await asyncio.sleep(0.5)
+
+                rand = random.random()
+                print(rand)
+                if rand < 0.5:
+                    message = {"type": "Command", "command": "SING eVeRyTi"}
+                    await websocket.send(msgpack.packb(message, use_bin_type=True))
+
                 await asyncio.sleep(random.uniform(1.0, 2.0))
 
             message = {"type": "EndSpeech", "prompt": prompt[backwards]}
