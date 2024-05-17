@@ -22,6 +22,9 @@ func _pause() -> void:
 func _unpause() -> void:
 	Globals.is_paused = false
 
+	if Globals.is_ready():
+		Globals.ready_for_speech.emit()
+
 func _sing(song_name: String) -> void:
 	var next_song: Song
 	for song in Globals.config.songs:
