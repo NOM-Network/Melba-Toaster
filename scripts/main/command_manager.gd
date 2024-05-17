@@ -1,17 +1,24 @@
 extends Node
 
 func execute(command_string: String) -> void:
-	var command: Array = command_string.to_lower().split(" ")
+	var command: Array = command_string.split(" ")
 
 	match command:
 		["sing", var song_name]:
-			_sing(song_name)
+			_sing(song_name.to_lower())
 
 		["pause"]:
 			_pause()
 
 		["unpause"]:
 			_unpause()
+
+		["scene", ..]:
+			var scene_name: String = command.reduce(
+				func(acc: String, word: String) -> String: return acc + " " + word, ""
+			)
+			scene_name = scene_name.strip_edges().trim_prefix("scene ")
+			Globals.change_scene.emit(scene_name)
 
 		_:
 			print("Unknown command: %s" % command)
@@ -38,9 +45,10 @@ func _sing(song_name: String) -> void:
 
 	print("Waiting for speech to end...")
 	Globals.is_paused = true
-	await Globals.end_speech
 
 	print("Singing %s..." % song_name)
-	await get_tree().create_timer(2.0).timeout
+	if not Globals.is_ready():
+		await Globals.end_speech
+		await get_tree().create_timer(2.0).timeout
 
 	Globals.start_singing.emit(next_song, 0.0)

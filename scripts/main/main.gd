@@ -93,7 +93,6 @@ func _on_data_received(message: PackedByteArray, stats: Array) -> void:
 			Globals.set_toggle.emit(data.result.toggleName, data.result.enabled)
 
 		"Command":
-			print(data.result)
 			CommandManager.execute(data.result.command)
 
 		_:
