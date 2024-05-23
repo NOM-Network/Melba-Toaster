@@ -14,6 +14,11 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var greenscreen_window := $GreenScreenWindow
 @onready var greenscreen_texture := $GreenScreenWindow/TextureRect
 
+func _enter_tree() -> void:
+	while Globals.config.is_ready == false:
+		print("Waiting for config...")
+		await get_tree().create_timer(1.0).timeout
+
 # region PROCESS
 func _ready() -> void:
 	# Timers

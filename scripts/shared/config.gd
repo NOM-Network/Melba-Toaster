@@ -3,25 +3,28 @@ class_name ToasterConfig
 
 var config: ConfigFile
 var songs: Array[Song]
+var is_ready: bool = false
 
 var SONG_FOLDER_PATH: String
 
 func _init(debug_mode: bool) -> void:
 	SONG_FOLDER_PATH = "./dist/songs" if debug_mode else "./songs"
 
-	_init_config()
+	var config_file: String = "./dist/config/debug.cfg" if debug_mode else "./config/prod.cfg"
+	_init_config(config_file)
 
 	init_songs(debug_mode)
 
-func _init_config() -> void:
-	config = _load_config_file("./config/prod.cfg")
-	assert(config is ConfigFile, "No config present!")
+func _init_config(config_file: String) -> void:
+	print("Loading config from %s..." % config_file)
+	config = _load_config_file(config_file)
+	is_ready = true
 
 func init_songs(debug_mode: bool) -> void:
 	songs = []
 
 	var dir := DirAccess.open(SONG_FOLDER_PATH)
-	assert(dir, "There is no %s folder in the project root" % SONG_FOLDER_PATH)
+	assert(dir, "There is  %s folder in the project root" % SONG_FOLDER_PATH)
 
 	var song_folders := dir.get_directories()
 
@@ -48,11 +51,14 @@ func init_songs(debug_mode: bool) -> void:
 	print("Songs loaded: ", songs.size())
 
 func _load_config_file(filename: String) -> Variant:
-	var file := ConfigFile.new()
+	var file: ConfigFile = ConfigFile.new()
 
-	var err := file.load(filename)
-	if (err) != OK:
-		printerr("Config file %s is corrupted, error %d" % [filename, err])
+	var err: Error = file.load(filename)
+	assert(err != Error.ERR_FILE_NOT_FOUND, "Cannot find the config file %s" % filename)
+
+	if err != OK:
+		printerr("Failed to load config file %s, error %d, please check the documentation: https://bit.ly/godot-error" % [filename, err])
+		printerr("Close the Toaster.")
 		return null
 
 	return file

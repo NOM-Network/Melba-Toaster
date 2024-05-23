@@ -9,6 +9,14 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 **Control panel interface**
 ![Interface](readme_assets/interface.png?1)
 
+## Going live
+
+This [Wiki page](https://github.com/NOM-Network/Melba-Toaster/wiki/Going-live) contains instructions on how to go live using the [Release version of the Toaster](https://github.com/NOM-Network/Melba-Toaster/releases).
+
+### Song support
+
+Melba can sing! Song support is outlined in [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Song-support).
+
 ## Development
 
 1. Install the latest minor version of Godot 4.2:
@@ -28,23 +36,15 @@ Communication with the backend follows [this API schema](API_SCHEMA.md).
 
     Alternatively, you can Download ZIP package using the green "Code" button and unzip it.
 
-3. In the `config` folder, duplicate `prod.cfg.example` file, rename it to `prod.cfg` and fill it out with the connection details for both OBS and backend websockets (make sure they are available).
+3. In the `dist/config` folder, duplicate `prod.cfg.example` file, rename it to `debug.cfg` and fill it out with the connection details for both OBS and backend websockets (make sure they are available).
 
 4. Open the project in Godot.
 
 5. Hit F5 in Godot editor. Live2D and Control Panel scenes should start automatically.
 
-> The project can run without OBS and/or the backend, but nothing will actually happen. You can find a [mock backend server](backend/README.md) in the `backend` folder.
+> The project can run without OBS and/or the backend, but nothing will actually happen. This can be useful for testing the songs. If you need to test yapping capabilities of the model, use the [mock backend server](backend/README.md) in the `backend` folder.
 >
 > When pushing changes to the repository, ignore or revert any `Param` changes in `scenes\live2d\live_2d_melba.tscn` - they are control parameters for the model and are changed in the runtime. If you use GitHub Desktop, you can ignore these lines from commit by clicking on the line block.
-
-### Song support
-
-Melba can sing! Song support is outlined in [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Song-support).
-
-### Going live
-
-Moved to [Wiki](https://github.com/NOM-Network/Melba-Toaster/wiki/Going-live)
 
 ### Note for Mac/Linux users
 
