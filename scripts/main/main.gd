@@ -10,25 +10,32 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var lower_third := $LowerThird
 @onready var mic := $Microphone
 @onready var audio_manager := $AudioManager
+@onready var karaoke_background := $KaraokeBackground
 
 @onready var greenscreen_window := $GreenScreenWindow
 @onready var greenscreen_texture := $GreenScreenWindow/TextureRect
+
+var tween: Tween
+
+# region PROCESS
 
 func _enter_tree() -> void:
 	while Globals.config.is_ready == false:
 		print("Waiting for config...")
 		await get_tree().create_timer(1.0).timeout
 
-# region PROCESS
 func _ready() -> void:
 	# Timers
 	%BeforeNextResponseTimer.wait_time = Globals.time_before_next_response
 
+	# Prepare stuff
 	_connect_signals()
 	_add_model()
 
+	# Greenscreen
 	greenscreen_texture.texture = get_viewport().get_texture()
 
+	# Backend
 	await connect_backend()
 
 func _process(_delta: float) -> void:
@@ -167,6 +174,8 @@ func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	if not Globals.fixed_scene:
 		Globals.change_scene.emit("Song")
 
+	_toggle_karaoke_background(true, song.wait_time)
+
 func _on_stop_singing() -> void:
 	mic.animation = "out"
 	mic.play()
@@ -183,6 +192,22 @@ func _on_stop_singing() -> void:
 		Globals.is_paused = false
 		await get_tree().create_timer(2.0).timeout
 		Globals.ready_for_speech.emit()
+
+	_toggle_karaoke_background(false)
+
+func _toggle_karaoke_background(enabled:=true, wait_time:=2.5) -> void:
+	if tween:
+		tween.kill()
+	tween = create_tween()
+	tween.set_trans(Tween.TRANS_QUINT)
+
+	if enabled:
+		karaoke_background.visible = true
+		tween.tween_method(karaoke_background.set_transparency, 1000.0, 0.0, wait_time)
+	else:
+		tween.tween_method(karaoke_background.set_transparency, karaoke_background.get_transparency(), 1000.0, wait_time)
+		await tween.finished
+		karaoke_background.visible = false
 
 func _on_connection_closed() -> void:
 	Globals.is_paused = true

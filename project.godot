@@ -14,8 +14,8 @@ config/name="Melba Toaster"
 config/version="1.5.1.0"
 run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 0)
-boot_splash/show_image=false
+boot_splash/bg_color=Color(0, 0, 0, 0)
+boot_splash/fullsize=false
 
 [autoload]
 
@@ -33,11 +33,9 @@ gdscript/warnings/unsafe_cast=1
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
+window/size/resizable=false
 window/size/borderless=true
-window/size/transparent=true
 window/subwindows/embed_subwindows=false
-window/dpi/allow_hidpi=false
-window/per_pixel_transparency/allowed=true
 
 [editor]
 
@@ -74,12 +72,4 @@ common/physics_ticks_per_second=120
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=2
-textures/default_filters/anisotropic_filtering_level=4
-textures/decals/filter=5
-textures/light_projectors/filter=5
-anti_aliasing/quality/msaa_2d=3
 viewport/transparent_background=true
-anti_aliasing/quality/screen_space_aa=1
-anti_aliasing/quality/use_taa=true
-anti_aliasing/quality/use_debanding=true

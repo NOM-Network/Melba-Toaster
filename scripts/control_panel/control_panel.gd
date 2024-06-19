@@ -361,7 +361,6 @@ func _on_stop_singing() -> void:
 	%DancingBpm.editable = true
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
-
 	if button_pressed:
 		var song: Song = Globals.config.songs[%SingingMenu.selected]
 		var seek_time: float = %SingingSeekTime.value

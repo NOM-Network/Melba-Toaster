@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=96 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
 [ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="7_6nuhl"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
+[ext_resource type="PackedScene" uid="uid://djlj24xps7bt7" path="res://scenes/karaoke_background/karaoke_background.tscn" id="9_6akwu"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_ehotg"]
 
@@ -736,5 +737,9 @@ text = "420"
 unique_name_in_owner = true
 wait_time = 5.0
 one_shot = true
+
+[node name="KaraokeBackground" parent="." instance=ExtResource("9_6akwu")]
+visible = false
+z_index = -1
 
 [connection signal="timeout" from="BeforeNextResponseTimer" to="." method="_on_before_next_response_timer_timeout"]
