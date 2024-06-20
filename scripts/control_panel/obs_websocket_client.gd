@@ -804,7 +804,7 @@ var password: String = Globals.config.get_obs("password")
 # Builtin functions                                                           #
 ###############################################################################
 
-func _ready() -> void:
+func _ready() -> void:	
 	set_process(false)
 
 func _process(_delta: float) -> void:
@@ -846,13 +846,14 @@ func _handle_hello() -> Error:
 
 	_poll_handler = _handle_identify
 
+	# TODO: fix the issue with password authentication
 	var identify := Identify.new(
-		RPC_VERSION,
-		ObsWebSocketClient._generate_auth(
-			password,
-			hello.authentication.challenge,
-			hello.authentication.salt
-		)
+			RPC_VERSION,
+			ObsWebSocketClient._generate_auth(
+				password,
+				hello.authentication.challenge,
+				hello.authentication.salt
+			) if hello.authentication else ""
 	)
 
 	connection_established.emit()
@@ -946,6 +947,9 @@ func establish_connection() -> int:
 	set_process(true)
 	if not socket:
 		socket = WebSocketPeer.new()
+		
+		socket.outbound_buffer_size = 1048576
+		socket.inbound_buffer_size = 1048576
 
 	return socket.connect_to_url(URL_PATH % [secure, host, port], TLSOptions.client())
 

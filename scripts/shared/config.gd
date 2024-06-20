@@ -64,7 +64,7 @@ func _load_config_file(filename: String) -> Variant:
 	return file
 
 func get_obs(key: String) -> Variant:
-	return config.get_value("OBS", key)
+	return config.get_value("OBS", key, "")
 
 func get_backend(key: String) -> Variant:
 	return config.get_value("backend", key)
