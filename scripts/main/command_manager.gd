@@ -21,7 +21,7 @@ func execute(command_string: String) -> void:
 			Globals.change_scene.emit(scene_name)
 
 		_:
-			print("Unknown command", command)
+			print("Unknown command ", command)
 
 func _pause() -> void:
 	Globals.is_paused = true
