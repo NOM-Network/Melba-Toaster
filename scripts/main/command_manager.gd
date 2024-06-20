@@ -21,7 +21,7 @@ func execute(command_string: String) -> void:
 			Globals.change_scene.emit(scene_name)
 
 		_:
-			print("Unknown command: %s" % command)
+			print("Unknown command", command)
 
 func _pause() -> void:
 	Globals.is_paused = true
@@ -33,22 +33,4 @@ func _unpause() -> void:
 		Globals.ready_for_speech.emit()
 
 func _sing(song_name: String) -> void:
-	var next_song: Song
-	for song in Globals.config.songs:
-		if song.id.begins_with(song_name):
-			next_song = song
-			break
-
-	if not next_song:
-		print("Could not find song %s" % song_name)
-		return
-
-	print("Waiting for speech to end...")
-	Globals.is_paused = true
-
-	print("Singing %s..." % song_name)
-	if not Globals.is_ready():
-		await Globals.end_speech
-		await get_tree().create_timer(2.0).timeout
-
-	Globals.start_singing.emit(next_song, 0.0)
+	Globals.queue_next_song.emit(song_name, 0)

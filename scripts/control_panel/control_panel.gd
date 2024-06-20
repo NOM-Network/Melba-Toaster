@@ -181,9 +181,10 @@ func _generate_singing_controls() -> void:
 	menu.clear()
 
 	var songs := Globals.config.songs
-	var i := 1
+	var i := 0
 	for song in songs:
-		menu.add_item("%s - %s" % [i, song.get_song_ui_name()])
+		menu.add_item("%s - %s" % [i + 1, song.get_song_ui_name()], i)
+		menu.set_item_metadata(i, song.id)
 		i += 1
 
 func _generate_model_controls() -> void:
@@ -346,27 +347,35 @@ func _on_start_singing(song: Song) -> void:
 		%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
 
 	Globals.is_paused = true
-	%SingingMenu.disabled = true
-	%ReloadSongList.disabled = true
-	%DancingToggle.disabled = true
-	%DancingBpm.editable = false
+	_disable_singing_dancing_controls(true)
 	gui_release_focus()
 
 func _on_stop_singing() -> void:
 	_set_input_volume( - 100.0, -10.0, 10.0)
 
-	%SingingMenu.disabled = false
-	%ReloadSongList.disabled = false
-	%DancingToggle.disabled = false
-	%DancingBpm.editable = true
+	_disable_singing_dancing_controls(false)
+	gui_release_focus()
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		var song: Song = Globals.config.songs[%SingingMenu.selected]
+		var song_name: String = %SingingMenu.get_selected_metadata()
 		var seek_time: float = %SingingSeekTime.value
-		Globals.start_singing.emit(song, seek_time)
+		Globals.queue_next_song.emit(song_name, seek_time)
+		
+		%SingingToggle.text = "Queued"
+		_disable_singing_dancing_controls(true)
 	else:
-		Globals.stop_singing.emit()
+		if Globals.is_singing:
+			Globals.stop_singing.emit()
+		else:
+			print("Song removed from the queue")
+			Globals.is_paused = false
+			Globals.queued_song = null
+			Globals.queued_song_seek_time = 0.0
+			
+		_disable_singing_dancing_controls(false)
+		%SingingToggle.text = "Start"
+	gui_release_focus()
 
 func _on_dancing_toggle_toggled(button_pressed: bool) -> void:
 	if button_pressed:
@@ -375,6 +384,13 @@ func _on_dancing_toggle_toggled(button_pressed: bool) -> void:
 	else:
 		Globals.end_dancing_motion.emit()
 	gui_release_focus()
+
+func _disable_singing_dancing_controls(disabled: bool) -> void:
+	for control: Control in [%DancingBpm, %DancingToggle, %SingingMenu, %ReloadSongList, %SingingSeekTime]:
+		if control is SpinBox:
+			control.editable = not disabled
+		else:
+			control.disabled = disabled
 
 func _on_model_toggle_pressed(toggle: CheckButton) -> void:
 	Globals.set_toggle.emit(toggle.text, toggle.button_pressed)
@@ -628,9 +644,11 @@ func _on_reset_state_pressed() -> void:
 
 func _on_show_beats_toggled(toggled_on: bool) -> void:
 	Globals.show_beats = toggled_on
+	gui_release_focus()
 
 func _on_scene_override_toggled(toggled_on: bool) -> void:
 	Globals.scene_override = toggled_on
+	gui_release_focus()
 
 func _on_scene_override_list_item_selected(index: int) -> void:
 	Globals.scene_override_to = %SceneOverrideList.get_selected_metadata()

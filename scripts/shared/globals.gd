@@ -7,6 +7,7 @@ signal set_expression(expression_name: String, enabled: bool)
 signal set_toggle(toggle_name: String, enabled: bool)
 signal pin_asset(asset_name: String, enabled: bool)
 
+signal queue_next_song(song_name: String, seek_time: float)
 signal start_singing(song: Song, seek_time: float)
 signal stop_singing()
 
@@ -48,6 +49,9 @@ signal update_backend_stats(data: Array)
 
 @export var scene_override := false
 @export var scene_override_to := "Stay"
+
+@export var queued_song: Song
+@export var queued_song_seek_time := 0.0
 
 @export var time_before_cleanout := 10.0
 @export var time_before_next_response := 0.1

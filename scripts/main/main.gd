@@ -63,6 +63,7 @@ func _connect_signals() -> void:
 	Globals.cancel_speech.connect(_on_cancel_speech)
 	Globals.end_speech.connect(_on_end_speech)
 
+	Globals.queue_next_song.connect(_on_queue_next_song)
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 
@@ -143,6 +144,32 @@ func _on_cancel_speech() -> void:
 func _on_end_speech() -> void:
 	_get_ready_for_next_speech()
 
+func _on_queue_next_song(song_name: String, seek_time: float) -> void:
+	var next_song: Song
+	for song in Globals.config.songs:
+		if song.id.begins_with(song_name):
+			next_song = song
+			break
+
+	if not next_song:
+		print("Could not find song %s" % song_name)
+		return
+		
+	Globals.queued_song = next_song
+	Globals.queued_song_seek_time = seek_time
+
+	Globals.is_paused = true
+	if not Globals.is_ready():
+		print("Waiting for speech to end...")
+		await Globals.end_speech
+		await get_tree().create_timer(2.0).timeout
+
+	if Globals.queued_song:
+		print("Singing %s..." % song_name)
+		Globals.start_singing.emit(next_song, seek_time)
+	else:
+		print("Song queue is empty")
+		
 func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
@@ -176,6 +203,8 @@ func _on_stop_singing() -> void:
 	Globals.end_singing_mouth_movement.emit()
 
 	_set_next_scene("Main")
+	
+	Globals.queued_song = null
 
 	if client.is_open():
 		Globals.is_paused = false
