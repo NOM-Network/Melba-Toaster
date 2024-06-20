@@ -52,8 +52,8 @@ MarginContainer/constants/margin_top = 10
 disable_3d = true
 title = "Control Panel - Toaster"
 initial_position = 1
-size = Vector2i(1366, 780)
-min_size = Vector2i(1366, 780)
+size = Vector2i(1366, 860)
+min_size = Vector2i(1366, 860)
 auto_translate = false
 script = ExtResource("1_rhl0v")
 
@@ -626,14 +626,26 @@ text = "Test"
 layout_mode = 2
 alignment = 1
 
-[node name="FixedScene" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="SceneOverride" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
-text = "Don't change automatically"
+text = "Next scene override"
 
-[node name="GreenScreenToggle" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="SceneOverrideList" type="OptionButton" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 1
+selected = 0
+popup/item_0/text = "Stay"
+popup/item_0/id = 0
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="GreenScreenToggle" type="CheckBox" parent="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 focus_mode = 0
 text = "Greenscreen Window"
@@ -845,8 +857,9 @@ wait_time = 0.5
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/ShowBeats" to="." method="_on_show_beats_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/ObsClientStatus" to="." method="_on_obs_client_status_pressed"]
 [connection signal="pressed" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer/BackendStatus" to="." method="_on_backend_status_pressed"]
-[connection signal="toggled" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2/FixedScene" to="." method="_on_fixed_scene_toggled"]
-[connection signal="toggled" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2/GreenScreenToggle" to="." method="_on_green_screen_toggle_toggled"]
+[connection signal="toggled" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2/SceneOverride" to="." method="_on_scene_override_toggled"]
+[connection signal="item_selected" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer2/SceneOverrideList" to="." method="_on_scene_override_list_item_selected"]
+[connection signal="toggled" from="Margins/HSplitContainer/RightPanel/ObsControlsPanel/MarginContainer/VBoxContainer/HBoxContainer3/GreenScreenToggle" to="." method="_on_green_screen_toggle_toggled"]
 [connection signal="confirmed" from="CloseConfirm" to="." method="_on_close_confirm_confirmed"]
 [connection signal="timeout" from="Timers/GodotStatsTimer" to="." method="_on_godot_stats_timer_timeout"]
 [connection signal="timeout" from="Timers/ObsStatsTimer" to="." method="_on_obs_stats_timer_timeout"]

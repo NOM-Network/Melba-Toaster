@@ -45,7 +45,9 @@ signal update_backend_stats(data: Array)
 @export var dancing_bpm := 0.0
 
 @export var show_beats := debug_mode
-@export var fixed_scene := false
+
+@export var scene_override := false
+@export var scene_override_to := "Stay"
 
 @export var time_before_cleanout := 10.0
 @export var time_before_next_response := 0.1

@@ -65,7 +65,7 @@ func _apply_defaults() -> void:
 	%CurrentSpeech/Emotions.text = "Waiting for emotions..."
 	%CurrentSpeech/Text.text = "Waiting for text..."
 
-	%FixedScene.button_pressed = Globals.fixed_scene
+	%SceneOverride.button_pressed = Globals.scene_override
 
 func _update_control_status() -> void:
 	if last_pause_status != Globals.is_paused:
@@ -361,7 +361,6 @@ func _on_stop_singing() -> void:
 	%DancingBpm.editable = true
 
 func _on_singing_toggle_toggled(button_pressed: bool) -> void:
-
 	if button_pressed:
 		var song: Song = Globals.config.songs[%SingingMenu.selected]
 		var seek_time: float = %SingingSeekTime.value
@@ -476,6 +475,19 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
+		
+	# Generate scene override list
+	var menu := %SceneOverrideList
+	menu.clear()
+	
+	menu.add_item("Stay", 0)
+	menu.set_item_metadata(0, "Stay")
+	
+	var i := 1
+	for scene: Dictionary in scenes:
+		menu.add_item("%s" % scene.sceneName, i)
+		menu.set_item_metadata(i, scene.sceneName)
+		i += 1
 
 func _change_active_scene(data: Dictionary) -> void:
 	for button in %ObsScenes.get_children():
@@ -617,8 +629,11 @@ func _on_reset_state_pressed() -> void:
 func _on_show_beats_toggled(toggled_on: bool) -> void:
 	Globals.show_beats = toggled_on
 
-func _on_fixed_scene_toggled(toggled_on: bool) -> void:
-	Globals.fixed_scene = toggled_on
+func _on_scene_override_toggled(toggled_on: bool) -> void:
+	Globals.scene_override = toggled_on
+
+func _on_scene_override_list_item_selected(index: int) -> void:
+	Globals.scene_override_to = %SceneOverrideList.get_selected_metadata()
 
 func _on_reload_song_list_pressed() -> void:
 	if not Globals.is_paused or Globals.is_singing:
@@ -643,16 +658,16 @@ func _on_backend_status_pressed() -> void:
 func _on_speech_text_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-				%CurrentSpeech/TextCopied.show()
+			%CurrentSpeech/TextCopied.show()
 
-				var text: String = %CurrentSpeech/Prompt.text
-				text += "\n\n" + %CurrentSpeech/Text.text \
-					.replace("\n", " ") \
-					.replace(" [END]", "")
+			var text: String = %CurrentSpeech/Prompt.text
+			text += "\n\n" + %CurrentSpeech/Text.text \
+				.replace("\n", " ") \
+				.replace(" [END]", "")
 
-				DisplayServer.clipboard_set(text)
-				await get_tree().create_timer(2.0).timeout
-				%CurrentSpeech/TextCopied.hide()
+			DisplayServer.clipboard_set(text)
+			await get_tree().create_timer(2.0).timeout
+			%CurrentSpeech/TextCopied.hide()
 
 func _on_close_requested() -> void:
 	$CloseConfirm.show()
