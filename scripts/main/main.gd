@@ -154,7 +154,7 @@ func _on_queue_next_song(song_name: String, seek_time: float) -> void:
 	if not next_song:
 		print("Could not find song %s" % song_name)
 		return
-		
+
 	Globals.queued_song = next_song
 	Globals.queued_song_seek_time = seek_time
 
@@ -169,7 +169,7 @@ func _on_queue_next_song(song_name: String, seek_time: float) -> void:
 		Globals.start_singing.emit(next_song, seek_time)
 	else:
 		print("Song queue is empty")
-		
+
 func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
@@ -191,7 +191,8 @@ func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
 		command["filterEnabled"] = true
 	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
-	_set_next_scene("Song")
+	var next_scene := "Collab Song" if Globals.config.get_obs("collab") else "Song"
+	Globals.change_scene.emit(next_scene)
 
 func _on_stop_singing() -> void:
 	mic.animation = "out"
@@ -202,20 +203,15 @@ func _on_stop_singing() -> void:
 	Globals.end_dancing_motion.emit()
 	Globals.end_singing_mouth_movement.emit()
 
-	_set_next_scene("Main")
-	
+	var next_scene := "Collab" if Globals.config.get_obs("collab") else "Main"
+	Globals.change_scene.emit(next_scene)
+
 	Globals.queued_song = null
 
 	if client.is_open():
 		Globals.is_paused = false
 		await get_tree().create_timer(2.0).timeout
 		Globals.ready_for_speech.emit()
-
-func _set_next_scene(next_scene: String) -> void:
-	if Globals.scene_override and Globals.scene_override_to:
-		next_scene = Globals.scene_override_to
-		
-	Globals.change_scene.emit(next_scene)
 
 func _on_connection_closed() -> void:
 	Globals.is_paused = true

@@ -50,6 +50,9 @@ signal update_backend_stats(data: Array)
 @export var scene_override := false
 @export var scene_override_to := "Stay"
 
+@export var position_override := false
+@export var position_override_to := default_position
+
 @export var queued_song: Song
 @export var queued_song_seek_time := 0.0
 

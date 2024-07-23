@@ -14,8 +14,13 @@ config/name="Melba Toaster"
 config/version="1.5.1.0"
 run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
+run/max_fps=60
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 0)
 boot_splash/show_image=false
+
+[audio]
+
+driver/mix_rate=48000
 
 [autoload]
 

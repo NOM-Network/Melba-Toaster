@@ -642,7 +642,7 @@ offset_right = 1966.0
 offset_bottom = 1124.0
 mouse_filter = 2
 mouse_force_pass_scroll_events = false
-color = Color(0, 1, 0, 1)
+color = Color(0, 0, 1, 1)
 
 [node name="TextureRect" type="TextureRect" parent="GreenScreenWindow"]
 anchors_preset = 15

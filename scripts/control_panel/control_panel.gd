@@ -253,7 +253,7 @@ func _handle_event(data: Dictionary) -> void:
 			pass # handled by SceneListChanged
 
 		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded", \
-		"MediaInputActionTriggered", "InputVolumeChanged":
+		"MediaInputActionTriggered", "InputVolumeChanged", "MediaInputPlaybackEnded":
 			pass # We don't need it
 
 		_:
@@ -334,6 +334,7 @@ func _on_message_queue_stats_timer_timeout() -> void:
 
 func _on_start_singing(song: Song) -> void:
 	_set_input_volume( - 10.0, -100.0, 10.0)
+	_mpv_pause()
 
 	Globals.current_emotion_modifier = 0.0
 
@@ -351,6 +352,7 @@ func _on_start_singing(song: Song) -> void:
 	gui_release_focus()
 
 func _on_stop_singing() -> void:
+	_mpv_pause()
 	_set_input_volume( - 100.0, -10.0, 10.0)
 
 	_disable_singing_dancing_controls(false)
@@ -361,7 +363,7 @@ func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 		var song_name: String = %SingingMenu.get_selected_metadata()
 		var seek_time: float = %SingingSeekTime.value
 		Globals.queue_next_song.emit(song_name, seek_time)
-		
+
 		%SingingToggle.text = "Queued"
 		_disable_singing_dancing_controls(true)
 	else:
@@ -372,7 +374,7 @@ func _on_singing_toggle_toggled(button_pressed: bool) -> void:
 			Globals.is_paused = false
 			Globals.queued_song = null
 			Globals.queued_song_seek_time = 0.0
-			
+
 		_disable_singing_dancing_controls(false)
 		%SingingToggle.text = "Start"
 	gui_release_focus()
@@ -431,27 +433,39 @@ func _on_obs_stream_control_pressed() -> void:
 	obs.send_command("ToggleStream")
 
 func _on_change_scene(scene_name: String) -> void:
-	obs.send_command("SetCurrentProgramScene", {"sceneName": scene_name})
+	var next_scene := scene_name
+	if Globals.scene_override and Globals.scene_override_to:
+		next_scene = Globals.scene_override_to
+	obs.send_command("SetCurrentProgramScene", {"sceneName": next_scene})
 
 	var next_position: String
-	var selected_override: int = %NextPositionMenu.selected - 1
-	if selected_override != - 1:
-		next_position = Globals.positions.keys()[selected_override]
-
-	if not next_position:
-		match scene_name:
+	if Globals.position_override and Globals.position_override_to:
+		next_position = Globals.position_override_to
+	else:
+		match next_scene:
 			"Main", "Song":
 				next_position = "default"
 
 			"Collab":
 				next_position = "collab"
 
+			"Collab Song":
+				next_position = "collab_song"
+
 			"Gaming":
 				next_position = "gaming"
 
-	%NextPositionMenu.selected = 0
+			_:
+				next_position = "default"
+
 	if next_position:
+		Globals.position_override = false
+		%NextPositionMenu.selected = 0
 		Globals.change_position.emit(next_position)
+
+func _on_next_posision_menu_item_selected(index: int) -> void:
+	Globals.position_override = true
+	Globals.position_override_to = %NextPositionMenu.get_item_text(index)
 
 func _on_scene_button_pressed(button: Button) -> void:
 	CpHelpers.apply_color_override(button, true, Color.YELLOW)
@@ -491,14 +505,14 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 		CpHelpers.apply_color_override(button, scene.sceneName == active_scene, Color.GREEN)
 		button.pressed.connect(_on_scene_button_pressed.bind(button))
 		%ObsScenes.add_child(button)
-		
+
 	# Generate scene override list
 	var menu := %SceneOverrideList
 	menu.clear()
-	
+
 	menu.add_item("Stay", 0)
 	menu.set_item_metadata(0, "Stay")
-	
+
 	var i := 1
 	for scene: Dictionary in scenes:
 		menu.add_item("%s" % scene.sceneName, i)
@@ -650,7 +664,7 @@ func _on_scene_override_toggled(toggled_on: bool) -> void:
 	Globals.scene_override = toggled_on
 	gui_release_focus()
 
-func _on_scene_override_list_item_selected(index: int) -> void:
+func _on_scene_override_list_item_selected(_index: int) -> void:
 	Globals.scene_override_to = %SceneOverrideList.get_selected_metadata()
 
 func _on_reload_song_list_pressed() -> void:
@@ -717,8 +731,9 @@ func _change_input_settings(data: Dictionary) -> void:
 
 	if data.inputSettings.text == "0:00":
 		await get_tree().create_timer(1.0).timeout
-		Globals.change_position.emit("intro")
-		Globals.change_scene.emit("Main")
+
+		var next_scene := "Collab" if Globals.config.get_obs("collab") else "Main"
+		Globals.change_scene.emit(next_scene)
 
 func _set_input_volume(start: float, end: float, step: float, sleep: int=10) -> void:
 	if end < start:
@@ -742,3 +757,10 @@ func _update_stream_status(data: Dictionary) -> void:
 func _change_stream_state(data: Dictionary) -> void:
 	if data.outputState == "OBS_WEBSOCKET_OUTPUT_STOPPED":
 		%StreamTimecode.remove_theme_color_override("font_color")
+
+func _mpv_pause() -> void:
+	var output := []
+	var command := "echo cycle pause >\\\\\\\\.\\pipe\\mpv-pipe" # plz forgib ;(
+	print_debug(command.c_unescape())
+	var exit_code := OS.execute("cmd.exe", ["/C", command.c_unescape()], output, true, false)
+	print_debug("mpv exit code: ", exit_code, " ", output)

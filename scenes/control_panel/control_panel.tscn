@@ -228,7 +228,6 @@ layout_mode = 2
 text_overrun_behavior = 3
 clip_text = true
 item_count = 1
-selected = 0
 fit_to_longest_item = false
 popup/item_0/text = "Sound Output"
 popup/item_0/id = 0
@@ -263,7 +262,6 @@ layout_mode = 2
 tooltip_text = "Override next position"
 focus_mode = 0
 item_count = 1
-selected = 0
 popup/item_0/text = "Position override"
 popup/item_0/id = 0
 
@@ -501,7 +499,6 @@ size_flags_horizontal = 3
 focus_mode = 0
 alignment = 1
 item_count = 1
-selected = 0
 popup/item_0/text = "money machine"
 popup/item_0/id = 0
 
@@ -637,7 +634,6 @@ text = "Next scene override"
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 1
-selected = 0
 popup/item_0/text = "Stay"
 popup/item_0/id = 0
 
@@ -803,6 +799,7 @@ WS Inc/Out: [b]???[/b]"
 fit_content = true
 
 [node name="CloseConfirm" type="ConfirmationDialog" parent="."]
+transparent_bg = true
 initial_position = 4
 size = Vector2i(324, 109)
 transient = false
@@ -810,6 +807,7 @@ unresizable = true
 always_on_top = true
 transparent = true
 popup_window = true
+auto_translate = false
 ok_button_text = "Yes"
 dialog_hide_on_ok = false
 cancel_button_text = "No"
@@ -828,6 +826,7 @@ vertical_alignment = 1
 title = "Duh!"
 initial_position = 2
 size = Vector2i(350, 100)
+auto_translate = false
 ok_button_text = "Gotcha!"
 dialog_text = "Set Pause or stop singing to update the list!"
 dialog_autowrap = true
@@ -851,6 +850,7 @@ wait_time = 0.5
 [connection signal="value_changed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/TimeBeforeNextResponse" to="." method="_on_time_before_next_response_value_changed"]
 [connection signal="item_selected" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/SoundOutput" to="." method="_on_sound_output_item_selected"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/Misc/ResetState" to="." method="_on_reset_state_pressed"]
+[connection signal="item_selected" from="Margins/HSplitContainer/LeftPanel/SceneController/MarginContainer/VBoxContainer/Overrides/NextPositionMenu" to="." method="_on_next_posision_menu_item_selected"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel/MarginContainer/Dancing/DancingToggle" to="." method="_on_dancing_toggle_toggled"]
 [connection signal="pressed" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer2/ReloadSongList" to="." method="_on_reload_song_list_pressed"]
 [connection signal="toggled" from="Margins/HSplitContainer/LeftPanel/HBoxContainer/MiscControlsPanel2/MarginContainer/Singing/HBoxContainer/SingingToggle" to="." method="_on_singing_toggle_toggled"]
