@@ -43,7 +43,7 @@ func _on_start_speech() -> void:
 	Globals.is_speaking = true
 	speech_player.play()
 
-func _on_start_singing(song: Song, seek_time:=0.0) -> void:
+func _on_start_singing(song: Song, seek_time := 0.0) -> void:
 	prepare_song(song)
 	subtitles = song.load_subtitles_file()
 
@@ -146,7 +146,7 @@ func prepare_song(song: Song) -> void:
 
 	song_duration = song_player.stream.get_length()
 
-func play_song(seek_time:=0.0) -> void:
+func play_song(seek_time := 0.0) -> void:
 	Globals.is_singing = true
 	song_player.play(seek_time)
 	speech_player.play(seek_time)

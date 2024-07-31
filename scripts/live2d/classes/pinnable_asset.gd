@@ -15,10 +15,10 @@ var initial_points: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 func _init(
 	p_node_name: String,
 	p_mesh: String,
-	p_position_offset: Vector2=Vector2.ZERO,
-	p_scale_offset: float=0.0,
-	p_custom_point: int=0,
-	p_second_point: int=- 1
+	p_position_offset: Vector2 = Vector2.ZERO,
+	p_scale_offset: float = 0.0,
+	p_custom_point: int = 0,
+	p_second_point: int = -1
 ) -> void:
 	self.node_name = p_node_name
 	self.mesh = p_mesh

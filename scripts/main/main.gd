@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var model := preload ("res://scenes/live2d/live_2d_melba.tscn").instantiate()
+@onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
 var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
@@ -170,7 +170,7 @@ func _on_queue_next_song(song_name: String, seek_time: float) -> void:
 	else:
 		print("Song queue is empty")
 
-func _on_start_singing(song: Song, _seek_time:=0.0) -> void:
+func _on_start_singing(song: Song, _seek_time := 0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
 	# Reset toggles

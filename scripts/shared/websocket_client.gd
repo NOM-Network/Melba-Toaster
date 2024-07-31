@@ -78,7 +78,7 @@ func send_message(json: Dictionary) -> void:
 	if err != OK:
 		printerr("Toaster client: Message sending error ", err)
 
-func break_connection(reason: String="") -> void:
+func break_connection(reason: String = "") -> void:
 	set_process(true)
 	socket.close(1000, reason)
 	last_state = socket.get_ready_state()

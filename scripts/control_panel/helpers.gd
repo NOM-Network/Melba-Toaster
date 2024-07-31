@@ -47,10 +47,10 @@ static func construct_model_control_buttons(
 static func change_toggle_state(
 	toggle: Button,
 	button_pressed: bool,
-	enabled_text:=">>> STOP <<<",
-	disabled_text:="Start",
-	override_color:=Color.RED,
-	apply_color:=true
+	enabled_text := ">>> STOP <<<",
+	disabled_text := "Start",
+	override_color := Color.RED,
+	apply_color := true
 ) -> void:
 	toggle.set_pressed_no_signal(button_pressed)
 	toggle.text = enabled_text if button_pressed else disabled_text
@@ -62,7 +62,7 @@ static func apply_color_override(
 	node: Node,
 	state: bool,
 	active_color: Color,
-	inactive_color: Variant=null,
+	inactive_color: Variant = null,
 ) -> void:
 	for i: String in overrides:
 		if not state and not inactive_color:
@@ -73,7 +73,7 @@ static func apply_color_override(
 static func change_status_color(node: Button, active: bool) -> void:
 	node.self_modulate = Color.GREEN if active else Color.RED
 
-static func array_to_string(arr: Array, separator:=" ") -> String:
+static func array_to_string(arr: Array, separator := " ") -> String:
 	var s := ""
 	for i: String in arr:
 		s += i as String + separator

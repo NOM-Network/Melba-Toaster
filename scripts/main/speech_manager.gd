@@ -108,7 +108,7 @@ func _process_emotions(emotions: Array) -> void:
 	if not emotions:
 		return
 
-	var max_emotion: Array = ["anger", - 1.0]
+	var max_emotion: Array = ["anger", -1.0]
 
 	for emotion: String in emotions:
 		if not Globals.emotions_modifiers.has(emotion):

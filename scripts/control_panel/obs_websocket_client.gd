@@ -225,7 +225,7 @@ class Identify extends ClientObsMessage:
 	var authentication: String
 	var event_subscriptions: int
 
-	func _init(p_rpc_version: int,p_authentication: String,p_event_subscriptions: int = OpCodeEnums.EventSubscription.All.IDENTIFIER_VALUE):
+	func _init(p_rpc_version: int, p_authentication: String, p_event_subscriptions: int = OpCodeEnums.EventSubscription.All.IDENTIFIER_VALUE):
 		op = 1
 
 		rpc_version = p_rpc_version
@@ -309,7 +309,7 @@ class Request extends ClientObsMessage:
 	var request_id: String
 	var request_data: Dictionary
 
-	func _init(p_request_type: String,p_request_id: String,p_request_data: Dictionary = {}):
+	func _init(p_request_type: String, p_request_id: String, p_request_data: Dictionary = {}):
 		op = 6
 
 		request_type = p_request_type
@@ -551,7 +551,7 @@ const OpCodeEnums := {
 
 	"RequestBatchExecutionType": {
 		"None": {
-			"IDENTIFIER_VALUE": -1,
+			"IDENTIFIER_VALUE": - 1,
 			"LATEST_SUPPORTED_RPC_VERSION": 1
 		},
 		"SerialRealtime": {
@@ -804,7 +804,7 @@ var password: String = Globals.config.get_obs("password")
 # Builtin functions                                                           #
 ###############################################################################
 
-func _ready() -> void:	
+func _ready() -> void:
 	set_process(false)
 
 func _process(_delta: float) -> void:
@@ -947,7 +947,7 @@ func establish_connection() -> int:
 	set_process(true)
 	if not socket:
 		socket = WebSocketPeer.new()
-		
+
 		socket.outbound_buffer_size = 1048576
 		socket.inbound_buffer_size = 1048576
 

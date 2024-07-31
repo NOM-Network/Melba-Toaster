@@ -126,7 +126,7 @@ func _stop_obs_processing() -> void:
 	obs.break_connection()
 	CpHelpers.change_status_color(obs_client_status, false)
 
-	CpHelpers.clear_nodes([ %ObsScenes, %ObsInputs, %ObsFilters])
+	CpHelpers.clear_nodes([%ObsScenes, %ObsInputs, %ObsFilters])
 
 func _connect_signals() -> void:
 	Globals.set_toggle.connect(_on_set_toggle)
@@ -189,7 +189,7 @@ func _generate_singing_controls() -> void:
 
 func _generate_model_controls() -> void:
 	for type: String in ["animations", "pinnable_assets", "expressions", "toggles"]:
-		var parent := get_node("%%%s"% type.to_pascal_case())
+		var parent := get_node("%%%s" % type.to_pascal_case())
 		CpHelpers.clear_nodes(parent)
 
 		var callable: Callable
@@ -273,7 +273,7 @@ func _handle_request(data: Dictionary) -> void:
 
 	match data.requestType:
 		"GetStats":
-			CpHelpers.insert_data( %StreamStats, Templates.format_obs_stats(data.responseData))
+			CpHelpers.insert_data(%StreamStats, Templates.format_obs_stats(data.responseData))
 
 		"GetStreamStatus":
 			_update_stream_status(data.responseData)
@@ -287,7 +287,7 @@ func _handle_request(data: Dictionary) -> void:
 					"GetSourceFilterList", {"sourceName": scene.sceneName}, scene.sceneName
 				])
 
-			CpHelpers.clear_nodes( %ObsFilters)
+			CpHelpers.clear_nodes(%ObsFilters)
 			obs.send_command_batch(request)
 
 		"GetInputList":
@@ -321,7 +321,7 @@ func _handle_request(data: Dictionary) -> void:
 				print("-------------")
 
 func _on_godot_stats_timer_timeout() -> void:
-	CpHelpers.insert_data( %GodotStats, Templates.format_godot_stats())
+	CpHelpers.insert_data(%GodotStats, Templates.format_godot_stats())
 
 func _on_obs_stats_timer_timeout() -> void:
 	obs.send_command_batch([
@@ -330,10 +330,10 @@ func _on_obs_stats_timer_timeout() -> void:
 	])
 
 func _on_message_queue_stats_timer_timeout() -> void:
-	CpHelpers.insert_data( %MessageQueueStats, Templates.format_message_queue_stats())
+	CpHelpers.insert_data(%MessageQueueStats, Templates.format_message_queue_stats())
 
 func _on_start_singing(song: Song) -> void:
-	_set_input_volume( - 10.0, -100.0, 10.0)
+	_set_input_volume(-10.0, -100.0, 10.0)
 	_mpv_pause()
 
 	Globals.current_emotion_modifier = 0.0
@@ -343,9 +343,9 @@ func _on_start_singing(song: Song) -> void:
 			%SingingMenu.select(i)
 			break
 
-	var old_text: String = %SingingMenu.get_popup().get_item_text( %SingingMenu.selected)
+	var old_text: String = %SingingMenu.get_popup().get_item_text(%SingingMenu.selected)
 	if not old_text.begins_with("♫"):
-		%SingingMenu.get_popup().set_item_text( %SingingMenu.selected, "♫ %s" % old_text)
+		%SingingMenu.get_popup().set_item_text(%SingingMenu.selected, "♫ %s" % old_text)
 
 	Globals.is_paused = true
 	_disable_singing_dancing_controls(true)
@@ -353,7 +353,7 @@ func _on_start_singing(song: Song) -> void:
 
 func _on_stop_singing() -> void:
 	_mpv_pause()
-	_set_input_volume( - 100.0, -10.0, 10.0)
+	_set_input_volume(-100.0, -10.0, 10.0)
 
 	_disable_singing_dancing_controls(false)
 	gui_release_focus()
@@ -417,11 +417,11 @@ func _on_start_speech() -> void:
 
 func _on_set_toggle(toggle_name: String, enabled: bool) -> void:
 	var ui_name := "Toggles_%s" % toggle_name.to_pascal_case()
-	_change_checkbutton_state( %Toggles, ui_name, enabled)
+	_change_checkbutton_state(%Toggles, ui_name, enabled)
 
 func _on_pin_asset(asset_name: String, enabled: bool) -> void:
 	var ui_name := "PinnableAssets_%s" % asset_name.to_pascal_case()
-	_change_checkbutton_state( %PinnableAssets, ui_name, enabled)
+	_change_checkbutton_state(%PinnableAssets, ui_name, enabled)
 
 func _change_checkbutton_state(node: Node, ui_name: String, enabled: bool) -> void:
 	var asset: CheckButton = node.get_node(ui_name)
@@ -491,7 +491,7 @@ func _generate_scene_buttons(data: Dictionary) -> void:
 	var scenes: Array = data.scenes
 	scenes.reverse()
 
-	CpHelpers.clear_nodes( %ObsScenes)
+	CpHelpers.clear_nodes(%ObsScenes)
 
 	for scene: Dictionary in scenes:
 		var button := Button.new()
@@ -550,7 +550,7 @@ func change_filter_state(data: Dictionary) -> void:
 	CpHelpers.apply_color_override(button, data.filterEnabled, Color.GREEN, Color.GRAY)
 
 func _generate_input_request(inputs: Array) -> void:
-	CpHelpers.clear_nodes( %ObsInputs)
+	CpHelpers.clear_nodes(%ObsInputs)
 
 	var request := []
 	for i: Dictionary in inputs:
@@ -611,7 +611,7 @@ func _on_time_before_next_response_value_changed(value: float) -> void:
 	Globals.time_before_next_response = value
 
 func _on_update_backend_stats(data: Array) -> void:
-	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats(data))
+	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats(data))
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("cancel_speech"):
@@ -683,7 +683,7 @@ func _on_obs_client_status_pressed() -> void:
 func _on_backend_status_pressed() -> void:
 	Globals.is_paused = true
 	main.disconnect_backend()
-	CpHelpers.insert_data( %BackendStats, Templates.format_backend_stats([0, 0]))
+	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats([0, 0]))
 	await get_tree().create_timer(1.0).timeout
 	main.connect_backend()
 
@@ -735,9 +735,9 @@ func _change_input_settings(data: Dictionary) -> void:
 		var next_scene := "Collab" if Globals.config.get_obs("collab") else "Main"
 		Globals.change_scene.emit(next_scene)
 
-func _set_input_volume(start: float, end: float, step: float, sleep: int=10) -> void:
+func _set_input_volume(start: float, end: float, step: float, sleep: int = 10) -> void:
 	if end < start:
-		step *= - 1.0
+		step *= -1.0
 
 	var requests: Array = []
 	for i: float in Vector3(start, end, step):

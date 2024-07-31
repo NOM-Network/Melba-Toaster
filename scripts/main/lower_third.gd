@@ -93,7 +93,7 @@ func _on_continue_speech(_data: Dictionary) -> void:
 func _on_speech_done() -> void:
 	_start_clear_subtitles_timer()
 
-func _on_start_singing(song: Song, seek_time:=0.0) -> void:
+func _on_start_singing(song: Song, seek_time := 0.0) -> void:
 	clear_subtitles()
 	cleanout_timer.stop()
 
@@ -117,7 +117,7 @@ func _on_ready_for_speech() -> void:
 
 # region PUBLIC FUNCTIONS
 
-func set_prompt(text: String, duration:=0.0) -> void:
+func set_prompt(text: String, duration := 0.0) -> void:
 	prompt.text = ""
 	text = text.strip_edges()
 	if not text:
@@ -139,7 +139,7 @@ func set_prompt(text: String, duration:=0.0) -> void:
 
 	_tween_visible_ratio(prompt, prompt.name, 0.0, 1.0, duration)
 
-func set_subtitles(text: String, duration:=0.0, continue_print:=false) -> void:
+func set_subtitles(text: String, duration := 0.0, continue_print := false) -> void:
 	if not continue_print:
 		subtitles.text = ""
 	print_timer.stop()
@@ -164,7 +164,7 @@ func set_subtitles(text: String, duration:=0.0, continue_print:=false) -> void:
 			current_subtitle_text.push_back([time, ""])
 
 	# Fix last token not appearing at the end
-	current_subtitle_text[- 1] = [duration - time_per_symbol, current_subtitle_text[- 1][1]]
+	current_subtitle_text[-1] = [duration - time_per_symbol, current_subtitle_text[-1][1]]
 	current_subtitle_text.push_back([duration, "STOP"])
 
 	print_timer.start(duration)

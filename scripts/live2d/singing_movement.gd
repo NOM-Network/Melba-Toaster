@@ -97,7 +97,7 @@ func _on_beats_timer_timeout() -> void:
 	for axis: String in ["x", "y", "z"]:
 		_dance(axis) if axis in current_motion else _stop(axis)
 
-func _dance(axis: String, new_tween:=false) -> void:
+func _dance(axis: String, new_tween := false) -> void:
 	if tween.has(axis):
 		if not new_tween and tween[axis].is_running():
 			if Globals.debug_mode: print("Skipping: ", axis)
@@ -112,7 +112,7 @@ func _dance(axis: String, new_tween:=false) -> void:
 	var time: float = bob_interval * _time_modifier(axis)
 	tween[axis] = create_tween().set_ease(Tween.EASE_IN_OUT).set_parallel().set_loops()
 
-	var random_swing := 1 if randi_range(0, 1) else - 1
+	var random_swing := 1 if randi_range(0, 1) else -1
 	if Globals.debug_mode: print(axis, ": swing ", random_swing)
 
 	# Swing back

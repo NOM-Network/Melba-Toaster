@@ -110,10 +110,10 @@ func _physics_process(_delta: float) -> void:
 
 func manage_speaking() -> void:
 	# Mouth amplitude
-	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice( - 5))
+	param_mouth_open_y.value = _find_avg(prev_mouth_values.slice(-5))
 
 	# Mouth form
-	var mouth_form: float = _find_avg(prev_mouth_form_values.slice( - 3))
+	var mouth_form: float = _find_avg(prev_mouth_form_values.slice(-3))
 	param_mouth_form.value = _clamp_to_log_scale(mouth_form)
 
 	if prev_mouth_values[prev_values_amount - 1] != 0.0 \

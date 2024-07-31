@@ -54,7 +54,7 @@ static var pinnable_assets := {
 	"censor": PinnableAsset.new("CensorAnimation", "Nose", Vector2(0, -120), 1.5),
 	"glasses": PinnableAsset.new("GlassSprites", "Nose", Vector2(10, -110), 1.1),
 	"hat": PinnableAsset.new("Hat", "ArtMesh67", Vector2(150, 100), 1.1),
-	"band": PinnableAsset.new("TetoBand", "ArtMesh30", Vector2( - 75, 70), 1.0),
+	"band": PinnableAsset.new("TetoBand", "ArtMesh30", Vector2(-75, 70), 1.0),
 	"pikmin": PinnableAsset.new("Pikmin", "ArtMesh4", Vector2(120, -120), 0.8, 0, 3)
 }
 
@@ -64,7 +64,7 @@ static var toggles := {
 	"tears": Toggle.new("Param20", 0.5),
 	"toa": Toggle.new("Param21", 1.0),
 	"confused": Toggle.new("Param18", 0.5),
-	"gymbag": Toggle.new("Param28", 0.5, true)
+	"gymbag": Toggle.new("Param28", 0.5)
 }
 
 static var animations := {
