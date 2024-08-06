@@ -1,11 +1,11 @@
 # Start up script
-# Use the actual path to your executables
+# Use the actual paths to your executables
 
 # Plane9 (visualiser)
 Start-Process "Plane9.exe" -ArgumentList "-w" -WorkingDirectory "C:\Program Files (x86)\Plane9\"
 
-# PotPlayer (audio player)
-Start-Process "PotPlayerMini.exe" -ArgumentList "/autoplay" -WorkingDirectory "C:\Program Files (x86)\PotPlayer\"
+# mpv
+Start-Process "mpv.exe" -ArgumentList "https://www.youtube.com/watch?v=dQw4w9WgXcQ --volume=50 --ytdl-format=ba --input-ipc-server=\\.\pipe\mpv-pipe" -WorkingDirectory "C:\Program Files\mpv"
 Start-Sleep -Seconds 5
 
 # OBS (streaming)
