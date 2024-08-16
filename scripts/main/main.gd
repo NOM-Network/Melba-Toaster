@@ -27,6 +27,7 @@ func _ready() -> void:
 	_connect_signals()
 	_add_model()
 
+	await RenderingServer.frame_post_draw
 	greenscreen_texture.texture = get_viewport().get_texture()
 
 	await connect_backend()

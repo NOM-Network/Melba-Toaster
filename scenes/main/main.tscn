@@ -631,7 +631,6 @@ script = ExtResource("4_bxfqh")
 [node name="GreenScreenWindow" type="Window" parent="."]
 title = "Greenscreen Melba - Toaster"
 size = Vector2i(1920, 1080)
-visible = false
 unresizable = true
 borderless = true
 
