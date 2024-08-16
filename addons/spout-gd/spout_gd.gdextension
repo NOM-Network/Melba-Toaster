@@ -1,0 +1,15 @@
+[configuration]
+entry_symbol = "spout_gd_library_init"
+compatibility_minimum = 4.1
+
+[libraries]
+windows.debug.x86_64 = "bin/spout_gd.windows.template_debug.dll"
+windows.release.x86_64 = "bin/spout_gd.windows.template_release.dll"
+
+[dependencies]
+windows.debug = {
+  "bin/SpoutLibrary.dll": ""
+}
+windows.release = {
+  "bin/SpoutLibrary.dll": ""
+}

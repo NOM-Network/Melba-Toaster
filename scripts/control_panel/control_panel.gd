@@ -562,7 +562,7 @@ func _generate_input_request(inputs: Array) -> void:
 
 func _generate_input_button(data: Dictionary) -> void:
 	# Only inputs we need
-	if data.inputName not in ["Mebla Capture", "MUSIC"]:
+	if data.inputName not in ["Mebla Capture", "MUSIC", "Melba Sound"]:
 		return
 
 	var button := Button.new()
@@ -623,6 +623,7 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("toggle_mute"):
 		obs.send_command("ToggleInputMute", {"inputName": "Mebla Capture"}, "Mebla Capture")
+		obs.send_command("ToggleInputMute", {"inputName": "Melba Sound"}, "Melba Sound")
 
 func backend_connected() -> void:
 	pause_button.disabled = false

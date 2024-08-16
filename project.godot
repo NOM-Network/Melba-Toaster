@@ -30,7 +30,7 @@ CommandManager="*res://scripts/main/command_manager.gd"
 
 [debug]
 
-gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unused_signal=0
 gdscript/warnings/unsafe_cast=1
 
 [display]

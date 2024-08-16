@@ -14,6 +14,9 @@ var model_target_point: GDCubismEffectTargetPoint
 @onready var greenscreen_window := $GreenScreenWindow
 @onready var greenscreen_texture := $GreenScreenWindow/TextureRect
 
+var spout: Spout
+var img: Image
+
 func _enter_tree() -> void:
 	while Globals.config.is_ready == false:
 		print("Waiting for config...")
@@ -45,7 +48,13 @@ func _process(_delta: float) -> void:
 	else:
 		$BeatsCounter.visible = false
 
+	if OS.has_feature("windows"):
+		await RenderingServer.frame_post_draw
+		img = get_viewport().get_texture().get_image()
+		spout.send_image(img, img.get_width(), img.get_height(), Spout.FORMAT_RGBA, false)
+
 func _add_model() -> void:
+	get_window().size = Vector2i(1920, 1080)
 	add_child(model, true)
 
 	model_sprite = model.get_node("%Sprite2D")
@@ -53,6 +62,11 @@ func _add_model() -> void:
 	model_target_point = model.get_node("%TargetPoint")
 
 	Globals.change_position.emit(Globals.default_position)
+
+	if OS.has_feature("windows"):
+		spout = Spout.new()
+		spout.set_sender_name("Melba Toaster")
+		print("Spout2 initialized")
 
 # endregion
 
