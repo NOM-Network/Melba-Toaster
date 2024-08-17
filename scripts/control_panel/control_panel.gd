@@ -700,10 +700,8 @@ func _on_obs_client_status_pressed() -> void:
 
 func _on_backend_status_pressed() -> void:
 	Globals.is_paused = true
-	main.disconnect_backend()
 	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats([0, 0]))
-	await get_tree().create_timer(1.0).timeout
-	main.connect_backend()
+	main.disconnect_backend()
 
 func _on_speech_text_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:

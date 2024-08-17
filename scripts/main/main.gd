@@ -15,6 +15,8 @@ var model_target_point: GDCubismEffectTargetPoint
 var spout: Spout
 var img: Image
 
+var connection_attempt: int = 0
+
 func _enter_tree() -> void:
 	while Globals.config.is_ready == false:
 		print("Waiting for config...")
@@ -227,6 +229,21 @@ func _on_connection_closed() -> void:
 	Globals.is_paused = true
 	control_panel.backend_disconnected()
 
+	if connection_attempt < 11:
+		connection_attempt += 1
+		print("Trying to reconnect, attempt %s" % connection_attempt)
+		await get_tree().create_timer(1.0).timeout
+
+		print("Reconnecting...")
+		connect_backend()
+		await client.connection_established
+
+		Globals.is_paused = false
+		Globals.ready_for_speech.emit()
+	else:
+		print("Too many connection attempts, giving up :(")
+		connection_attempt = 0
+
 # endregion
 
 # region PUBLIC FUNCTIONS
@@ -244,6 +261,8 @@ func connect_backend() -> void:
 
 	if not Globals.ready_for_speech.is_connected(_on_ready_for_speech):
 		Globals.ready_for_speech.connect(_on_ready_for_speech)
+
+	connection_attempt = 0
 
 func disconnect_backend() -> void:
 	client.break_connection("from control panel")

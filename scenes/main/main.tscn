@@ -631,6 +631,8 @@ spout_target = NodePath("SubViewportContainer/SpoutTarget")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
+handshake_headers = null
+supported_protocols = null
 
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
