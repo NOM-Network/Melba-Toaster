@@ -20,6 +20,9 @@ func execute(command_string: String) -> void:
 			scene_name = scene_name.strip_edges().trim_prefix("scene ")
 			Globals.change_scene.emit(scene_name)
 
+		["goodbyes"]:
+			_goodbyes()
+
 		_:
 			print("Unknown command ", command)
 
@@ -34,3 +37,6 @@ func _unpause() -> void:
 
 func _sing(song_name: String) -> void:
 	Globals.queue_next_song.emit(song_name, 0)
+
+func _goodbyes() -> void:
+	Globals.obs_action.emit("toggle_scene_source", "Goodbyes")

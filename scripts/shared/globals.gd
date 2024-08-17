@@ -35,6 +35,9 @@ signal set_subtitles_fast(text: String)
 
 signal update_backend_stats(data: Array)
 
+# OBS Websocket
+signal obs_action(action: String, args: String)
+
 # endregion
 
 # region MELBA STATE

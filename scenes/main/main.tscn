@@ -635,6 +635,8 @@ script = ExtResource("4_bxfqh")
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
 current_screen = 0
+obs_sources = null
+active_scene = null
 
 [node name="GreenScreen" type="ColorRect" parent="."]
 z_index = -1

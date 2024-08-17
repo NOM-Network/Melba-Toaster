@@ -50,10 +50,10 @@ async def twitch_client():
 
 
 async def twitch_handler(message):
-    if f"PRIVMSG #{test_username} :!" not in message:
+    if f"PRIVMSG #{test_username} :!toaster" not in message:
         return
 
-    message = message.rsplit(" :", 1)[-1]
+    message = message.rsplit(" :!toaster", 1)[-1]
     message = {
         "type": "Command",
         "command": message[1:].replace("\r\n", ""),

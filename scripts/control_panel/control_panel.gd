@@ -15,6 +15,9 @@ extends Window
 @onready var message_queue_stats_timer := $Timers/MessageQueueStatsTimer
 @onready var sound_output := %SoundOutput
 
+@export var obs_sources: Array
+@export var active_scene: String
+
 # OBS info
 var OpCodes: Dictionary = ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
@@ -146,6 +149,8 @@ func _connect_signals() -> void:
 	Globals.end_speech.connect(_on_end_speech)
 	Globals.push_speech_from_queue.connect(_on_push_speech_from_queue)
 
+	Globals.obs_action.connect(_on_obs_action)
+
 	print_debug("Control Panel: connected signals")
 
 func _generate_position_controls() -> void:
@@ -223,6 +228,8 @@ func _handle_event(data: Dictionary) -> void:
 	match data.eventType:
 		"CurrentProgramSceneChanged":
 			_change_active_scene(data.eventData)
+			active_scene = data.eventData.sceneName
+			obs.send_command("GetSceneItemList", {"sceneName": active_scene})
 
 		"SceneListChanged":
 			obs.send_command("GetSceneList")
@@ -248,12 +255,16 @@ func _handle_event(data: Dictionary) -> void:
 		"StreamStateChanged":
 			_change_stream_state(data.eventData)
 
+		"SceneItemEnableStateChanged":
+			obs.send_command("GetSceneItemList", {"sceneName": active_scene})
+
 		# Ignored callbacks
 		"SceneNameChanged":
 			pass # handled by SceneListChanged
 
 		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded", \
-		"MediaInputActionTriggered", "InputVolumeChanged", "MediaInputPlaybackEnded":
+		"MediaInputActionTriggered", "InputVolumeChanged", "MediaInputPlaybackEnded", \
+		"MediaInputPlaybackStarted":
 			pass # We don't need it
 
 		_:
@@ -279,6 +290,7 @@ func _handle_request(data: Dictionary) -> void:
 			_update_stream_status(data.responseData)
 
 		"GetSceneList":
+			obs.send_command("GetSceneItemList", {"sceneName": data.responseData.currentProgramSceneName})
 			_generate_scene_buttons(data.responseData)
 
 			var request := []
@@ -304,12 +316,18 @@ func _handle_request(data: Dictionary) -> void:
 			if data.responseData.filters:
 				_generate_filter_buttons(data.requestId, data.responseData.filters)
 
+		"GetSceneItemList":
+			var sources: Array = data.responseData.sceneItems
+			obs_sources = sources.map(func(item: Dictionary) -> Array: return [
+				item.sourceName, item.sceneItemId, item.sceneItemEnabled
+			])
+
 		# Ignored callbacks
 		"ToggleInputMute":
 			pass # handled by InputMuteStateChanged event
 
 		"SetCurrentProgramScene", "ToggleStream", "SetSourceFilterEnabled":
-			pass # handled by StreamChateChanged event
+			pass # handled by StreamStateChanged event
 
 		"SetInputVolume", "Sleep":
 			pass # handled by InputVolumeChanged event
@@ -485,7 +503,6 @@ func _update_position_buttons(new_position: String) -> void:
 		p.set_pressed_no_signal(p.get_meta("position_name") == new_position)
 
 func _generate_scene_buttons(data: Dictionary) -> void:
-	var active_scene: String
 	if data.has("currentProgramSceneName"):
 		active_scene = data.currentProgramSceneName
 	var scenes: Array = data.scenes
@@ -761,3 +778,18 @@ func _mpv_pause() -> void:
 	print_debug(command.c_unescape())
 	var exit_code := OS.execute("cmd.exe", ["/C", command.c_unescape()], output, true, false)
 	print_debug("mpv exit code: ", exit_code, " ", output)
+
+func _on_obs_action(action: String, args := "") -> void:
+	match action:
+		"toggle_scene_source":
+			var sceneItem: Array = obs_sources.filter(func(item: Array) -> bool: return item[0] == args)
+			if sceneItem.is_empty():
+				print("Could not find scene item: ", args)
+				return
+
+			sceneItem = sceneItem[0]
+			obs.send_command("SetSceneItemEnabled", {
+				"sceneName": active_scene,
+				"sceneItemId": sceneItem[1],
+				"sceneItemEnabled": not sceneItem[2]
+			})
