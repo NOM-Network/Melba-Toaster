@@ -3,8 +3,11 @@
 [ext_resource type="Script" path="res://scripts/main/audio_manager.gd" id="1_ybhav"]
 [ext_resource type="AudioStream" uid="uid://epn7w26l0klu" path="res://assets/main/TOASTED.ogg" id="2_18nft"]
 
-[node name="AudioManager" type="Node"]
+[node name="AudioManager" type="Node" node_paths=PackedStringArray("cancel_sound", "speech_player", "song_player")]
 script = ExtResource("1_ybhav")
+cancel_sound = NodePath("CancelSound")
+speech_player = NodePath("SpeechPlayer")
+song_player = NodePath("SongPlayer")
 
 [node name="SpeechPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"Voice"

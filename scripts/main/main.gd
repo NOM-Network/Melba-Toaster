@@ -5,14 +5,12 @@ var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
 
-@onready var client := $WebSocketClient
-@onready var control_panel := $ControlPanel
-@onready var lower_third := $LowerThird
-@onready var mic := $Microphone
-@onready var audio_manager := $AudioManager
-
-@onready var greenscreen_window := $GreenScreenWindow
-@onready var greenscreen_texture := $GreenScreenWindow/TextureRect
+@export var client: WebSocketClient
+@export var control_panel: Window
+@export var lower_third: Control
+@export var mic: AnimatedSprite2D
+@export var audio_manager: Node
+@export var spout_target: SubViewport
 
 var spout: Spout
 var img: Image
@@ -29,9 +27,6 @@ func _ready() -> void:
 
 	_connect_signals()
 	_add_model()
-
-	await RenderingServer.frame_post_draw
-	greenscreen_texture.texture = get_viewport().get_texture()
 
 	await connect_backend()
 
@@ -50,12 +45,12 @@ func _process(_delta: float) -> void:
 
 	if OS.has_feature("windows"):
 		await RenderingServer.frame_post_draw
-		img = get_viewport().get_texture().get_image()
+		img = spout_target.get_viewport().get_texture().get_image()
 		spout.send_image(img, img.get_width(), img.get_height(), Spout.FORMAT_RGBA, false)
 
 func _add_model() -> void:
 	get_window().size = Vector2i(1920, 1080)
-	add_child(model, true)
+	spout_target.add_child(model, true, -1)
 
 	model_sprite = model.get_node("%Sprite2D")
 	user_model = model.get_node("%GDCubismUserModel")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=94 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
@@ -8,8 +8,6 @@
 [ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
 [ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="7_6nuhl"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
-
-[sub_resource type="ImageTexture" id="ImageTexture_ehotg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
 atlas = ExtResource("4_ajw6o")
@@ -622,20 +620,24 @@ shadow_size = 0
 shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
 shadow_offset = Vector2(3, 3)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "lower_third", "mic", "audio_manager", "spout_target")]
 script = ExtResource("1_bldvu")
+client = NodePath("WebSocketClient")
+control_panel = NodePath("ControlPanel")
+lower_third = NodePath("SubViewportContainer/SpoutTarget/LowerThird")
+mic = NodePath("SubViewportContainer/SpoutTarget/Microphone")
+audio_manager = NodePath("AudioManager")
+spout_target = NodePath("SubViewportContainer/SpoutTarget")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
 
-[node name="GreenScreenWindow" type="Window" parent="."]
-title = "Greenscreen Melba - Toaster"
-size = Vector2i(1920, 1080)
-visible = false
-unresizable = true
-borderless = true
+[node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
+initial_position = 3
+current_screen = 0
 
-[node name="GreenScreen" type="ColorRect" parent="GreenScreenWindow"]
+[node name="GreenScreen" type="ColorRect" parent="."]
+z_index = -1
 offset_left = -57.0
 offset_top = -62.0
 offset_right = 1966.0
@@ -644,28 +646,30 @@ mouse_filter = 2
 mouse_force_pass_scroll_events = false
 color = Color(0, 0, 1, 1)
 
-[node name="TextureRect" type="TextureRect" parent="GreenScreenWindow"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = SubResource("ImageTexture_ehotg")
 
-[node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
-initial_position = 3
-current_screen = 0
+[node name="SpoutTarget" type="SubViewport" parent="SubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
 
-[node name="Microphone" type="AnimatedSprite2D" parent="."]
+[node name="Microphone" type="AnimatedSprite2D" parent="SubViewportContainer/SpoutTarget"]
 position = Vector2(180, 474)
 scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
 
-[node name="LowerThird" type="Control" parent="."]
+[node name="LowerThird" type="Control" parent="SubViewportContainer/SpoutTarget"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 35.0
@@ -674,7 +678,7 @@ offset_right = 1885.0
 offset_bottom = 1029.0
 script = ExtResource("6_buuj2")
 
-[node name="Prompt" type="Label" parent="LowerThird"]
+[node name="Prompt" type="Label" parent="SubViewportContainer/SpoutTarget/LowerThird"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 10
@@ -690,7 +694,7 @@ autowrap_mode = 3
 text_overrun_behavior = 3
 visible_characters_behavior = 1
 
-[node name="Subtitles" type="Label" parent="LowerThird"]
+[node name="Subtitles" type="Label" parent="SubViewportContainer/SpoutTarget/LowerThird"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -707,10 +711,10 @@ vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
 
-[node name="ClearSubtitlesTimer" type="Timer" parent="LowerThird"]
+[node name="ClearSubtitlesTimer" type="Timer" parent="SubViewportContainer/SpoutTarget/LowerThird"]
 wait_time = 5.0
 
-[node name="PrintTimer" type="Timer" parent="LowerThird"]
+[node name="PrintTimer" type="Timer" parent="SubViewportContainer/SpoutTarget/LowerThird"]
 one_shot = true
 
 [node name="BeatsCounter" type="Label" parent="."]

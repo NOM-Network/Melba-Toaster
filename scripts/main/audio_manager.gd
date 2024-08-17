@@ -2,11 +2,9 @@ extends Node
 
 @onready var voice_bus := AudioServer.get_bus_index("Voice")
 
-@onready var cancel_sound: AudioStreamPlayer = $CancelSound
-@onready var speech_player: AudioStreamPlayer = $SpeechPlayer
-@onready var song_player: AudioStreamPlayer = $SongPlayer
-
-@onready var lower_third := get_parent().get_node("LowerThird")
+@export var cancel_sound: AudioStreamPlayer
+@export var speech_player: AudioStreamPlayer
+@export var song_player: AudioStreamPlayer
 
 var subtitles: Array
 
@@ -79,13 +77,13 @@ func _match_command(line: Array) -> void:
 	var text: String = line[1]
 
 	if not text.begins_with("&"):
-		lower_third.set_subtitles_fast(text.c_unescape())
+		Globals.set_subtitles_fast.emit(text.c_unescape())
 		return
 
 	var command: Array = text.split(" ")
 	match command:
 		["&CLEAR"]:
-			lower_third.set_subtitles_fast("")
+			Globals.set_subtitles_fast.emit("")
 
 		["&START", var bpm]:
 			Globals.start_dancing_motion.emit(bpm)

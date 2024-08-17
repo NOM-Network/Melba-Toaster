@@ -2,7 +2,7 @@
 
 This is the presentation part of NOM Network's AI VTuber **[Melba Toast](https://www.twitch.tv/melbathetoast/)**.
 
-Written using [Godot](https://godotengine.org/) and GDScript, this program allows Melba Toast's model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel, which can be used to drive the model, OBS Studio and moderate incoming speech. Also includes Greenscreen mode for streaming via Discord or other services to 3rd party.
+Written using [Godot](https://godotengine.org/) and GDScript, this program allows Melba Toast's model to speak, show animations, have expressions and such, driven by the backend. Includes the Control Panel, which can be used to drive the model, OBS Studio and moderate incoming speech. Uses Spout2 to screencap the model, includes native Color Key mode for screen sharing.
 
 Communication with the backend follows [this API schema](API_SCHEMA.md).
 

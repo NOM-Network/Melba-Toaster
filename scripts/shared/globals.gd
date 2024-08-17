@@ -30,6 +30,8 @@ signal end_speech(data: Dictionary)
 signal speech_done()
 signal cancel_speech()
 signal reset_subtitles()
+signal set_subtitles(text: String, duration: float, continue_print: bool)
+signal set_subtitles_fast(text: String)
 
 signal update_backend_stats(data: Array)
 
@@ -58,8 +60,6 @@ signal update_backend_stats(data: Array)
 
 @export var time_before_cleanout := 10.0
 @export var time_before_next_response := 0.1
-
-@export var green_screen := false
 
 func is_ready() -> bool:
 	return not (is_speaking or is_singing)

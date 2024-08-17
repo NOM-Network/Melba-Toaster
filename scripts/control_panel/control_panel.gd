@@ -710,10 +710,6 @@ func _on_close_confirm_confirmed() -> void:
 	main.disconnect_backend()
 	get_tree().quit()
 
-func _on_green_screen_toggle_toggled(enabled: bool) -> void:
-	Globals.green_screen = enabled
-	main.greenscreen_window.visible = enabled
-
 func _generate_sound_controls() -> void:
 	var outputs := AudioServer.get_output_device_list()
 

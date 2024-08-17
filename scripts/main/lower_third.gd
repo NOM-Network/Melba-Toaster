@@ -40,6 +40,8 @@ func _ready() -> void:
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 
+	Globals.set_subtitles_fast.connect(_on_set_subtitles_fast)
+
 func _process(delta: float) -> void:
 	if not print_timer.is_stopped():
 		var current_time: float = current_duration + (time_per_symbol * 3) - print_timer.time_left
@@ -112,6 +114,9 @@ func _on_ready_for_speech() -> void:
 
 	if randf() < 0.66:
 		Globals.set_toggle.emit("toast", false)
+
+func _on_set_subtitles_fast(text: String) -> void:
+	set_subtitles_fast(text)
 
 # endregion
 
