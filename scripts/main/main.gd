@@ -13,7 +13,7 @@ var model_target_point: GDCubismEffectTargetPoint
 @export var spout_target: SubViewport
 
 var spout: Spout
-var img: Image
+var spout_texture: ViewportTexture
 
 var connection_attempt: int = 0
 
@@ -47,12 +47,12 @@ func _process(_delta: float) -> void:
 
 	if OS.has_feature("windows"):
 		await RenderingServer.frame_post_draw
-		img = spout_target.get_viewport().get_texture().get_image()
+		var img := spout_texture.get_image()
 		spout.send_image(img, img.get_width(), img.get_height(), Spout.FORMAT_RGBA, false)
 
 func _add_model() -> void:
 	get_window().size = Vector2i(1920, 1080)
-	spout_target.add_child(model, true, -1)
+	spout_target.add_child(model, true)
 
 	model_sprite = model.get_node("%Sprite2D")
 	user_model = model.get_node("%GDCubismUserModel")
@@ -63,7 +63,9 @@ func _add_model() -> void:
 	if OS.has_feature("windows"):
 		spout = Spout.new()
 		spout.set_sender_name("Melba Toaster")
+		spout_texture = spout_target.get_viewport().get_texture()
 		print("Spout2 initialized")
+	control_panel.get_node("TextureRect").texture = spout_texture
 
 # endregion
 

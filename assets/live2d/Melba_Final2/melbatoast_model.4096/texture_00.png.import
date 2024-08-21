@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/texture_00.png-3c87971baaef896d9603313c914d0e
 
 [params]
 
-compress/mode=3
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

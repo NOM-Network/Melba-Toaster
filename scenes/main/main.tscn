@@ -1,12 +1,11 @@
-[gd_scene load_steps=94 format=3 uid="uid://b3swnm3lvor3i"]
+[gd_scene load_steps=91 format=3 uid="uid://b3swnm3lvor3i"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Texture2D" uid="uid://d31jgtyln1dig" path="res://assets/main/mic/mic_in.png" id="4_ajw6o"]
 [ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
-[ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="6_buuj2"]
-[ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="7_6nuhl"]
+[ext_resource type="PackedScene" uid="uid://c61c4c54xgfqi" path="res://scenes/main/lower_third_manager.tscn" id="6_22ojb"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwc8w"]
@@ -602,29 +601,12 @@ animations = [{
 "speed": 30.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_8wgd5"]
-font = ExtResource("7_6nuhl")
-font_size = 30
-outline_size = 5
-outline_color = Color(0.556863, 0.384314, 0.117647, 1)
-shadow_size = 0
-shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
-shadow_offset = Vector2(3, 3)
-
-[sub_resource type="LabelSettings" id="LabelSettings_rpyvj"]
-font = ExtResource("7_6nuhl")
-font_size = 40
-outline_size = 5
-outline_color = Color(0.556863, 0.384314, 0.117647, 1)
-shadow_size = 0
-shadow_color = Color(0.388235, 0.262745, 0.0705882, 1)
-shadow_offset = Vector2(3, 3)
-
 [node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "lower_third", "mic", "audio_manager", "spout_target")]
+process_mode = 3
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
-lower_third = NodePath("SubViewportContainer/SpoutTarget/LowerThird")
+lower_third = NodePath("SubViewportContainer/SpoutTarget/LowerThirdManager")
 mic = NodePath("SubViewportContainer/SpoutTarget/Microphone")
 audio_manager = NodePath("AudioManager")
 spout_target = NodePath("SubViewportContainer/SpoutTarget")
@@ -641,7 +623,6 @@ obs_sources = null
 active_scene = null
 
 [node name="GreenScreen" type="ColorRect" parent="."]
-z_index = -1
 offset_left = -57.0
 offset_top = -62.0
 offset_right = 1966.0
@@ -673,53 +654,7 @@ sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
 
-[node name="LowerThird" type="Control" parent="SubViewportContainer/SpoutTarget"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 35.0
-offset_top = 682.0
-offset_right = 1885.0
-offset_bottom = 1029.0
-script = ExtResource("6_buuj2")
-
-[node name="Prompt" type="Label" parent="SubViewportContainer/SpoutTarget/LowerThird"]
-clip_contents = true
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 5.0
-offset_right = -511.0
-offset_bottom = 123.0
-grow_horizontal = 2
-text = "cjmaxik: тест тест test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string test string"
-label_settings = SubResource("LabelSettings_8wgd5")
-vertical_alignment = 2
-autowrap_mode = 3
-text_overrun_behavior = 3
-visible_characters_behavior = 1
-
-[node name="Subtitles" type="Label" parent="SubViewportContainer/SpoutTarget/LowerThird"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -205.0
-offset_bottom = -2.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "тесттестwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww                "
-label_settings = SubResource("LabelSettings_rpyvj")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-visible_characters_behavior = 1
-
-[node name="ClearSubtitlesTimer" type="Timer" parent="SubViewportContainer/SpoutTarget/LowerThird"]
-wait_time = 5.0
-
-[node name="PrintTimer" type="Timer" parent="SubViewportContainer/SpoutTarget/LowerThird"]
-one_shot = true
+[node name="LowerThirdManager" parent="SubViewportContainer/SpoutTarget" instance=ExtResource("6_22ojb")]
 
 [node name="BeatsCounter" type="Label" parent="."]
 anchors_preset = 2

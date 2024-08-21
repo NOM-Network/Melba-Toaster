@@ -17,10 +17,10 @@ dest_files=["res://.godot/imported/mic_in.png-c32df2a61ee8e1b0e30ac320dcf59ce3.c
 
 compress/mode=0
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.0
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=0
+compress/channel_pack=1
 mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0

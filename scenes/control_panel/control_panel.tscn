@@ -61,27 +61,17 @@ script = ExtResource("1_rhl0v")
 [node name="ObsWebSocketClient" type="Node" parent="."]
 script = ExtResource("2_1sf50")
 
-[node name="BackgroundColor" type="ColorRect" parent="."]
-visible = false
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.392157)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0.603922, 0.541176, 1)
-
-[node name="TextureRect" type="TextureRect" parent="."]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -170.0
-offset_top = -182.0
-grow_horizontal = 0
-grow_vertical = 0
 size_flags_horizontal = 0
 texture = ExtResource("3_ewt3g")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="Margins" type="MarginContainer" parent="."]
 anchors_preset = 15
