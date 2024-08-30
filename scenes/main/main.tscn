@@ -619,8 +619,6 @@ supported_protocols = null
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
 initial_position = 3
 current_screen = 0
-obs_sources = null
-active_scene = null
 
 [node name="GreenScreen" type="ColorRect" parent="."]
 offset_left = -57.0

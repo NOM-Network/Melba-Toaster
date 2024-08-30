@@ -98,6 +98,10 @@ func initialize_pinnable_assets() -> void:
 
 		asset.node.modulate.a = 0
 
+		if not dict_mesh.has(asset.mesh):
+			printerr("Cannot found `%s` mesh" % asset.mesh)
+			continue
+
 		var ary_mesh: ArrayMesh = dict_mesh[asset.mesh]
 		var ary_surface: Array = ary_mesh.surface_get_arrays(0)
 
@@ -106,6 +110,10 @@ func initialize_pinnable_assets() -> void:
 
 func _physics_process(_delta: float) -> void:
 	for toggle: Object in Globals.toggles.values():
+		if not toggle.param:
+			printerr("Cannot found `%s` parameter" % toggle["id"])
+			continue
+
 		toggle.param.set_value(toggle.value)
 
 	for asset: String in assets_to_pin.keys():

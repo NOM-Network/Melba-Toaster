@@ -22,7 +22,7 @@ extends Window
 var OpCodes: Dictionary = ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
 
-var music_input_name: String = "MUSIC"
+var music_inputs: Array = ["MUSIC", "MUSIC2"]
 var music_volume: float = -10.0
 
 # Last state globals
@@ -579,7 +579,7 @@ func _generate_input_request(inputs: Array) -> void:
 
 func _generate_input_button(data: Dictionary) -> void:
 	# Only inputs we need
-	if data.inputName not in ["Mebla Capture", "MUSIC", "Melba Sound"]:
+	if data.inputName not in ["Mebla Capture", "Melba Sound", "MUSIC", "MUSIC2"]:
 		return
 
 	var button := Button.new()
@@ -753,10 +753,14 @@ func _set_input_volume(start: float, end: float, step: float, sleep: int = 10) -
 
 	var requests: Array = []
 	for i: float in Vector3(start, end, step):
-		requests.push_back(["SetInputVolume", {"inputName": music_input_name, "inputVolumeDb": i}])
-		requests.push_back(["Sleep", {"sleepMillis": sleep}])
+		for source in music_inputs:
+			requests.push_back(["SetInputVolume", {"inputName": source, "inputVolumeDb": i}])
+			requests.push_back(["Sleep", {"sleepMillis": sleep}])
 
-	requests.push_back(["SetInputVolume", {"inputName": music_input_name, "inputVolumeDb": end}])
+	for source in music_inputs:
+		requests.push_back(["SetInputVolume", {"inputName": source, "inputVolumeDb": end}])
+
+	print(requests)
 	obs.send_command_batch(requests)
 
 func _update_stream_status(data: Dictionary) -> void:

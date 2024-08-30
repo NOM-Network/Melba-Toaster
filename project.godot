@@ -81,3 +81,4 @@ common/physics_ticks_per_second=120
 
 textures/vram_compression/import_etc2_astc=true
 viewport/transparent_background=true
+viewport/hdr_2d=true
