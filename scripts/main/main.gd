@@ -81,6 +81,8 @@ func _connect_signals() -> void:
 	Globals.start_singing.connect(_on_start_singing)
 	Globals.stop_singing.connect(_on_stop_singing)
 
+	Globals.toggle_filter.connect(_on_toggle_filter)
+
 func _on_ready_for_speech() -> void:
 	client.send_message({"type": "DoneSpeaking"})
 	if not Globals.is_paused:
@@ -184,7 +186,7 @@ func _on_queue_next_song(song_name: String, seek_time: float) -> void:
 	else:
 		print("Song queue is empty")
 
-func _on_start_singing(song: Song, _seek_time := 0.0) -> void:
+func _on_start_singing(_song: Song, _seek_time := 0.0) -> void:
 	Globals.current_emotion_modifier = 0.0
 
 	# Reset toggles
@@ -196,17 +198,16 @@ func _on_start_singing(song: Song, _seek_time := 0.0) -> void:
 	mic.animation = "in"
 	mic.play()
 
-	var command := {
-		"sourceName": "Song",
-		"filterName": "hiyori",
-		"filterEnabled": false
-	}
-	if song.id == "hiyori":
-		command["filterEnabled"] = true
-	control_panel.obs.send_command("SetSourceFilterEnabled", command)
-
 	var next_scene := "Collab Song" if Globals.config.get_obs("collab") else "Song"
 	Globals.change_scene.emit(next_scene)
+
+func _on_toggle_filter(source_name: String, filter_name: String, enabled: bool) -> void:
+	var command := {
+		"sourceName": source_name,
+		"filterName": filter_name,
+		"filterEnabled": enabled
+	}
+	control_panel.obs.send_command("SetSourceFilterEnabled", command)
 
 func _on_stop_singing() -> void:
 	mic.animation = "out"

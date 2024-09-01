@@ -32,6 +32,7 @@ signal cancel_speech()
 signal reset_subtitles()
 signal set_subtitles(text: String, duration: float, continue_print: bool)
 signal set_subtitles_fast(text: String)
+signal toggle_filter(source_name: String, filter_name: String, enabled: bool)
 
 signal update_backend_stats(data: Array)
 

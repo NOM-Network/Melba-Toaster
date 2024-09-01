@@ -103,6 +103,9 @@ func _match_command(line: Array) -> void:
 		["&ANIM", var anim_name]:
 			Globals.play_animation.emit(anim_name)
 
+		["&FILTER", var source_name, var filter_name, var enabled]:
+			Globals.toggle_filter.emit(source_name, filter_name, enabled == "1")
+
 		_:
 			printerr("SONG: `%s` is not a valid command, ignoring..." % line)
 
