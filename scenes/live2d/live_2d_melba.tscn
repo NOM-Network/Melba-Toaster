@@ -83,6 +83,7 @@ offset = Vector2(-1100, -1100)
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
 auto_scale = false
 adjust_scale = 0.33
+mask_viewport_size = Vector2i(1100, 1100)
 anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"

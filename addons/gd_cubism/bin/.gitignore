@@ -1,3 +1,2 @@
-~*
-*.exp
-*.lib
+*
+!.gitignore
