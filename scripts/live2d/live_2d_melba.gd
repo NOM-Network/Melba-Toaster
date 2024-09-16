@@ -62,9 +62,6 @@ func _ready() -> void:
 	set_expression("end")
 	play_random_idle_animation()
 
-	if debug_pins:
-		z_index = -1
-
 func connect_signals() -> void:
 	Globals.play_animation.connect(play_animation)
 	Globals.set_expression.connect(set_expression)
@@ -238,7 +235,7 @@ func get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) -> 
 	var angle1: float = pos[0].angle_to_point(trans_point_b)
 	var angle2: float = pos[0].angle_to_point(pos[1])
 
-	return angle2 - angle1
+	return (angle2 - angle1) + PI
 
 func reset_overrides() -> void:
 	eye_blink.active = true

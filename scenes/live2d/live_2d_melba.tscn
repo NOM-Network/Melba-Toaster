@@ -79,6 +79,9 @@ texture = SubResource("ViewportTexture_qkp5x")
 centered = false
 offset = Vector2(-1100, -1100)
 
+[node name="PinnableAssets" parent="Sprite2D" instance=ExtResource("5_rx2gh")]
+unique_name_in_owner = true
+
 [node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
 auto_scale = false
@@ -88,15 +91,15 @@ anim_loop = false
 anim_loop_fade_in = true
 anim_expression = "Gymbag"
 anim_motion = "_0"
-ParamAngleX = -5.4514
-ParamAngleY = -1.22316
-ParamAngleZ = -1.85507
-ParamBodyAngleX = 0.56741
-ParamBodyAngleY = 0.345852
-ParamBodyAngleZ = -6.89829e-07
-Param3 = -1.35487
-Param4 = -0.374964
-Param5 = -1.60667
+ParamAngleX = -5.05553
+ParamAngleY = 0.256534
+ParamAngleZ = 7.21652
+ParamBodyAngleX = -0.167076
+ParamBodyAngleY = 0.450143
+ParamBodyAngleZ = -8.35847e-05
+Param3 = -1.25634
+Param4 = 0.0
+Param5 = 6.38929
 ParamEyeLOpen = 1.0
 ParamEyeLSmile = 0.0
 ParamEyeROpen = 1.0
@@ -105,11 +108,11 @@ ParamEyeBallX = 0.0
 ParamEyeBallY = 0.0
 ParamMouthForm = 0.0
 ParamMouthOpenY = 0.0
-Param6 = -0.0465214
-Param7 = -0.00205332
-Param8 = 0.0233483
-Param10 = -0.210634
-Param11 = 0.01724
+Param6 = 0.092969
+Param7 = -0.016208
+Param8 = 0.0376774
+Param10 = 0.325389
+Param11 = 0.026581
 Param15 = 0.0
 Param16 = 0.0
 Param17 = 0.0
@@ -120,8 +123,8 @@ Param21 = 0.0
 Param28 = 1.0
 Param19 = 0.0
 Param20 = 0.0
-Param24 = 0.0
-Param26 = 0.0
+Param24 = 0.000381893
+Param26 = 0.000381893
 Param25 = 0.0
 Param27 = 0.0
 ParamBrowLY = 0.0
@@ -133,16 +136,16 @@ ParamBrowRAngle = 0.0
 ParamBrowLForm = 0.0
 ParamBrowRForm = 0.0
 ParamCheek = 0.0
-ParamBreath = 0.0173513
+ParamBreath = 0.485753
 ParamHairFront = 0.0
 ParamHairSide = 0.0
 ParamHairBack = 0.0
-Param = 2.38419e-07
-Param2 = 0.0
-Param12 = -0.000927402
-Param13 = 0.000462413
-Param23 = -0.00051262
-Param22 = -0.00084251
+Param = -3.57628e-07
+Param2 = 5.96046e-07
+Param12 = -0.00111749
+Param13 = 0.000401698
+Param23 = -0.00427664
+Param22 = 0.00427664
 Part35 = 1.0
 Part33 = 1.0
 Part31 = 1.0
@@ -232,9 +235,6 @@ unique_name_in_owner = true
 wait_time = 3.0
 one_shot = true
 autostart = true
-
-[node name="PinnableAssets" parent="Sprite2D" instance=ExtResource("5_rx2gh")]
-unique_name_in_owner = true
 
 [node name="AnimTimer" type="Timer" parent="."]
 
