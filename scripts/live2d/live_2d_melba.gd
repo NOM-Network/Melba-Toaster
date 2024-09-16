@@ -16,6 +16,8 @@ var assets_to_pin := {}
 @onready var tweens := {}
 #endregion
 
+const _90_DEG_IN_RAD = deg_to_rad(90.0)
+
 #region MODEL DATA
 @export var model_position: Vector2 = Vector2.ZERO:
 	get:
@@ -237,7 +239,11 @@ func get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) -> 
 	var angle1: float = pos[0].angle_to_point(trans_point_b)
 	var angle2: float = pos[0].angle_to_point(pos[1])
 
-	return (angle2 - angle1) + PI
+	var angle = angle2 - angle1
+
+	if angle > 0:
+		return angle - _90_DEG_IN_RAD
+	return angle + _90_DEG_IN_RAD
 
 func reset_overrides() -> void:
 	eye_blink.active = true
