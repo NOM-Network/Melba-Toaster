@@ -921,11 +921,12 @@ func _handle_data_received() -> int:
 
 func _get_message() -> Dictionary:
 	var json: Variant = JSON.parse_string(socket.get_packet().get_string_from_utf8())
+
 	if not json is Dictionary:
 		printerr("Unexpected data from obs-websocket: %s\nAborting connection" % str(json))
 		return {}
 
-	return json as Dictionary
+	return json
 
 func _send_message(data: PackedByteArray) -> void:
 	if socket.get_ready_state() == WebSocketPeer.STATE_OPEN:

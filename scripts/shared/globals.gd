@@ -98,9 +98,7 @@ static var current_emotion_modifier := 0.0
 # region HELPERS
 
 func get_audio_compensation() -> float:
-	return AudioServer.get_time_since_last_mix() \
-		- AudioServer.get_output_latency() \
-		+ (1 / Engine.get_frames_per_second()) * 2
+	return AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() + (1 / Engine.get_frames_per_second()) * 2
 
 # endregion
 
@@ -115,7 +113,7 @@ func _ready() -> void:
 func _on_change_position(position: String) -> void:
 	self.last_position = position
 
-func _debug_event(arg1: Variant, arg2: Variant=null, arg3: Variant=null, arg4: Variant=null, arg5: Variant=null) -> void:
+func _debug_event(arg1: Variant, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null) -> void:
 	if not debug_mode:
 		return
 
