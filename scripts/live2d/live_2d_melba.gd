@@ -1,11 +1,11 @@
 extends Node2D
 
-@onready var model := %GDCubismUserModel
-@onready var sprite := %Sprite2D
-@onready var pinnable_assets := %PinnableAssets
-@onready var target_point := %TargetPoint
-@onready var eye_blink := %EyeBlinking
-@onready var anim_timer := $AnimTimer
+@onready var model: GDCubismUserModel = %GDCubismUserModel
+@onready var sprite: Sprite2D = %Sprite2D
+@onready var pinnable_assets: Node2D = %PinnableAssets
+@onready var target_point: GDCubismEffectTargetPoint = %TargetPoint
+@onready var eye_blink: Node = %EyeBlinking
+@onready var anim_timer: Timer = $AnimTimer
 
 #region ASSETS
 @onready var dict_mesh: Dictionary = model.get_meshes()
@@ -24,7 +24,7 @@ const _90_DEG_IN_RAD = deg_to_rad(90.0)
 		if model:
 			return model.adjust_position + Vector2(model.size) / 2
 		else:
-			return Vector2( - 200, 580)
+			return Vector2(-200, 580)
 
 	set(value):
 		if model:
@@ -48,11 +48,11 @@ const _90_DEG_IN_RAD = deg_to_rad(90.0)
 #endregion
 
 #region DEBUG
-@export var debug_pins := false
-var debug_draw: Array
-var default_font := ThemeDB.fallback_font
-var default_font_size := 26
-var default_color := Color.WEB_PURPLE
+@onready var debug_pins: bool = Globals.debug_mode
+var debug_draw: Array = []
+var default_font: Font = ThemeDB.fallback_font
+var default_font_size: int = 26
+var default_color: Color = Color.WEB_PURPLE
 #endregion
 
 # Called when the node enters the scene tree for the first time.
@@ -75,7 +75,7 @@ func connect_signals() -> void:
 	anim_timer.timeout.connect(_on_animation_finished)
 
 func initialize_animations() -> void:
-	model.playback_process_mode = 1
+	model.playback_process_mode = GDCubismUserModel.IDLE
 
 	for anim: Object in Globals.animations.values():
 		if anim.override_name != "":
@@ -129,10 +129,10 @@ func _physics_process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event as InputEventMouseMotion:
-		if event.button_mask&MOUSE_BUTTON_MASK_LEFT != 0:
+		if event.button_mask & MOUSE_BUTTON_MASK_LEFT != 0:
 			mouse_to_position(event.relative)
 
-		if event.button_mask&MOUSE_BUTTON_MASK_RIGHT != 0:
+		if event.button_mask & MOUSE_BUTTON_MASK_RIGHT != 0:
 			move_eyes(event.position)
 
 	if event as InputEventMouseButton:
@@ -150,9 +150,9 @@ func _input(event: InputEvent) -> void:
 
 				MOUSE_BUTTON_WHEEL_DOWN:
 					if event.ctrl_pressed:
-						mouse_to_rotation( - Globals.rotation_change)
+						mouse_to_rotation(-Globals.rotation_change)
 					else:
-						mouse_to_scale( - Globals.scale_change)
+						mouse_to_scale(-Globals.scale_change)
 
 				MOUSE_BUTTON_MIDDLE:
 					Globals.change_position.emit(Globals.last_position)
@@ -212,9 +212,6 @@ func pin(asset: PinnableAsset) -> void:
 		debug_draw.append([asset.node.position, asset.node_name])
 
 func _draw() -> void:
-	if not debug_pins:
-		return
-
 	# Model center
 	var pivot: Vector2 = model_pivot()
 	draw_circle(pivot, 10, Color.RED)
@@ -283,7 +280,7 @@ func set_expression(expression_name: String) -> void:
 		model.stop_expression()
 	elif Globals.expressions.has(expression_name):
 		var expr_id: int = Globals.expressions[expression_name].id
-		model.start_expression(expr_id)
+		model.start_expression("%s" % expr_id)
 
 func set_toggle(toggle_name: String, enabled: bool) -> void:
 	if Globals.toggles.has(toggle_name):
@@ -327,10 +324,7 @@ func mouse_to_scale(change: float) -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	var pivot := model_pivot()
 
-	var new_pos := model_position - Vector2(
-		- (mouse_pos.x - pivot.x) * change,
-		(mouse_pos.y - pivot.y) * change
-	) / new_scale
+	var new_pos := model_position - Vector2(-(mouse_pos.x - pivot.x) * change, (mouse_pos.y - pivot.y) * change) / new_scale
 
 	if tweens.has("scale"):
 		tweens.scale.kill()
@@ -357,7 +351,7 @@ func mouse_to_rotation(change: float) -> void:
 	if rot >= 360.0:
 		rot -= 360.0
 		sprite.rotation_degrees = rot
-	elif rot <= - 360.0:
+	elif rot <= -360.0:
 		rot += 360.0 + change
 		sprite.rotation_degrees = rot
 
