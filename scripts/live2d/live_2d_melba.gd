@@ -73,6 +73,8 @@ func connect_signals() -> void:
 	anim_timer.timeout.connect(_on_animation_finished)
 
 func initialize_animations() -> void:
+	model.playback_process_mode = 1
+
 	for anim: Object in Globals.animations.values():
 		if anim.override_name != "":
 			anim.override = model.get_node(anim.override_name)
