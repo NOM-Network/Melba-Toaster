@@ -1,8 +1,7 @@
 extends GDCubismEffectCustom
+class_name PinnableAssets
 
 const _90_DEG_IN_RAD = deg_to_rad(90.0)
-
-@onready var parent: GDCubismUserModel = get_parent()
 
 #region ASSETS
 @export var assets: Node2D
@@ -13,16 +12,19 @@ var tweens: Dictionary
 
 #region MAIN
 func _ready() -> void:
+	assets.get_node("Notes").visible = false
+
 	_connect_signals()
-	_initialize_pinnable_assets()
 
 func _connect_signals() -> void:
 	cubism_init.connect(_on_cubism_init)
 	Globals.pin_asset.connect(_on_pin_asset)
 	cubism_prologue.connect(_on_cubism_prologue)
+#endregion
 
-func _initialize_pinnable_assets() -> void:
-	assets.get_node("Notes").visible = false
+#region SIGNALS
+func _on_cubism_init(model: GDCubismUserModel) -> void:
+	meshes = model.get_meshes()
 
 	for asset: PinnableAsset in Globals.pinnable_assets.values():
 		asset.node = assets.find_child(asset.node_name)
@@ -41,11 +43,6 @@ func _initialize_pinnable_assets() -> void:
 
 		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
 		asset.initial_points[1] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
-#endregion
-
-#region SIGNALS
-func _on_cubism_init(model: GDCubismUserModel) -> void:
-	meshes = model.get_meshes()
 
 func _on_pin_asset(node_name: String, enabled: bool) -> void:
 	if not Globals.pinnable_assets.has(node_name):
@@ -102,7 +99,4 @@ func _get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) ->
 	if angle > 0:
 		return angle - _90_DEG_IN_RAD
 	return angle + _90_DEG_IN_RAD
-
-func _get_model_pivot() -> Vector2:
-	return Vector2(parent.size) / 2.0 + parent.adjust_position
 #endregion

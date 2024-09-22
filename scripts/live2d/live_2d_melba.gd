@@ -193,7 +193,7 @@ func play_random_idle_animation() -> void:
 	elif random_int <= 10: # 40% chance, ~57% when idle2 was last_animation
 		play_animation("idle3")
 
-func model_pivot() -> Vector2:
+func get_model_pivot() -> Vector2:
 	return Vector2(model.size) / 2.0 + model.adjust_position
 
 func mouse_to_scale(change: float) -> void:
@@ -202,7 +202,7 @@ func mouse_to_scale(change: float) -> void:
 		return
 
 	var mouse_pos := get_viewport().get_mouse_position()
-	var pivot := model_pivot()
+	var pivot := get_model_pivot()
 
 	var new_pos := model_position - Vector2(-(mouse_pos.x - pivot.x) * change, (mouse_pos.y - pivot.y) * change) / new_scale
 
@@ -215,7 +215,7 @@ func mouse_to_scale(change: float) -> void:
 	tweens.scale.tween_property(self, "model_position", new_pos, 0.05)
 
 func mouse_to_rotation(change: float) -> void:
-	var pivot: Vector2 = model_pivot()
+	var pivot: Vector2 = get_model_pivot()
 	sprite.offset = -pivot
 	sprite.position = pivot
 
@@ -236,7 +236,7 @@ func mouse_to_rotation(change: float) -> void:
 		sprite.rotation_degrees = rot
 
 func mouse_to_position(change: Vector2) -> void:
-	var pivot: Vector2 = model_pivot()
+	var pivot: Vector2 = get_model_pivot()
 	sprite.offset = -pivot
 	sprite.position = pivot
 	model.adjust_position += change
@@ -267,7 +267,7 @@ func _on_change_position(new_position: String) -> void:
 				tweens.trans.kill()
 
 			var pos: Array = positions.model
-			var pivot: Vector2 = model_pivot()
+			var pivot: Vector2 = get_model_pivot()
 
 			tweens.trans = create_tween().set_trans(Tween.TRANS_QUINT)
 			tweens.trans.set_parallel()
