@@ -51,11 +51,10 @@ static var positions := {
 }
 
 static var pinnable_assets := {
-	"censor": PinnableAsset.new("CensorAnimation", "Nose", Vector2(0, -120), 1.5),
-	"glasses": PinnableAsset.new("GlassSprites", "Nose", Vector2(10, -110), 1.1),
-	"hat": PinnableAsset.new("Hat", "ArtMesh67", Vector2(150, 100), 1.1),
-	"band": PinnableAsset.new("TetoBand", "ArtMesh30", Vector2(-75, 70), 1.0),
-	"pikmin": PinnableAsset.new("Pikmin", "ArtMesh4", Vector2(120, -120), 0.8, 0, 3)
+	"censor": PinnableAsset.new("Censor", "Nose", Vector2(0, -120), 1.5),
+	"glasses": PinnableAsset.new("Glasses", "Nose", Vector2(10, -110), 1.1),
+	"hat": PinnableAsset.new("Hat", "ArtMesh67", Vector2(90, 100), 1.1),
+	"band": PinnableAsset.new("TetoBand", "ArtMesh30", Vector2(-75, 70), 1.0)
 }
 
 static var toggles := {

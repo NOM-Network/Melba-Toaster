@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://ds3cr7lote6cs"]
+[gd_scene load_steps=11 format=3 uid="uid://ds3cr7lote6cs"]
 
 [ext_resource type="Texture2D" uid="uid://cym7l00g0fswe" path="res://assets/live2d/pinnable_assets/glasses.png" id="1_fj5nk"]
 [ext_resource type="Texture2D" uid="uid://dow7ry1r7bvdm" path="res://assets/live2d/pinnable_assets/censor.png" id="2_glko1"]
 [ext_resource type="Texture2D" uid="uid://q7sygse7kwg5" path="res://assets/live2d/pinnable_assets/hatTop.png" id="3_pc45b"]
 [ext_resource type="Texture2D" uid="uid://cyg5rr7kbpiaq" path="res://assets/live2d/pinnable_assets/hatBottom.png" id="4_0yagu"]
 [ext_resource type="Texture2D" uid="uid://dqge66kutwpnq" path="res://assets/live2d/pinnable_assets/tetoBand.png" id="5_wm2aa"]
-[ext_resource type="Texture2D" uid="uid://dx4faee3ujvah" path="res://assets/live2d/pinnable_assets/pikmin.png" id="6_pduqu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f53nl"]
 atlas = ExtResource("2_glko1")
@@ -44,15 +43,38 @@ animations = [{
 }]
 
 [node name="PinnableAssets" type="Node2D"]
+z_index = 100
 
-[node name="GlassSprites" type="Sprite2D" parent="."]
-texture = ExtResource("1_fj5nk")
+[node name="Notes" type="Label" parent="."]
+top_level = true
+offset_left = 464.0
+offset_top = 525.0
+offset_right = 2464.0
+offset_bottom = 1159.0
+theme_override_font_sizes/font_size = 64
+text = "- Z Index of the parent node MUST be 100 (above the model)
+- for new assets, create a Node2D, then add the sprite there
+- for multi-layer nodes, change Z Index of the sprites themselves
 
-[node name="CensorAnimation" type="AnimatedSprite2D" parent="."]
-modulate = Color(1, 1, 1, 0)
+- for multiple assets overlapping, use Node2D's Z Index
+- for changing the pivot, use the sprite's pivot and then reset its position
+- for changing the rotation, use the sprite's rotation
+
+Check editor description of the assets/sprites for any overrides"
+autowrap_mode = 3
+
+[node name="Censor" type="Node2D" parent="."]
+
+[node name="CensorAnimation" type="AnimatedSprite2D" parent="Censor"]
 sprite_frames = SubResource("SpriteFrames_uup0d")
 autoplay = "default"
 frame_progress = 0.928116
+
+[node name="Glasses" type="Node2D" parent="."]
+z_index = -1
+
+[node name="GlassesSprite" type="Sprite2D" parent="Glasses"]
+texture = ExtResource("1_fj5nk")
 
 [node name="Hat" type="Node2D" parent="."]
 
@@ -60,13 +82,20 @@ frame_progress = 0.928116
 texture = ExtResource("3_pc45b")
 
 [node name="HatBottom" type="Sprite2D" parent="Hat"]
-z_index = -1
+editor_description = "OVERRIDES:
+- Z Index -100"
+z_index = -100
 texture = ExtResource("4_0yagu")
 
 [node name="TetoBand" type="Node2D" parent="."]
 
-[node name="Band" type="Sprite2D" parent="TetoBand"]
+[node name="BandAsset" type="Sprite2D" parent="TetoBand"]
+editor_description = "OVERRIDES:
+- position (70, 30)
+- rotation -50
+- Z Index -72"
+z_index = -72
+position = Vector2(70, 30)
+rotation = -0.872665
 texture = ExtResource("5_wm2aa")
-
-[node name="Pikmin" type="Sprite2D" parent="."]
-texture = ExtResource("6_pduqu")
+offset = Vector2(-29, -91)

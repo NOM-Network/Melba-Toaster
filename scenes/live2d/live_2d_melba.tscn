@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://h1kmx2dkntdj"]
+[gd_scene load_steps=10 format=3 uid="uid://h1kmx2dkntdj"]
 
 [ext_resource type="Script" path="res://scripts/live2d/mouth_movement.gd" id="1_2m8bk"]
 [ext_resource type="Script" path="res://scripts/live2d/live_2d_melba.gd" id="1_gym56"]
 [ext_resource type="Script" path="res://scripts/live2d/eye_blink.gd" id="3_6ft37"]
 [ext_resource type="Script" path="res://scripts/live2d/singing_movement.gd" id="4_xiarh"]
 [ext_resource type="PackedScene" uid="uid://ds3cr7lote6cs" path="res://scenes/live2d/pinnable_assets.tscn" id="5_rx2gh"]
+[ext_resource type="Script" path="res://scripts/live2d/pinnable_assets.gd" id="6_4roha"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_qkp5x"]
-viewport_path = NodePath("Sprite2D/GDCubismUserModel")
+viewport_path = NodePath("ModelSprite/Model")
 
 [sub_resource type="Animation" id="Animation_rc6ug"]
 resource_name = "emerge"
@@ -71,7 +72,7 @@ model_eyes_target = null
 metadata/_edit_horizontal_guides_ = [-942.0, -560.0, 1100.0]
 metadata/_edit_vertical_guides_ = [1100.0]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="ModelSprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 z_index = -1
 texture_filter = 6
@@ -80,10 +81,7 @@ texture = SubResource("ViewportTexture_qkp5x")
 centered = false
 offset = Vector2(-1100, -1100)
 
-[node name="PinnableAssets" parent="Sprite2D" instance=ExtResource("5_rx2gh")]
-unique_name_in_owner = true
-
-[node name="GDCubismUserModel" type="GDCubismUserModel" parent="Sprite2D"]
+[node name="Model" type="GDCubismUserModel" parent="ModelSprite"]
 assets = "res://assets/live2d/Melba_Final2/melbatoast_model.model3.json"
 playback_process_mode = 2
 auto_scale = false
@@ -215,28 +213,35 @@ gui_disable_input = true
 size = Vector2i(2200, 2200)
 render_target_update_mode = 4
 
-[node name="GDCubismEffectBreath" type="GDCubismEffectBreath" parent="Sprite2D/GDCubismUserModel"]
+[node name="BreathMovement" type="GDCubismEffectBreath" parent="ModelSprite/Model"]
 unique_name_in_owner = true
 
-[node name="SingingMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+[node name="SingingMovement" type="GDCubismEffectCustom" parent="ModelSprite/Model"]
 unique_name_in_owner = true
 script = ExtResource("4_xiarh")
 
-[node name="MouthMovement" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+[node name="MouthMovement" type="GDCubismEffectCustom" parent="ModelSprite/Model"]
 script = ExtResource("1_2m8bk")
 
-[node name="TargetPoint" type="GDCubismEffectTargetPoint" parent="Sprite2D/GDCubismUserModel"]
+[node name="TargetPoint" type="GDCubismEffectTargetPoint" parent="ModelSprite/Model"]
 unique_name_in_owner = true
 
-[node name="EyeBlinking" type="GDCubismEffectCustom" parent="Sprite2D/GDCubismUserModel"]
+[node name="EyeBlinking" type="GDCubismEffectCustom" parent="ModelSprite/Model"]
 unique_name_in_owner = true
 script = ExtResource("3_6ft37")
 
-[node name="BlinkTimer" type="Timer" parent="Sprite2D/GDCubismUserModel/EyeBlinking"]
+[node name="BlinkTimer" type="Timer" parent="ModelSprite/Model/EyeBlinking"]
 unique_name_in_owner = true
 wait_time = 3.0
 one_shot = true
 autostart = true
+
+[node name="PinnableAssets" type="GDCubismEffectCustom" parent="ModelSprite/Model" node_paths=PackedStringArray("assets")]
+script = ExtResource("6_4roha")
+assets = NodePath("Assets")
+
+[node name="Assets" parent="ModelSprite/Model/PinnableAssets" instance=ExtResource("5_rx2gh")]
+unique_name_in_owner = true
 
 [node name="AnimTimer" type="Timer" parent="."]
 
@@ -245,4 +250,4 @@ libraries = {
 "": SubResource("AnimationLibrary_a8dkn")
 }
 
-[connection signal="motion_event" from="Sprite2D/GDCubismUserModel" to="." method="_on_gd_cubism_user_model_motion_event"]
+[connection signal="motion_event" from="ModelSprite/Model" to="." method="_on_gd_cubism_user_model_motion_event"]
