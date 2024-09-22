@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://bjp2bck62tl2m"]
+[gd_scene load_steps=13 format=3 uid="uid://bjp2bck62tl2m"]
 
 [ext_resource type="Script" path="res://scripts/control_panel/control_panel.gd" id="1_rhl0v"]
 [ext_resource type="Script" path="res://scripts/control_panel/obs_websocket_client.gd" id="2_1sf50"]
 [ext_resource type="Texture2D" uid="uid://cobm5phwndmwn" path="res://assets/control_panel/toast.png" id="3_ewt3g"]
+[ext_resource type="Script" path="res://scripts/control_panel/scroll_container.gd" id="4_1cphc"]
 
 [sub_resource type="Theme" id="Theme_lkaxc"]
 MarginContainer/constants/margin_bottom = 10
@@ -133,6 +134,9 @@ text = "Cancel (F12)"
 [node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 3
+script = ExtResource("4_1cphc")
 
 [node name="CurrentSpeech" type="VBoxContainer" parent="Margins/HSplitContainer/LeftPanel/SpeechBoxPanel/SpeechBoxContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
@@ -162,6 +166,7 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "Click to copy-paste the current text"
 mouse_filter = 1
 text = "Eh, I gotta admit mate, I'm not the biggest fan of pineapple on pizza. It's just not my thing. Sure it has a sweet taste, but it just doesn't mix well with the savoury flavour of the cheese and the tomato. But hey, I ain't gonna be a hater, mate! To each their own, am I right? Some people might like pineapple on their pizza, and that's totally fine with me. I'll just stick to my jam, cheese, and peanut butter toast. (and yes, I do love to eat my peanut butter and jam toast!)"
 horizontal_alignment = 1
