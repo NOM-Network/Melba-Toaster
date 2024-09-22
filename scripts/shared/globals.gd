@@ -65,7 +65,7 @@ signal obs_action(action: String, args: String)
 @export var queued_song_seek_time := 0.0
 
 @export var time_before_cleanout := 10.0
-@export var time_before_next_response := 0.1
+@export var time_before_next_response := 0.5
 
 func is_ready() -> bool:
 	return not (is_speaking or is_singing)

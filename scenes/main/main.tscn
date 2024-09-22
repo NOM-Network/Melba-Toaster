@@ -601,7 +601,7 @@ animations = [{
 "speed": 30.0
 }]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "lower_third", "mic", "audio_manager", "spout_target")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("client", "control_panel", "lower_third", "mic", "audio_manager", "spout_target", "bluescreen")]
 process_mode = 3
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
@@ -610,6 +610,7 @@ lower_third = NodePath("SubViewportContainer/SpoutTarget/LowerThirdManager")
 mic = NodePath("SubViewportContainer/SpoutTarget/Microphone")
 audio_manager = NodePath("AudioManager")
 spout_target = NodePath("SubViewportContainer/SpoutTarget")
+bluescreen = NodePath("BlueScreen")
 
 [node name="WebSocketClient" type="Node" parent="."]
 script = ExtResource("4_bxfqh")
@@ -620,7 +621,8 @@ supported_protocols = null
 initial_position = 3
 current_screen = 0
 
-[node name="GreenScreen" type="ColorRect" parent="."]
+[node name="BlueScreen" type="ColorRect" parent="."]
+visible = false
 offset_left = -57.0
 offset_top = -62.0
 offset_right = 1966.0
