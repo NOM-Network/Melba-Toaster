@@ -11,6 +11,7 @@ var model_target_point: GDCubismEffectTargetPoint
 @export var mic: AnimatedSprite2D
 @export var audio_manager: Node
 @export var spout_target: SubViewport
+@export var bluescreen: ColorRect
 
 var spout: Spout
 var spout_texture: ViewportTexture
@@ -82,6 +83,7 @@ func _connect_signals() -> void:
 	Globals.stop_singing.connect(_on_stop_singing)
 
 	Globals.toggle_filter.connect(_on_toggle_filter)
+	Globals.toggle_bluescreen.connect(_on_toggle_bluescreen)
 
 func _on_ready_for_speech() -> void:
 	client.send_message({"type": "DoneSpeaking"})
@@ -291,5 +293,8 @@ func _on_before_next_response_timer_timeout() -> void:
 
 	if not Globals.is_paused:
 		Globals.ready_for_speech.emit()
+
+func _on_toggle_bluescreen(toggled_on: bool) -> void:
+	bluescreen.visible = toggled_on
 
 # endregion

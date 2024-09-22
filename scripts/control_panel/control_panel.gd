@@ -795,3 +795,6 @@ func _on_obs_action(action: String, args := "") -> void:
 				"sceneItemId": sceneItem[1],
 				"sceneItemEnabled": not sceneItem[2]
 			})
+
+func _on_bluescreen_toggle_toggled(toggled_on: bool) -> void:
+	Globals.toggle_bluescreen.emit(toggled_on)
