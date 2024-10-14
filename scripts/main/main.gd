@@ -234,17 +234,17 @@ func _on_connection_closed() -> void:
 	Globals.is_paused = true
 	control_panel.backend_disconnected()
 
+	var callback: Callable = func():
+		Globals.is_paused = false
+		Globals.ready_for_speech.emit()
+
 	if connection_attempt < 11:
 		connection_attempt += 1
 		print("Trying to reconnect, attempt %s" % connection_attempt)
 		await get_tree().create_timer(1.0).timeout
 
 		print("Reconnecting...")
-		connect_backend()
-		await client.connection_established
-
-		Globals.is_paused = false
-		Globals.ready_for_speech.emit()
+		connect_backend(callback)
 	else:
 		print("Too many connection attempts, giving up :(")
 		connection_attempt = 0
@@ -253,7 +253,7 @@ func _on_connection_closed() -> void:
 
 # region PUBLIC FUNCTIONS
 
-func connect_backend() -> void:
+func connect_backend(callback: Callable = func(): pass ) -> void:
 	client.connect_client()
 	await client.connection_established
 	control_panel.backend_connected()
@@ -268,6 +268,9 @@ func connect_backend() -> void:
 		Globals.ready_for_speech.connect(_on_ready_for_speech)
 
 	connection_attempt = 0
+
+	if callback:
+		callback.call()
 
 func disconnect_backend() -> void:
 	client.break_connection("from control panel")

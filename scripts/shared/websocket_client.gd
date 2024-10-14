@@ -42,8 +42,12 @@ func _process(delta: float) -> void:
 			if state == socket.STATE_OPEN:
 				connection_established.emit()
 			elif state == socket.STATE_CLOSED:
+				var code = socket.get_close_code()
+				var reason = socket.get_close_reason()
+				printerr("Toaster client: Connection closed with code %d, reason %s. Clean: %s" % [code, reason, code != -1])
+
 				connection_closed.emit()
-				print_debug("Toaster client: Connection closed! ", socket.get_close_reason())
+				set_process(false)
 
 		while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
 			incoming_messages_count += 1
@@ -53,11 +57,9 @@ func is_open() -> bool:
 	return socket.get_ready_state() == socket.STATE_OPEN
 
 func connect_client() -> void:
-	print_debug("Toaster client: Establishing connection!")
+	print("Toaster client: Establishing connection...")
 
-	set_process(true)
-	if not socket:
-		socket = WebSocketPeer.new()
+	socket = WebSocketPeer.new()
 
 	socket.handshake_headers = handshake_headers
 	socket.supported_protocols = supported_protocols
@@ -69,21 +71,24 @@ func connect_client() -> void:
 		connection_closed.emit()
 
 	last_state = socket.get_ready_state()
+	print("Toaster client: Established!")
+	set_process(true)
 
 func send_message(json: Dictionary) -> void:
 	var message: String = JSON.stringify(json)
 
 	outgoing_messages_count += 1
+
+	if not socket or socket.get_ready_state() != socket.STATE_OPEN:
+		printerr("Toaster client: Socket connection is not established")
+
 	var err: Error = socket.send_text(message)
 	if err != OK:
 		printerr("Toaster client: Message sending error ", err)
 
 func break_connection(reason: String = "") -> void:
-	set_process(true)
 	socket.close(1000, reason)
 	last_state = socket.get_ready_state()
 
 	incoming_messages_count = 0
 	outgoing_messages_count = 0
-
-	socket = WebSocketPeer.new()
