@@ -21,8 +21,9 @@ extends Window
 var OpCodes: Dictionary = ObsWebSocketClient.OpCodeEnums.WebSocketOpCode
 var is_streaming := false
 
-var music_inputs: Array = ["MUSIC", "MUSIC2"]
-var music_volume: float = -10.0
+const TARGET_MUSIC_SOURCES: Array = ["MUSIC"]
+const INTRO_MUSIC_VOLUME: float = -10.0
+const TARGET_MUSIC_VOLUME: float = -18.0
 
 # Last state globals
 var last_pause_status := not Globals.is_paused
@@ -262,7 +263,7 @@ func _handle_event(data: Dictionary) -> void:
 
 		"SceneTransitionStarted", "SceneTransitionVideoEnded", "SceneTransitionEnded", \
 		"MediaInputActionTriggered", "InputVolumeChanged", "MediaInputPlaybackEnded", \
-		"MediaInputPlaybackStarted":
+		"MediaInputPlaybackStarted", "RecordStateChanged":
 			pass # We don't need it
 
 		_:
@@ -349,8 +350,7 @@ func _on_message_queue_stats_timer_timeout() -> void:
 	CpHelpers.insert_data(%MessageQueueStats, Templates.format_message_queue_stats())
 
 func _on_start_singing(song: Song) -> void:
-	_set_input_volume(-10.0, -100.0, 10.0)
-	_mpv_pause()
+	_set_input_volume(TARGET_MUSIC_VOLUME, -100.0, 10.0)
 
 	Globals.current_emotion_modifier = 0.0
 
@@ -368,8 +368,7 @@ func _on_start_singing(song: Song) -> void:
 	gui_release_focus()
 
 func _on_stop_singing() -> void:
-	_mpv_pause()
-	_set_input_volume(-100.0, -10.0, 10.0)
+	_set_input_volume(-100.0, TARGET_MUSIC_VOLUME, 10.0)
 
 	_disable_singing_dancing_controls(false)
 	gui_release_focus()
@@ -577,7 +576,7 @@ func _generate_input_request(inputs: Array) -> void:
 
 func _generate_input_button(data: Dictionary) -> void:
 	# Only inputs we need
-	if data.inputName not in ["Mebla Capture", "Melba Sound", "MUSIC", "MUSIC2"]:
+	if data.inputName not in ["Melba Sound", "MUSIC"]:
 		return
 
 	var button := Button.new()
@@ -637,7 +636,6 @@ func _input(event: InputEvent) -> void:
 			pause_button.button_pressed = not pause_button.button_pressed
 
 	if event.is_action_pressed("toggle_mute"):
-		obs.send_command("ToggleInputMute", {"inputName": "Mebla Capture"}, "Mebla Capture")
 		obs.send_command("ToggleInputMute", {"inputName": "Melba Sound"}, "Melba Sound")
 
 func backend_connected() -> void:
@@ -725,8 +723,8 @@ func _change_input_settings(data: Dictionary) -> void:
 	if data.inputName != "Countdown":
 		return
 
-	if data.inputSettings.text == "0:05":
-		_set_input_volume(0.0, -10.0, 0.05)
+	if data.inputSettings.text == "0:09":
+		_set_input_volume(INTRO_MUSIC_VOLUME, TARGET_MUSIC_VOLUME, 0.025)
 
 	if data.inputSettings.text == "0:00":
 		await get_tree().create_timer(1.0).timeout
@@ -739,34 +737,47 @@ func _set_input_volume(start: float, end: float, step: float, sleep: int = 10) -
 		step *= -1.0
 
 	var requests: Array = []
-	for i: float in Vector3(start, end, step):
-		for source in music_inputs:
-			requests.push_back(["SetInputVolume", {"inputName": source, "inputVolumeDb": i}])
-			requests.push_back(["Sleep", {"sleepMillis": sleep}])
+	if step != 0.0:
+		for i: float in Vector3(start, end, step):
+			for source in TARGET_MUSIC_SOURCES:
+				requests.push_back(["SetInputVolume", {"inputName": source, "inputVolumeDb": i}])
+				requests.push_back(["Sleep", {"sleepMillis": sleep}])
 
-	for source in music_inputs:
+	for source in TARGET_MUSIC_SOURCES:
 		requests.push_back(["SetInputVolume", {"inputName": source, "inputVolumeDb": end}])
 
-	print(requests)
 	obs.send_command_batch(requests)
 
 func _update_stream_status(data: Dictionary) -> void:
-	if data.outputDuration > 2 * 60 * 60 * 1000:
+	### WHY DOES THIS EXIST?
+	# obs-websocket is not aware of the Twitch Enhanced Broadcasting feature,
+	# so it does not calculate the timecode correctly.
+	# It does so by multiplying the amount of produced frames to the frame time.
+	# (see https://github.com/obsproject/obs-websocket/blob/master/src/utils/Obs_NumberHelper.cpp#L26)
+	# When using the Enhanced Broadcasting feature, it calculates that amount for ALL the streams.
+	# By default, there are 5 streams in total, 2 of which run at 60.03 FPS, and 3 of which run at 30.02 FPS (on average).
+	# Given that 60.03 FPS gives us 1 second of runtime on our scale, 30.02 FPS gives us 0,5000832917 seconds of runtime on our scale.
+	# So, 1 + 1 + 0,5000832917 + 0,5000832917 + 0,5000832917 = 3,5002498751 seconds
+	# It is still not very accurate, but this timestamp is for information only, so it's fine by me.
+	### END OF RANT
+	var duration: int = data.outputDuration / 3.5002498751
+
+	if duration > 2 * 60 * 60 * 1000:
 		if not %StreamTimecode.has_theme_color_override("font_color"):
 			%StreamTimecode.add_theme_color_override("font_color", Color.RED)
 
-	%StreamTimecode.text = data.outputTimecode.substr(0, 8)
+	var total_seconds = duration / 1000.0
+	var hours = int(total_seconds / 3600)
+	var minutes = int((total_seconds - hours * 3600) / 60)
+	var seconds = int(total_seconds - hours * 3600 - minutes * 60)
+
+	%StreamTimecode.text = "%02d:%02d:%02d" % [hours, minutes, seconds]
 
 func _change_stream_state(data: Dictionary) -> void:
-	if data.outputState == "OBS_WEBSOCKET_OUTPUT_STOPPED":
+	if data.outputState == "OBS_WEBSOCKET_OUTPUT_STARTING":
+		_set_input_volume(0.0, INTRO_MUSIC_VOLUME, 0.0, 0)
+	elif data.outputState == "OBS_WEBSOCKET_OUTPUT_STOPPED":
 		%StreamTimecode.remove_theme_color_override("font_color")
-
-func _mpv_pause() -> void:
-	var output := []
-	var command := "echo cycle pause >\\\\\\\\.\\pipe\\mpv-pipe" # plz forgib ;(
-	print_debug(command.c_unescape())
-	var exit_code := OS.execute("cmd.exe", ["/C", command.c_unescape()], output, true, false)
-	print_debug("mpv exit code: ", exit_code, " ", output)
 
 func _on_obs_action(action: String, args := "") -> void:
 	match action:
