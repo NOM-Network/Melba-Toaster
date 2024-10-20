@@ -13,7 +13,9 @@ var host: String = Globals.config.get_backend("host")
 var port: String = Globals.config.get_backend("port")
 var password: String = Globals.config.get_backend("password")
 
-@export var handshake_headers: PackedStringArray
+var handshake_headers: PackedStringArray = PackedStringArray([
+	"Authentication: Bearer %s" % password
+])
 @export var supported_protocols: PackedStringArray
 var tls_options: TLSOptions = null
 
