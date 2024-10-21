@@ -13,10 +13,9 @@ var model_target_point: GDCubismEffectTargetPoint
 @export var spout_target: SubViewport
 @export var bluescreen: ColorRect
 
-var spout: Spout
-var spout_texture: ViewportTexture
-
 var connection_attempt: int = 0
+
+var spout_manager: RefCounted
 
 func _enter_tree() -> void:
 	while Globals.config.is_ready == false:
@@ -46,10 +45,9 @@ func _process(_delta: float) -> void:
 	else:
 		$BeatsCounter.visible = false
 
-	if OS.has_feature("windows"):
+	if spout_manager:
 		await RenderingServer.frame_post_draw
-		var img := spout_texture.get_image()
-		spout.send_image(img, img.get_width(), img.get_height(), Spout.FORMAT_RGBA, false)
+		spout_manager.send_texture()
 
 func _add_model() -> void:
 	get_window().size = Vector2i(1920, 1080)
@@ -62,11 +60,12 @@ func _add_model() -> void:
 	Globals.change_position.emit(Globals.default_position)
 
 	if OS.has_feature("windows"):
-		spout = Spout.new()
-		spout.set_sender_name("Melba Toaster")
-		spout_texture = spout_target.get_viewport().get_texture()
-		print("Spout2 initialized")
-	control_panel.get_node("TextureRect").texture = spout_texture
+		spout_manager = load("res://scripts/main/spout_manager.gd").new()
+		spout_manager.init(spout_target.get_viewport().get_texture())
+	else:
+		print_debug("Spout not supported on this platform")
+
+	control_panel.get_node("TextureRect").texture = spout_target.get_viewport().get_texture()
 
 # endregion
 
