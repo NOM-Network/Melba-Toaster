@@ -58,7 +58,7 @@ func _on_stop_singing() -> void:
 
 func _on_speech_player_finished() -> void:
 	var random_wait := randf_range(0.05, 0.69)
-	print_debug("Waiting for %f seconds" % random_wait)
+	print("-- Waiting for %f seconds" % random_wait)
 	await get_tree().create_timer(random_wait).timeout
 
 	Globals.is_speaking = false

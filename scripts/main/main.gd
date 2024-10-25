@@ -234,18 +234,19 @@ func _on_connection_closed() -> void:
 	control_panel.backend_disconnected()
 
 	var callback: Callable = func():
-		Globals.is_paused = false
-		Globals.ready_for_speech.emit()
+		if not Globals.is_singing:
+			Globals.is_paused = false
+			Globals.ready_for_speech.emit()
 
 	if connection_attempt < 11:
 		connection_attempt += 1
-		print("Trying to reconnect, attempt %s" % connection_attempt)
+		print("Toaster: Trying to reconnect, attempt %s" % connection_attempt)
 		await get_tree().create_timer(1.0).timeout
 
-		print("Reconnecting...")
+		print("Toaster: Reconnecting...")
 		connect_backend(callback)
 	else:
-		print("Too many connection attempts, giving up :(")
+		print("Toaster: Too many connection attempts, giving up :(")
 		connection_attempt = 0
 
 # endregion

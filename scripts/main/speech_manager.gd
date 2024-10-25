@@ -25,7 +25,6 @@ func _process(_delta: float) -> void:
 		printerr("Skipping message %s - skipped on process" % message.id)
 		return
 
-	print("Message ID: ", message.id)
 	current_speech_id = message.id
 
 	if message.has("emotions"):
@@ -43,11 +42,12 @@ func _process(_delta: float) -> void:
 				Globals.new_speech.emit(message)
 
 		"ContinueSpeech":
-			print("ContinueSpeech: ", message.id)
+			print("- ContinueSpeech: ", message.id)
 			Globals.continue_speech.emit(message)
 
 		"EndSpeech":
 			print("EndSpeech: ", message.id)
+			print("----------")
 			current_speech_id = 0
 			Globals.end_speech.emit()
 

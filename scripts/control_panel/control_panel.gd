@@ -699,6 +699,13 @@ func _on_backend_status_pressed() -> void:
 	CpHelpers.insert_data(%BackendStats, Templates.format_backend_stats([0, 0]))
 	main.disconnect_backend()
 
+	await get_tree().create_timer(1.0).timeout
+	var callback: Callable = func():
+		if not Globals.is_singing:
+			Globals.is_paused = false
+			Globals.ready_for_speech.emit()
+	main.connect_backend(callback)
+
 func _on_speech_text_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
