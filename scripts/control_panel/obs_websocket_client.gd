@@ -962,6 +962,10 @@ func break_connection(reason: String = "") -> void:
 	socket = WebSocketPeer.new()
 
 func send_command(command: String, data: Dictionary = {}, request_id: String = "1") -> void:
+	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		print("OBS WebSocket: Unable to send command, not connected")
+		return
+
 	var req := Request.new(command, str(request_id), data)
 
 	_send_message(req.get_as_json().to_utf8_buffer())

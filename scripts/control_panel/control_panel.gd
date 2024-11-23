@@ -228,7 +228,6 @@ func _handle_event(data: Dictionary) -> void:
 		"CurrentProgramSceneChanged":
 			_change_active_scene(data.eventData)
 			active_scene = data.eventData.sceneName
-			obs.send_command("GetSceneItemList", {"sceneName": active_scene})
 
 		"SceneListChanged":
 			obs.send_command("GetSceneList")
@@ -289,13 +288,15 @@ func _handle_request(data: Dictionary) -> void:
 			_update_stream_status(data.responseData)
 
 		"GetSceneList":
-			obs.send_command("GetSceneItemList", {"sceneName": data.responseData.currentProgramSceneName})
 			_generate_scene_buttons(data.responseData)
 
 			var request := []
 			for scene: Dictionary in data.responseData.scenes:
 				request.push_front([
 					"GetSourceFilterList", {"sourceName": scene.sceneName}, scene.sceneName
+				])
+				request.push_front([
+					"GetSceneItemList", {"sceneName": scene.sceneName}, scene.sceneName
 				])
 
 			CpHelpers.clear_nodes(%ObsFilters)
@@ -316,10 +317,12 @@ func _handle_request(data: Dictionary) -> void:
 				_generate_filter_buttons(data.requestId, data.responseData.filters)
 
 		"GetSceneItemList":
+			var scene_name: String = data.requestId
 			var sources: Array = data.responseData.sceneItems
-			obs_sources = sources.map(func(item: Dictionary) -> Array: return [
-				item.sourceName, item.sceneItemId, item.sceneItemEnabled
-			])
+
+			obs_sources.append_array(sources.map(func(item: Dictionary) -> Array: return [
+				item.sourceName, item.sceneItemId, item.sceneItemEnabled, scene_name
+			]))
 
 		# Ignored callbacks
 		"ToggleInputMute":
@@ -451,6 +454,10 @@ func _on_change_scene(scene_name: String) -> void:
 	var next_scene := scene_name
 	if Globals.scene_override and Globals.scene_override_to:
 		next_scene = Globals.scene_override_to
+
+	if next_scene == "Stay":
+		return
+
 	obs.send_command("SetCurrentProgramScene", {"sceneName": next_scene})
 
 	var next_position: String
@@ -786,19 +793,27 @@ func _change_stream_state(data: Dictionary) -> void:
 	elif data.outputState == "OBS_WEBSOCKET_OUTPUT_STOPPED":
 		%StreamTimecode.remove_theme_color_override("font_color")
 
-func _on_obs_action(action: String, args := "") -> void:
+func _on_obs_action(action: String, args: Array) -> void:
 	match action:
 		"toggle_scene_source":
-			var sceneItem: Array = obs_sources.filter(func(item: Array) -> bool: return item[0] == args)
-			if sceneItem.is_empty():
+			var source_name: String = args[0]
+			var enabled: bool = args[1]
+
+			if obs_sources.is_empty():
+				print("OBS sources are empty")
+				return
+
+			var scene_item: Array = obs_sources.filter(func(item: Array) -> bool: return item[0] == source_name)[0]
+			if scene_item.is_empty():
 				print("Could not find scene item: ", args)
 				return
 
-			sceneItem = sceneItem[0]
+			var source_id = scene_item[1]
+			var scene_name = scene_item[3]
 			obs.send_command("SetSceneItemEnabled", {
-				"sceneName": active_scene,
-				"sceneItemId": sceneItem[1],
-				"sceneItemEnabled": not sceneItem[2]
+				"sceneName": scene_name,
+				"sceneItemId": source_id,
+				"sceneItemEnabled": enabled
 			})
 
 func _on_bluescreen_toggle_toggled(toggled_on: bool) -> void:

@@ -106,8 +106,11 @@ func _match_command(line: Array) -> void:
 		["&FILTER", var source_name, var filter_name, var enabled]:
 			Globals.toggle_filter.emit(source_name, filter_name, enabled == "1")
 
+		["&SOURCE", var source_name, var enabled]:
+			Globals.obs_action.emit("toggle_scene_source", [source_name, enabled == "1"])
+
 		_:
-			printerr("SONG: `%s` is not a valid command, ignoring..." % line)
+			printerr("SONG: `%s` is not a valid command, ignoring..." % command)
 
 # region PUBLIC FUNCTIONS
 
