@@ -19,7 +19,7 @@ Melba can sing! Song support is outlined in [Wiki](https://github.com/NOM-Networ
 
 ## Development
 
-1. Install the latest minor version of Godot 4.3:
+1. Install the latest minor version of Godot 4.5:
 
     - standalone: <https://godotengine.org/download/windows/>
     - via winget:
