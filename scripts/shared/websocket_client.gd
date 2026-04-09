@@ -8,7 +8,7 @@ var last_state: WebSocketPeer.State = WebSocketPeer.STATE_CLOSED
 var secure: String = "wss" if Globals.config.get_backend("secure") else "ws"
 var host: String = Globals.config.get_backend("host")
 var port: String = Globals.config.get_backend("port")
-var password: String = Globals.config.get_backend("password")
+var password: String = Globals.config.get_backend("password") if Globals.config.get_backend("password") != null else ""
 
 var handshake_headers: PackedStringArray = PackedStringArray([
 	"Authentication: Bearer %s" % password

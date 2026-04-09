@@ -1,7 +1,6 @@
 extends GDCubismEffectCustom
 class_name SingingMovement
 
-@onready var sprite_2d: Sprite2D = %ModelSprite
 @onready var gd_cubism_user_model: GDCubismUserModel = %Model
 
 var bob_interval: float = 0.5

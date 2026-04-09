@@ -1,7 +1,7 @@
 extends Node
 class_name Variables
 
-static var default_model_position := Vector2(740, 1160)
+static var default_model_position := Vector2(820, 1160)
 static var default_model_scale := 0.33
 static var default_lower_third_position := [Vector2(35, 682), Vector2(1, 1)]
 

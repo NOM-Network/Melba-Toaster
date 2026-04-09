@@ -1,9 +1,9 @@
 [gd_scene load_steps=91 format=3 uid="uid://b3swnm3lvor3i"]
 
-[ext_resource type="Script" path="res://scripts/main/main.gd" id="1_bldvu"]
+[ext_resource type="Script" uid="uid://dswnf1vmoev5o" path="res://scripts/main/main.gd" id="1_bldvu"]
 [ext_resource type="PackedScene" uid="uid://bjp2bck62tl2m" path="res://scenes/control_panel/control_panel.tscn" id="2_uvv3l"]
 [ext_resource type="Texture2D" uid="uid://d31jgtyln1dig" path="res://assets/main/mic/mic_in.png" id="4_ajw6o"]
-[ext_resource type="Script" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
+[ext_resource type="Script" uid="uid://civw4h04r8gtt" path="res://scripts/shared/websocket_client.gd" id="4_bxfqh"]
 [ext_resource type="Texture2D" uid="uid://mjuycpvvuxp8" path="res://assets/main/mic/mic_out.png" id="5_8y5wi"]
 [ext_resource type="PackedScene" uid="uid://c61c4c54xgfqi" path="res://scenes/main/lower_third_manager.tscn" id="6_22ojb"]
 [ext_resource type="PackedScene" uid="uid://bjb7frhypfech" path="res://scenes/main/audio_manager.tscn" id="8_jjjnc"]
@@ -606,7 +606,7 @@ process_mode = 3
 script = ExtResource("1_bldvu")
 client = NodePath("WebSocketClient")
 control_panel = NodePath("ControlPanel")
-lower_third = NodePath("SubViewportContainer/SpoutTarget/LowerThirdManager")
+lower_third = NodePath("SubViewportContainer/SpoutTarget/CanvasLayer/LowerThirdManager")
 mic = NodePath("SubViewportContainer/SpoutTarget/Microphone")
 audio_manager = NodePath("AudioManager")
 spout_target = NodePath("SubViewportContainer/SpoutTarget")
@@ -616,6 +616,7 @@ bluescreen = NodePath("BlueScreen")
 script = ExtResource("4_bxfqh")
 
 [node name="ControlPanel" parent="." instance=ExtResource("2_uvv3l")]
+oversampling_override = 1.0
 initial_position = 3
 current_screen = 0
 
@@ -652,7 +653,9 @@ sprite_frames = SubResource("SpriteFrames_4nhqd")
 animation = &"in"
 centered = false
 
-[node name="LowerThirdManager" parent="SubViewportContainer/SpoutTarget" instance=ExtResource("6_22ojb")]
+[node name="CanvasLayer" type="CanvasLayer" parent="SubViewportContainer/SpoutTarget"]
+
+[node name="LowerThirdManager" parent="SubViewportContainer/SpoutTarget/CanvasLayer" instance=ExtResource("6_22ojb")]
 
 [node name="BeatsCounter" type="Label" parent="."]
 anchors_preset = 2

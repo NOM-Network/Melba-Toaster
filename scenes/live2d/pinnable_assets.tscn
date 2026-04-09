@@ -43,6 +43,7 @@ animations = [{
 }]
 
 [node name="PinnableAssets" type="Node2D"]
+top_level = true
 z_index = 100
 
 [node name="Notes" type="Label" parent="."]

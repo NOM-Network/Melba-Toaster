@@ -1,7 +1,6 @@
 extends Node2D
 
 @onready var model := preload("res://scenes/live2d/live_2d_melba.tscn").instantiate()
-var model_sprite: Sprite2D
 var user_model: GDCubismUserModel
 var model_target_point: GDCubismEffectTargetPoint
 
@@ -53,7 +52,6 @@ func _add_model() -> void:
 	get_window().size = Vector2i(1920, 1080)
 	spout_target.add_child(model, true)
 
-	model_sprite = model.get_node("%ModelSprite")
 	user_model = model.get_node("%Model")
 	model_target_point = model.get_node("%TargetPoint")
 

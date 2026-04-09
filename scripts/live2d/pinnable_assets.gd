@@ -37,8 +37,8 @@ func _on_cubism_init(model: GDCubismUserModel) -> void:
 		if not meshes.has(asset.mesh):
 			printerr("Cannot found `%s` mesh" % asset.mesh)
 			continue
-
-		var ary_mesh: ArrayMesh = meshes[asset.mesh]
+		
+		var ary_mesh: ArrayMesh = meshes[asset.mesh].mesh
 		var ary_surface: Array = ary_mesh.surface_get_arrays(0)
 
 		asset.initial_points[0] = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
@@ -78,13 +78,15 @@ func _tween_pinned_asset(asset: PinnableAsset, enabled: bool) -> void:
 		assets_to_pin.erase(node_name)
 
 func _pin(asset: PinnableAsset, model: GDCubismUserModel) -> void:
-	var ary_mesh: ArrayMesh = meshes[asset.mesh]
+	var ary_mesh: ArrayMesh = meshes[asset.mesh].mesh
 	var ary_surface: Array = ary_mesh.surface_get_arrays(0)
 	var pos: Vector2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.custom_point]
 	var pos2: Vector2 = ary_surface[ArrayMesh.ARRAY_VERTEX][asset.second_point]
 
-	asset.node.position = pos + (model.adjust_scale * asset.position_offset)
-	asset.node.scale = Vector2(model.adjust_scale, model.adjust_scale) * asset.scale_offset
+	# Transform mesh position by model's position and scale for v0.9 direct rendering
+	var world_pos: Vector2 = model.position + (pos * model.scale.x)
+	asset.node.position = world_pos + (model.scale.x * asset.position_offset)
+	asset.node.scale = Vector2(model.scale.x, model.scale.x) * asset.scale_offset
 	asset.node.rotation = _get_asset_rotation(asset.initial_points, [pos, pos2])
 
 func _get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) -> float:
@@ -96,7 +98,5 @@ func _get_asset_rotation(initial_points: Array[Vector2], pos: Array[Vector2]) ->
 
 	var angle = angle2 - angle1
 
-	if angle > 0:
-		return angle - _90_DEG_IN_RAD
-	return angle + _90_DEG_IN_RAD
+	return angle
 #endregion

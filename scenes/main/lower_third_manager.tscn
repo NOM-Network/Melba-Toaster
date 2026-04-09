@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c61c4c54xgfqi"]
 
-[ext_resource type="Script" path="res://scripts/main/lower_third.gd" id="1_s6s1h"]
+[ext_resource type="Script" uid="uid://bchfgp1fqbmcq" path="res://scripts/main/lower_third.gd" id="1_s6s1h"]
 [ext_resource type="FontFile" uid="uid://dljb036lelm30" path="res://assets/main/ShantellSans-Bold.ttf" id="2_tctuy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8wgd5"]
